@@ -1,0 +1,26 @@
+@import '../variables.css';
+
+.role-buttons-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--clr-background);
+    color: var(--clr-OnBackground);
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    border-color: var(--clr-OnBackground);
+}
+
+th {
+    background-color: var(--primary-dark);
+    border-color: var(--clr-OnBackground);
+}

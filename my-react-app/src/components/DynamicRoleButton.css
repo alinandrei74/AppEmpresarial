@@ -1,0 +1,117 @@
+@import '../variables.css';
+
+.btn {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Estilos para Roles */
+.super-user {
+  background-color: var(--super-user-color);
+  color: black;
+}
+
+.super-user.dark {
+  background-color: var(--super-user-dark);
+}
+
+.super-user.light {
+  background-color: var(--super-user-light);
+}
+
+.cleaning {
+  background-color: var(--cleaning-color);
+  color: white;
+}
+
+.cleaning.dark {
+  background-color: var(--cleaning-dark);
+}
+
+.cleaning.light {
+  background-color: var(--cleaning-light);
+}
+
+.delivery {
+  background-color: var(--delivery-color);
+  color: white;
+}
+
+.delivery.dark {
+  background-color: var(--delivery-dark);
+}
+
+.delivery.light {
+  background-color: var(--delivery-light);
+}
+
+.maintenance {
+  background-color: var(--maintenance-color);
+  color: white;
+}
+
+.maintenance.dark {
+  background-color: var(--maintenance-dark);
+}
+
+.maintenance.light {
+  background-color: var(--maintenance-light);
+}
+
+/* Ejemplo de clases de botones */
+.btn-super-user {
+  background-color: var(--super-user-color);
+}
+
+.btn-super-user.dark {
+  background-color: var(--super-user-dark);
+}
+
+.btn-super-user.light {
+  background-color: var(--super-user-light);
+}
+
+.btn-cleaning {
+  background-color: var(--cleaning-color);
+}
+
+.btn-cleaning.dark {
+  background-color: var(--cleaning-dark);
+}
+
+.btn-cleaning.light {
+  background-color: var(--cleaning-light);
+}
+
+.btn-delivery {
+  background-color: var(--delivery-color);
+}
+
+.btn-delivery.dark {
+  background-color: var(--delivery-dark);
+}
+
+.btn-delivery.light {
+  background-color: var(--delivery-light);
+}
+
+.btn-maintenance {
+  background-color: var(--maintenance-color);
+}
+
+.btn-maintenance.dark {
+  background-color: var(--maintenance-dark);
+}
+
+.btn-maintenance.light {
+  background-color: var(--maintenance-light);
+}

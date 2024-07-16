@@ -1,0 +1,171 @@
+@import 'variables.css';
+
+body {
+    background-color: var(--primary-color);
+    color: var(--dark-text-color);
+    font-family: Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: var(--dark-bg-color);
+    color: var(--dark-text-color);
+}
+
+.app-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.toggle-button {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-bottom: 20px;
+}
+
+.toggle-button:hover {
+    background-color: var(--primary-dark);
+}
+
+.role-buttons-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+.btn {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+}
+
+/* Estilos para Roles */
+.super-user {
+    background-color: var(--super-user-color);
+    color: black;
+}
+
+.super-user.dark {
+    background-color: var(--super-user-dark);
+}
+
+.super-user.light {
+    background-color: var(--super-user-light);
+}
+
+.cleaning {
+    background-color: var(--cleaning-color);
+    color: white;
+}
+
+.cleaning.dark {
+    background-color: var(--cleaning-dark);
+}
+
+.cleaning.light {
+    background-color: var(--cleaning-light);
+}
+
+.delivery {
+    background-color: var(--delivery-color);
+    color: white;
+}
+
+.delivery.dark {
+    background-color: var(--delivery-dark);
+}
+
+.delivery.light {
+    background-color: var(--delivery-light);
+}
+
+.maintenance {
+    background-color: var(--maintenance-color);
+    color: white;
+}
+
+.maintenance.dark {
+    background-color: var(--maintenance-dark);
+}
+
+.maintenance.light {
+    background-color: var(--maintenance-light);
+}
+
+/* Ejemplo de clases de botones */
+.btn-super-user {
+    background-color: var(--super-user-color);
+}
+
+.btn-super-user.dark {
+    background-color: var(--super-user-dark);
+}
+
+.btn-super-user.light {
+    background-color: var(--super-user-light);
+}
+
+.btn-cleaning {
+    background-color: var(--cleaning-color);
+}
+
+.btn-cleaning.dark {
+    background-color: var(--cleaning-dark);
+}
+
+.btn-cleaning.light {
+    background-color: var(--cleaning-light);
+}
+
+.btn-delivery {
+    background-color: var(--delivery-color);
+}
+
+.btn-delivery.dark {
+    background-color: var(--delivery-dark);
+}
+
+.btn-delivery.light {
+    background-color: var(--delivery-light);
+}
+
+.btn-maintenance {
+    background-color: var(--maintenance-color);
+}
+
+.btn-maintenance.dark {
+    background-color: var(--maintenance-dark);
+}
+
+.btn-maintenance.light {
+    background-color: var(--maintenance-light);
+}
