@@ -1,18 +1,34 @@
-@import '../colors.css';
-
-.role-buttons-container {
+.role-buttons-head {
     width: 100%;
-    overflow-x: auto;
 }
 
-table {
+.role-buttons-head h2 {
+    margin-bottom: 1rem;
+}
+
+.role-buttons-head h3 {
+    margin-bottom: .8rem;
+}
+
+.role-buttons-table table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--clr-background);
-    color: var(--clr-OnBackground);
+    margin-bottom: .2rem;
 }
 
-th,
+.role-buttons-table {
+    width: 100%;
+    overflow-x: auto;
+    margin-bottom: 3rem;
+}
+
+/* table {
+    width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+} */
+
+/* th,
 td {
     border: 1px solid #ddd;
     padding: 10px;
@@ -22,5 +38,5 @@ td {
 
 th {
     background-color: var(--primary-dark);
-    border-color: var(--clr-OnBackground);
-}
+    color: white;
+} */

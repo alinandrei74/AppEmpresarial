@@ -1,5 +1,5 @@
 :root {
-    /*todo: Colores Generales */
+    /*todo: Colores Estaticos */
     --primary-default: #8ac8f1;
     --primary-dark: #5b8099;
     --primary-light: #b3e1ff;
@@ -26,10 +26,12 @@
     --maintenance-light: #f5c17b;
 
 
-    /*todo: Colores en MODO CLARO */
+    /*todo: Colores Dinamicos (Modo Claro) */
     /*? Fondo y Contra Fondo dinamicos */
     --clr-background: #b2cad0;
     --clr-OnBackground: #1b232d;
+    --clr-text: black;
+    --clr-OnText: white;
 
     /*? Roles dinamicos */
     --clr-superUser: var(--superUser-light);
@@ -38,11 +40,13 @@
     --clr-maintenance: var(--maintenance-light);
 }
 
-/*todo: Colores en MODO OSCURO */
+/*todo: Colores Dinamicos (Modo Oscuro) */
 .dark-mode {
     /*? Fondo y Contra Fondo dinamicos */
     --clr-background: #2c3e50;
     --clr-OnBackground: #ecf0f1;
+    --clr-text: white;
+    --clr-OnText: black;
 
     /*? Roles dinamicos */
     --clr-superUser: var(--superUser-dark);
