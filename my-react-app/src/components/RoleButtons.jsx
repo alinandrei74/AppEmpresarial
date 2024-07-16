@@ -14,8 +14,8 @@ const RoleButtons = () => {
   return (
     <>
       <div className="role-buttons-head">
-        <h2>Tabla de Botones</h2>
-        <h3>Ejemplos Visuales Usando los Colores</h3>
+        <h2>Ejemplos de Botones</h2>
+        <h3>Usando los Colores de la Tabla Anterior</h3>
       </div>
 
       <div className="role-buttons-table">

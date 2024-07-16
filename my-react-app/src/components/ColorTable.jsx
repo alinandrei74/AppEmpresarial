@@ -1,15 +1,11 @@
-import React, { useContext } from "react";
-import { DarkModeContext } from "../contexts/DarkModeContext";
 import "./ColorTable.css";
 
 /**
- * Componente que muestra una tabla de colores.
+ *1/ Componente que muestra una tabla de colores.
  *
  * @returns {JSX.Element} Una tabla con todos los colores definidos en CSS.
  */
 const ColorTable = () => {
-  const { darkMode } = useContext(DarkModeContext);
-
   const staticColors = [
     { name: "Primary Default", variable: "--primary-default" },
     { name: "Primary Dark", variable: "--primary-dark" },
@@ -42,27 +38,48 @@ const ColorTable = () => {
     { name: "Maintenance", variable: "--clr-maintenance" },
   ];
 
-  const renderColorRows = (colors) => {
-    return colors.map((color) => (
-      <tr key={color.variable}>
-        <td>{color.name}</td>
-        <td
-          style={{
-            backgroundColor: `var(${color.variable})`,
-            color:
-              color.variable === "--clr-OnBackground" ||
-              color.variable === "--clr-text" ||
-              color.variable.endsWith("-light")
-                ? `var(--clr-OnText)`
-                : darkMode,
-            padding: "10px",
-            textAlign: "center",
-          }}
-        >
-          {color.variable}
-        </td>
-      </tr>
-    ));
+  /**
+   ** Renderiza filas de colores para una tabla.
+   *
+   * @param {Array} colors - Lista de objetos de colores con propiedades `name` y `variable`.
+   * @param {boolean} isStatic - Indica si los colores son estáticos. Si es verdadero, el color del texto será siempre negro.
+   * @returns {JSX.Element[]} Array de filas `<tr>` con celdas `<td>` que muestran los nombres y colores.
+   */
+  const renderColorRows = (colors, isStatic) => {
+    return colors.map((color) => {
+      let textColor;
+
+      // Determina el color del texto basado en el nombre de la variable de color
+      if (color.variable.endsWith("-dark")) {
+        textColor = "white";
+      } else if (isStatic) {
+        textColor = "black";
+      } else if (
+        color.variable === "--clr-OnBackground" ||
+        color.variable === "--clr-text" ||
+        color.variable.endsWith("-light")
+      ) {
+        textColor = `var(--clr-OnText)`;
+      } else {
+        textColor = undefined;
+      }
+
+      return (
+        <tr key={color.variable}>
+          <td>{color.name}</td>
+          <td
+            style={{
+              backgroundColor: `var(${color.variable})`,
+              color: textColor,
+              padding: "10px",
+              textAlign: "center",
+            }}
+          >
+            {color.variable}
+          </td>
+        </tr>
+      );
+    });
   };
 
   return (
@@ -76,7 +93,7 @@ const ColorTable = () => {
             <th>Color</th>
           </tr>
         </thead>
-        <tbody>{renderColorRows(staticColors)}</tbody>
+        <tbody>{renderColorRows(staticColors, true)}</tbody>
       </table>
       <h3>Colores Dinámicos</h3>
       <table>
@@ -86,7 +103,7 @@ const ColorTable = () => {
             <th>Color</th>
           </tr>
         </thead>
-        <tbody>{renderColorRows(dynamicColors)}</tbody>
+        <tbody>{renderColorRows(dynamicColors, false)}</tbody>
       </table>
     </div>
   );
