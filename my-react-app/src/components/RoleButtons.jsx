@@ -1,8 +1,16 @@
-import React from "react";
+import React, { useContext } from "react";
 import "./RoleButtons.css";
 import DynamicRoleButton from "./DynamicRoleButton";
+import { DarkModeContext } from "../contexts/DarkModeContext";
 
-const RoleButtons = ({ darkMode }) => {
+/**
+ *1/ Componente que renderiza los botones de roles con diferentes estados de darkMode.
+ *
+ * @returns {JSX.Element} La tabla de botones de roles.
+ */
+const RoleButtons = () => {
+  const { darkMode } = useContext(DarkModeContext);
+
   return (
     <div className="role-buttons-container">
       <table>
@@ -19,28 +27,28 @@ const RoleButtons = ({ darkMode }) => {
             <td>
               <DynamicRoleButton
                 darkMode={darkMode}
-                role="super-user"
+                role="superUser"
                 label="Super Usuario"
               />
             </td>
             <td>
               <DynamicRoleButton
                 darkMode={true}
-                role="super-user"
+                role="superUser"
                 label="Super Usuario"
               />
             </td>
             <td>
               <DynamicRoleButton
                 darkMode={false}
-                role="super-user"
+                role="superUser"
                 label="Super Usuario"
               />
             </td>
             <td>
               <DynamicRoleButton
                 darkMode={null}
-                role="super-user"
+                role="superUser"
                 label="Super Usuario"
               />
             </td>

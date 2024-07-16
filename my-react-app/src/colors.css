@@ -1,0 +1,52 @@
+:root {
+    /*todo: Colores Generales */
+    --primary-default: #8ac8f1;
+    --primary-dark: #5b8099;
+    --primary-light: #b3e1ff;
+
+    --secondary-default: #3498db;
+    --secondary-dark: #216b9c;
+    --secondary-light: #5daee0;
+
+    /*? Roles */
+    --superUser-default: rgb(247, 238, 112);
+    --superUser-dark: rgb(200, 192, 90);
+    --superUser-light: rgb(255, 247, 145);
+
+    --cleaning-default: #bc54f4;
+    --cleaning-dark: #933cbe;
+    --cleaning-light: #d283f7;
+
+    --delivery-default: #95df6d;
+    --delivery-dark: #6bb149;
+    --delivery-light: #b4e58e;
+
+    --maintenance-default: #f2aa57;
+    --maintenance-dark: #bf853d;
+    --maintenance-light: #f5c17b;
+
+
+    /*todo: Colores en MODO CLARO */
+    /*? Fondo y Contra Fondo dinamicos */
+    --clr-background: #b2cad0;
+    --clr-OnBackground: #1b232d;
+
+    /*? Roles dinamicos */
+    --clr-superUser: var(--superUser-light);
+    --clr-cleaning: var(--cleaning-light);
+    --clr-delivery: var(--delivery-light);
+    --clr-maintenance: var(--maintenance-light);
+}
+
+/*todo: Colores en MODO OSCURO */
+.dark-mode {
+    /*? Fondo y Contra Fondo dinamicos */
+    --clr-background: #2c3e50;
+    --clr-OnBackground: #ecf0f1;
+
+    /*? Roles dinamicos */
+    --clr-superUser: var(--superUser-dark);
+    --clr-cleaning: var(--cleaning-dark);
+    --clr-delivery: var(--delivery-dark);
+    --clr-maintenance: var(--maintenance-dark);
+}

@@ -1,22 +1,15 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import "./App.css";
 import RoleButtons from "./components/RoleButtons";
+import { DarkModeContext } from "./contexts/DarkModeContext";
 
 /**
- * Componente principal de la aplicación.
+ *1/ Componente principal de la aplicación.
  *
  * @returns {JSX.Element} La interfaz principal de la aplicación.
  */
 const App = () => {
-  const [darkMode, setDarkMode] = useState(false);
-
-  /**
-   * Maneja el cambio entre modos claro y oscuro.
-   */
-  const toggleDarkMode = () => {
-    setDarkMode((prevMode) => !prevMode);
-    document.body.classList.toggle("dark-mode");
-  };
+  const { darkMode, toggleDarkMode } = useContext(DarkModeContext);
 
   return (
     <div className="app-container">

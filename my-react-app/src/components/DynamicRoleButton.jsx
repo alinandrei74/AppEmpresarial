@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PropTypes from "prop-types";
-import "./DynamicRoleButton.css";
 
 /**
- * Botón dinámico basado en el rol y el modo oscuro.
+ *1/ Botón dinámico basado en el rol y el modo oscuro.
  *
  * @param {Object} props - Las propiedades del componente.
  * @param {boolean} [props.darkMode=null] - Indica si el modo oscuro está activado.
@@ -12,26 +11,44 @@ import "./DynamicRoleButton.css";
  * @returns {JSX.Element} El botón de rol dinámico.
  */
 const DynamicRoleButton = ({ darkMode = null, role, label }) => {
-  const roleColor = `var(--${role}-color)`;
-  const roleDarkColor = `var(--${role}-dark)`;
-  const roleLightColor = `var(--${role}-light)`;
+  // Memorizar los colores para evitar recalcular en cada render
+  const { backgroundColor, hoverColor, textColor } = useMemo(() => {
+    const roleColor = `var(--${role}-default)`;
+    const roleDarkColor = `var(--${role}-dark)`;
+    const roleLightColor = `var(--${role}-light)`;
 
-  const backgroundColor =
-    darkMode === null ? roleColor : darkMode ? roleDarkColor : roleLightColor;
-  const hoverColor =
-    darkMode === null
-      ? roleLightColor
-      : darkMode
-      ? roleLightColor
-      : roleDarkColor;
+    let backgroundColor;
+    let hoverColor;
+    let textColor;
+
+    if (darkMode === null) {
+      backgroundColor = roleColor;
+      hoverColor = roleLightColor;
+      textColor = "black";
+    } else if (darkMode) {
+      backgroundColor = roleDarkColor;
+      hoverColor = roleLightColor;
+      textColor = "white";
+    } else {
+      backgroundColor = roleLightColor;
+      hoverColor = roleDarkColor;
+      textColor = "black";
+    }
+
+    return { backgroundColor, hoverColor, textColor };
+  }, [darkMode, role]);
+
+  const buttonStyle = {
+    padding: "10px 20px",
+    backgroundColor: backgroundColor,
+    color: textColor,
+  };
 
   return (
     <button
-      className={`btn btn-${role}`}
-      style={{
-        backgroundColor: backgroundColor,
-        color: darkMode ? "white" : "black",
-      }}
+      //! Actualmente no se usa pero es una buena practica
+      className={`btn-${role}`}
+      style={buttonStyle}
       onMouseEnter={(e) => (e.target.style.backgroundColor = hoverColor)}
       onMouseLeave={(e) => (e.target.style.backgroundColor = backgroundColor)}
     >
