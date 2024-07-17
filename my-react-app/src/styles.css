@@ -36,7 +36,7 @@ button:hover {
 
 th,
 td {
-    border: 1px solid #ddd;
+    border: 1px solid;
     padding: 10px;
     text-align: center;
     border-color: var(--clr-OnBackground);
@@ -45,40 +45,4 @@ td {
 th {
     background-color: var(--primary-dark);
     color: white;
-}
-
-/*? Estilos para Roles */
-.superUser {
-    background-color: var(--clr-superUser);
-}
-
-.superUser:hover {
-    background-color: var(--superUser-light);
-}
-
-
-.cleaning {
-    background-color: var(--clr-cleaning);
-}
-
-.cleaning:hover {
-    background-color: var(--cleaning-light);
-}
-
-
-.delivery {
-    background-color: var(--clr-cleaning);
-}
-
-.delivery:hover {
-    background-color: var(--delivery-light);
-}
-
-
-.maintenance {
-    background-color: var(--clr-maintenance);
-}
-
-.maintenance:hover {
-    background-color: var(--maintenance-light);
 }

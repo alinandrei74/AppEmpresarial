@@ -38,6 +38,11 @@
     --clr-cleaning: var(--cleaning-light);
     --clr-delivery: var(--delivery-light);
     --clr-maintenance: var(--maintenance-light);
+
+    --clr-superUser-hover: var(--superUser-dark);
+    --clr-cleaning-hover: var(--cleaning-dark);
+    --clr-delivery-hover: var(--delivery-dark);
+    --clr-maintenance-hover: var(--maintenance-dark);
 }
 
 /*todo: Colores Dinamicos (Modo Oscuro) */
@@ -53,4 +58,10 @@
     --clr-cleaning: var(--cleaning-dark);
     --clr-delivery: var(--delivery-dark);
     --clr-maintenance: var(--maintenance-dark);
+
+    --clr-superUser-hover: var(--superUser-light);
+    --clr-cleaning-hover: var(--cleaning-light);
+    --clr-delivery-hover: var(--delivery-light);
+    --clr-maintenance-hover: var(--maintenance-light);
+
 }

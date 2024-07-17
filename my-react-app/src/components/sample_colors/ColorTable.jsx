@@ -33,9 +33,13 @@ const ColorTable = () => {
     { name: "Text", variable: "--clr-text" },
     { name: "On Text", variable: "--clr-OnText" },
     { name: "SuperUser", variable: "--clr-superUser" },
+    { name: "SuperUser Hover", variable: "--clr-superUser-hover" },
     { name: "Cleaning", variable: "--clr-cleaning" },
+    { name: "Cleaning Hover", variable: "--clr-cleaning-hover" },
     { name: "Delivery", variable: "--clr-delivery" },
+    { name: "Delivery Hover", variable: "--clr-delivery-hover" },
     { name: "Maintenance", variable: "--clr-maintenance" },
+    { name: "Maintenance Hover", variable: "--clr-maintenance-hover" },
   ];
 
   /**
@@ -50,18 +54,21 @@ const ColorTable = () => {
       let textColor;
 
       // Determina el color del texto basado en el nombre de la variable de color
-      if (color.variable.endsWith("-dark")) {
-        textColor = "white";
-      } else if (isStatic) {
-        textColor = "black";
-      } else if (
-        color.variable === "--clr-OnBackground" ||
-        color.variable === "--clr-text" ||
-        color.variable.endsWith("-light")
-      ) {
-        textColor = `var(--clr-OnText)`;
-      } else {
-        textColor = undefined;
+      switch (true) {
+        case color.variable.endsWith("-dark"):
+          textColor = "white";
+          break;
+        case isStatic:
+          textColor = "black";
+          break;
+        case color.variable === "--clr-OnBackground":
+        case color.variable === "--clr-text":
+        case color.variable.endsWith("-light"):
+        case color.variable.endsWith("-hover"):
+          textColor = `var(--clr-OnText)`;
+          break;
+        default:
+          textColor = undefined;
       }
 
       return (
