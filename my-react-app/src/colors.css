@@ -47,7 +47,7 @@
     --clr-maintenance-hover: var(--maintenance-dark);
 
     /*? Navbar */
-    --clr-navbar: #7494a3;
+    --clr-navbar: var(--secondary-light);
 }
 
 /*todo: Colores Dinamicos (Modo Oscuro) */
@@ -70,5 +70,5 @@
     --clr-maintenance-hover: var(--maintenance-light);
 
     /*? Navbar */
-    --clr-navbar: #7494a3;
+    --clr-navbar: var(--secondary-dark);
 }

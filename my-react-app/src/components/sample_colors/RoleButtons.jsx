@@ -12,156 +12,67 @@ const RoleButtons = () => {
     <>
       <div className="role-buttons-head">
         <h2>Ejemplos de Botones</h2>
-        <h3>Usando los Colores de la Tabla Anterior</h3>
+        <h3>Usando el Componente RoleButton</h3>
       </div>
 
       <div className="role-buttons-table">
         <table>
           <thead>
             <tr>
-              <th>Dynamic Mode</th>
-              <th>Dark Mode</th>
-              <th>Light Mode</th>
-              <th>Default Mode</th>
+              <th>Default Theme</th>
+              <th>Dynamic Theme</th>
+              <th>Reverse Theme</th>
+              <th>Dark Theme</th>
+              <th>Light Theme</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <RoleButton
-                  theme="Dynamic"
-                  role="superUser"
-                  label="Super Usuario"
-                  onClick={() => console.log("Super Usuario - Dynamic Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Dark"
-                  role="superUser"
-                  label="Super Usuario"
-                  onClick={() => console.log("Super Usuario - Dark Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Light"
-                  role="superUser"
-                  label="Super Usuario"
-                  onClick={() => console.log("Super Usuario - Light Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Default"
-                  role="superUser"
-                  label="Super Usuario"
-                  onClick={() => console.log("Super Usuario - Default Mode")}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <RoleButton
-                  theme="Dynamic"
-                  role="cleaning"
-                  label="Limpieza"
-                  onClick={() => console.log("Limpieza - Dynamic Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Dark"
-                  role="cleaning"
-                  label="Limpieza"
-                  onClick={() => console.log("Limpieza - Dark Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Light"
-                  role="cleaning"
-                  label="Limpieza"
-                  onClick={() => console.log("Limpieza - Light Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Default"
-                  role="cleaning"
-                  label="Limpieza"
-                  onClick={() => console.log("Limpieza - Default Mode")}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <RoleButton
-                  theme="Dynamic"
-                  role="delivery"
-                  label="Reparto"
-                  onClick={() => console.log("Reparto - Dynamic Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Dark"
-                  role="delivery"
-                  label="Reparto"
-                  onClick={() => console.log("Reparto - Dark Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Light"
-                  role="delivery"
-                  label="Reparto"
-                  onClick={() => console.log("Reparto - Light Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Default"
-                  role="delivery"
-                  label="Reparto"
-                  onClick={() => console.log("Reparto - Default Mode")}
-                />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <RoleButton
-                  theme="Dynamic"
-                  role="maintenance"
-                  label="Mantenimiento"
-                  onClick={() => console.log("Mantenimiento - Dynamic Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Dark"
-                  role="maintenance"
-                  label="Mantenimiento"
-                  onClick={() => console.log("Mantenimiento - Dark Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Light"
-                  role="maintenance"
-                  label="Mantenimiento"
-                  onClick={() => console.log("Mantenimiento - Light Mode")}
-                />
-              </td>
-              <td>
-                <RoleButton
-                  theme="Default"
-                  role="maintenance"
-                  label="Mantenimiento"
-                  onClick={() => console.log("Mantenimiento - Default Mode")}
-                />
-              </td>
-            </tr>
+            {["superUser", "cleaning", "delivery", "maintenance"].map(
+              (role) => (
+                <tr key={role}>
+                  <td>
+                    <RoleButton
+                      theme="Default"
+                      role={role}
+                      label={role.charAt(0).toUpperCase() + role.slice(1)}
+                      onClick={() => console.log(`${role} - Default Theme`)}
+                    />
+                  </td>
+                  <td>
+                    <RoleButton
+                      theme="Dynamic"
+                      role={role}
+                      label={role.charAt(0).toUpperCase() + role.slice(1)}
+                      onClick={() => console.log(`${role} - Dynamic Theme`)}
+                    />
+                  </td>
+                  <td>
+                    <RoleButton
+                      theme="Reverse"
+                      role={role}
+                      label={role.charAt(0).toUpperCase() + role.slice(1)}
+                      onClick={() => console.log(`${role} - Reverse Theme`)}
+                    />
+                  </td>
+                  <td>
+                    <RoleButton
+                      theme="Dark"
+                      role={role}
+                      label={role.charAt(0).toUpperCase() + role.slice(1)}
+                      onClick={() => console.log(`${role} - Dark Theme`)}
+                    />
+                  </td>
+                  <td>
+                    <RoleButton
+                      theme="Light"
+                      role={role}
+                      label={role.charAt(0).toUpperCase() + role.slice(1)}
+                      onClick={() => console.log(`${role} - Light Theme`)}
+                    />
+                  </td>
+                </tr>
+              )
+            )}
           </tbody>
         </table>
       </div>

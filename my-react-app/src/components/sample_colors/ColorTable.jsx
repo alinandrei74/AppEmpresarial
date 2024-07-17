@@ -32,6 +32,7 @@ const ColorTable = () => {
     { name: "On Background", variable: "--clr-OnBackground" },
     { name: "Text", variable: "--clr-text" },
     { name: "On Text", variable: "--clr-OnText" },
+    { name: "Navigation Bar", variable: "--clr-navbar" },
     { name: "SuperUser", variable: "--clr-superUser" },
     { name: "SuperUser Hover", variable: "--clr-superUser-hover" },
     { name: "Cleaning", variable: "--clr-cleaning" },
