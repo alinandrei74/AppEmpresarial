@@ -8,8 +8,6 @@
     --secondary-dark: #216b9c;
     --secondary-light: #5daee0;
 
-   
-
     /*? Roles */
     --superUser-default: rgb(247, 238, 112);
     --superUser-dark: rgb(200, 192, 90);
@@ -40,10 +38,6 @@
     --clr-cleaning: var(--cleaning-light);
     --clr-delivery: var(--delivery-light);
     --clr-maintenance: var(--maintenance-light);
-
-    /*? Navbar*/
-     --clr-navbar: #7494a3;
-    
 }
 
 /*todo: Colores Dinamicos (Modo Oscuro) */
@@ -59,8 +53,4 @@
     --clr-cleaning: var(--cleaning-dark);
     --clr-delivery: var(--delivery-dark);
     --clr-maintenance: var(--maintenance-dark);
-
-    /*? Navbar*/
-    --clr-navbar: #7494a3;
-
 }

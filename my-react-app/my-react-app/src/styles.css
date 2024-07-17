@@ -1,0 +1,84 @@
+@import 'colors.css';
+
+/*todo || GENERAL STYLES */
+/*? Si necesitais cambiar o añadir algo aqui podeis hacerlo siempre que aviseis de ello */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: var(--clr-background);
+    color: var(--clr-text);
+    transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
+}
+
+main {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+button {
+    background-color: var(--secondary-default);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+button:hover {
+    background-color: var(--primary-dark);
+}
+
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    border-color: var(--clr-OnBackground);
+}
+
+th {
+    background-color: var(--primary-dark);
+    color: white;
+}
+
+/*? Estilos para Roles */
+.superUser {
+    background-color: var(--clr-superUser);
+}
+
+.superUser:hover {
+    background-color: var(--superUser-light);
+}
+
+
+.cleaning {
+    background-color: var(--clr-cleaning);
+}
+
+.cleaning:hover {
+    background-color: var(--cleaning-light);
+}
+
+
+.delivery {
+    background-color: var(--clr-cleaning);
+}
+
+.delivery:hover {
+    background-color: var(--delivery-light);
+}
+
+
+.maintenance {
+    background-color: var(--clr-maintenance);
+}
+
+.maintenance:hover {
+    background-color: var(--maintenance-light);
+}

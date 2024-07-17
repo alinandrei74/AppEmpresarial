@@ -4,8 +4,6 @@ import RoleButtons from "./components/RoleButtons";
 import ColorTable from "./components/ColorTable";
 import { DarkModeContext } from "./contexts/DarkModeContext";
 import PropTypes from "prop-types";
-import NavBar from "./components/NavBar"
-
 
 /**
  * Botón para cambiar entre modo claro y oscuro.
@@ -33,18 +31,14 @@ ToggleButton.propTypes = {
  */
 const App = () => {
   return (
-    <>
-    <NavBar/>
     <main>
       <div className="app-container">
-        
         <ToggleButton />
         <ColorTable />
         <ToggleButton />
         <RoleButtons />
       </div>
     </main>
-    </>
   );
 };
 
