@@ -1,5 +1,5 @@
 import Navbar from "./components/navbar/Navbar";
-import SampleColors from "./pages/sample_colors/SampleColors";
+import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
 
 /**
  *1/ Componente principal de la aplicación.
@@ -12,7 +12,7 @@ const App = () => {
       <Navbar />
       <main>
         <div className="app-container">
-          <SampleColors />
+          <SampleWebStyle />
         </div>
       </main>
     </>

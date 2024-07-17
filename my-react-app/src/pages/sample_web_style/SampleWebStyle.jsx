@@ -6,7 +6,7 @@ import ColorTable from "./components/ColorTable";
  *
  * @returns {JSX.Element} La interfaz principal de la página de colores de muestra.
  */
-const SampleColors = () => {
+const SampleWebStyle = () => {
   return (
     <>
       <br />
@@ -16,4 +16,4 @@ const SampleColors = () => {
   );
 };
 
-export default SampleColors;
+export default SampleWebStyle;
