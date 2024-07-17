@@ -1,25 +1,31 @@
 @import 'colors.css';
 
+/*! Si necesitais cambiar o añadir algo aqui podeis hacerlo siempre que aviseis de ello */
+
 /*todo || GENERAL STYLES */
-/*? Si necesitais cambiar o añadir algo aqui podeis hacerlo siempre que aviseis de ello */
+
+/*? All */
 * {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
 }
 
+/*? Body */
 body {
     background-color: var(--clr-background);
     color: var(--clr-text);
     transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
 }
 
+/*? Main */
 main {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
 
+/*? Botones */
 button {
     background-color: var(--secondary-default);
     color: white;
@@ -33,7 +39,7 @@ button:hover {
     background-color: var(--primary-dark);
 }
 
-
+/*? Tablas */
 th,
 td {
     border: 1px solid;
@@ -45,4 +51,16 @@ td {
 th {
     background-color: var(--primary-dark);
     color: white;
+}
+
+
+
+/*todo || GENERAL STYLES App */
+
+/*? Contenedor principal */
+.app-container {
+    padding: 20px;
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
 }

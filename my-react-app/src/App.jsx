@@ -1,11 +1,8 @@
-import "./App.css";
-
 import Navbar from "./components/navbar/Navbar";
-import RoleButtons from "./components/sample_colors/RoleButtons";
-import ColorTable from "./components/sample_colors/ColorTable";
+import SampleColors from "./pages/sample_colors/SampleColors";
 
 /**
- ** Componente principal de la aplicación.
+ *1/ Componente principal de la aplicación.
  *
  * @returns {JSX.Element} La interfaz principal de la aplicación.
  */
@@ -15,9 +12,7 @@ const App = () => {
       <Navbar />
       <main>
         <div className="app-container">
-          <br />
-          <ColorTable />
-          <RoleButtons />
+          <SampleColors />
         </div>
       </main>
     </>

@@ -1,11 +1,14 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import "./styles.css";
-import App from "./App";
+
 import DarkModeProvider from "./contexts/DarkModeContext";
 
+import "./styles.css";
+
+import App from "./App";
+
 /**
- ** Renderiza la aplicación principal en el DOM.
+ *todo: Renderiza la aplicación principal en el DOM.
  */
 const root = createRoot(document.getElementById("root"));
 

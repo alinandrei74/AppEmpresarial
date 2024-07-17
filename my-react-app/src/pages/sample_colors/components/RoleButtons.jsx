@@ -1,6 +1,6 @@
 import React from "react";
 import "./RoleButtons.css";
-import RoleButton from "../../utilities/components/RoleButton";
+import RoleButton from "../../../utilities/components/RoleButton";
 
 /**
  *1/ Componente que renderiza los botones de roles con diferentes estados de theme.
