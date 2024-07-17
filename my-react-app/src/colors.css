@@ -8,7 +8,7 @@
     --secondary-dark: #216b9c;
     --secondary-light: #5daee0;
 
-   
+
 
     /*? Roles */
     --superUser-default: rgb(247, 238, 112);
@@ -29,13 +29,13 @@
 
 
     /*todo: Colores Dinamicos (Modo Claro) */
-    /*? Fondo y Contra Fondo dinamicos */
+    /*? Fondo y Contra Fondo */
     --clr-background: #b2cad0;
     --clr-OnBackground: #1b232d;
     --clr-text: black;
     --clr-OnText: white;
 
-    /*? Roles dinamicos */
+    /*? Roles */
     --clr-superUser: var(--superUser-light);
     --clr-cleaning: var(--cleaning-light);
     --clr-delivery: var(--delivery-light);
@@ -45,17 +45,20 @@
     --clr-cleaning-hover: var(--cleaning-dark);
     --clr-delivery-hover: var(--delivery-dark);
     --clr-maintenance-hover: var(--maintenance-dark);
+
+    /*? Navbar */
+    --clr-navbar: #7494a3;
 }
 
 /*todo: Colores Dinamicos (Modo Oscuro) */
 .dark-mode {
-    /*? Fondo y Contra Fondo dinamicos */
+    /*? Fondo y Contra Fondo */
     --clr-background: #2c3e50;
     --clr-OnBackground: #ecf0f1;
     --clr-text: white;
     --clr-OnText: black;
 
-    /*? Roles dinamicos */
+    /*? Roles */
     --clr-superUser: var(--superUser-dark);
     --clr-cleaning: var(--cleaning-dark);
     --clr-delivery: var(--delivery-dark);
@@ -66,4 +69,6 @@
     --clr-delivery-hover: var(--delivery-light);
     --clr-maintenance-hover: var(--maintenance-light);
 
+    /*? Navbar */
+    --clr-navbar: #7494a3;
 }
