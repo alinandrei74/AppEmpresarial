@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import "./App.css";
-import RoleButtons from "./components/sample_colors/RoleButtons";
-import ColorTable from "./components/sample_colors/ColorTable";
+import RoleButtons from "./components/RoleButtons";
+import ColorTable from "./components/ColorTable";
 import { DarkModeContext } from "./contexts/DarkModeContext";
 import PropTypes from "prop-types";
-import NavBar from "./components/NavBar"
-
 
 /**
  * Botón para cambiar entre modo claro y oscuro.
@@ -33,18 +31,14 @@ ToggleButton.propTypes = {
  */
 const App = () => {
   return (
-    <>
-    <NavBar/>
     <main>
       <div className="app-container">
-        
         <ToggleButton />
         <ColorTable />
         <ToggleButton />
         <RoleButtons />
       </div>
     </main>
-    </>
   );
 };
 
