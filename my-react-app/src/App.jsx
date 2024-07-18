@@ -21,7 +21,6 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/user-profile/*" element={<UserProfile />} />
             </Routes>
-            <SampleWebStyle />
           </div>
         </main>
       </div>
