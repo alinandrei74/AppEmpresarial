@@ -3,7 +3,7 @@ import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
 
 /**
- * Componente de formulario controlado que utiliza las variables de CSS del root.
+ *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
@@ -15,7 +15,7 @@ const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   /**
-   * Maneja el cambio en los campos del formulario.
+   ** Maneja el cambio en los campos del formulario.
    * @param {React.ChangeEvent<HTMLInputElement>} e - El evento de cambio.
    */
   const handleChange = (e) => {
@@ -38,7 +38,7 @@ const Form = () => {
   };
 
   /**
-   * Maneja el cambio en el checkbox para mostrar la contraseña.
+   ** Maneja el cambio en el checkbox para mostrar la contraseña.
    * @param {React.ChangeEvent<HTMLInputElement>} e - El evento de cambio.
    */
   const handleCheckboxChange = (e) => {
@@ -46,17 +46,16 @@ const Form = () => {
   };
 
   /**
-   * Maneja el envío del formulario.
+   ** Maneja el envío del formulario.
    * @param {React.FormEvent<HTMLFormElement>} e - El evento de envío.
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí puedes manejar el envío del formulario, por ejemplo, enviar los datos a un servidor.
     console.log("Datos del formulario:", formData);
   };
 
   /**
-   * Verifica si el nombre de usuario y la contraseña son válidos.
+   ** Verifica si el nombre de usuario y la contraseña son válidos.
    * @returns {boolean} - true si el nombre de usuario y la contraseña son válidos, false en caso contrario.
    */
   const isFormValid = () => {
@@ -73,9 +72,14 @@ const Form = () => {
 
   return (
     <form className="form" onSubmit={handleSubmit}>
+      <div className="form-title">Inicio de Sesión</div>
+      <div className="form-description">
+        Por favor, inicie sesión para usar la aplicación.
+      </div>
+      <br />
       <div className="form-group">
         <label htmlFor="username" className="form-label">
-          Usuario:
+          Usuario
         </label>
         <input
           type="text"
@@ -89,7 +93,7 @@ const Form = () => {
       </div>
       <div className="form-group">
         <label htmlFor="password" className="form-label">
-          Contraseña:
+          Contraseña
         </label>
         <input
           type={showPassword ? "text" : "password"}
