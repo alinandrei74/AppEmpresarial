@@ -5,6 +5,7 @@ import Login from "./pages/login/Login";
 import UserProfile from "./pages/user_profile/UserProfile";
 import Register from "./pages/register/Register";
 import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
+import NotFound from "./pages/not_found/NotFound"; // Importar el nuevo componente
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-profile/*" element={<UserProfile />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
             {/* <SampleWebStyle /> */}
           </div>
