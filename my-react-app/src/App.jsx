@@ -13,7 +13,7 @@ const App = () => {
       <Navbar />
       <main>
         <div className="app-container">
-          <Login />
+          {/* <Login /> */}
           <SampleWebStyle />
         </div>
       </main>
