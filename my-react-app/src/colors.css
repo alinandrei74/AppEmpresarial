@@ -46,6 +46,7 @@
 
     /*? Error */
     --clr-error: rgb(255, 48, 48);
+    --clr-OnError: rgb(182, 0, 0);
 
     /*? Roles */
     --clr-superUser: var(--superUser-light);
@@ -76,7 +77,8 @@
     --clr-OnSecondary: var(--secondary-light);
 
     /*? Error */
-    --clr-error: rgb(182, 0, 0);
+    --clr-error:  rgb(182, 0, 0);
+    --clr-OnError: rgb(255, 48, 48);
 
     /*? Roles */
     --clr-superUser: var(--superUser-dark);
