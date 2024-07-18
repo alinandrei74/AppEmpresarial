@@ -24,6 +24,7 @@ const App = () => {
               <Route path="/user-profile/*" element={<UserProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <SampleWebStyle />
           </div>
         </main>
       </div>
