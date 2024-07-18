@@ -1,0 +1,22 @@
+[
+  {
+    "username": "Admin",
+    "password": "Admin",
+    "rol": "superUser"
+  },
+  {
+    "username": "Limpieza",
+    "password": "Limpieza",
+    "rol": "cleaning"
+  },
+  {
+    "username": "Entrega",
+    "password": "Entrega",
+    "rol": "delivery"
+  },
+  {
+    "username": "Mantenimiento",
+    "password": "Mantenimiento",
+    "rol": "maintenance"
+  }
+]
