@@ -29,6 +29,10 @@ const Form = () => {
         "",
         false
       );
+
+      if (newValue.length > 39) {
+        newValue = newValue.slice(0, 39);
+      }
     }
 
     setFormData({
