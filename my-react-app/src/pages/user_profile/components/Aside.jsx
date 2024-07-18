@@ -18,7 +18,7 @@ const Aside = () => {
   return (
     <aside className="aside">
       <div className="logo">Mi Aplicación</div>
-      <ul>
+      <ul className="aside-items">
         {menuItems.map((item, index) => (
           <li key={index}>
             <Link to={item.path}>{item.name}</Link>
