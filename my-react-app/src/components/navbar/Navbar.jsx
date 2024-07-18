@@ -46,7 +46,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar ${darkMode ? "dark-mode" : ""}`}>
+    <nav className={`navbar`}>
       <div className="navbar-container">
         <div className="navbar-logo">
           <h1>Mi perfil</h1>

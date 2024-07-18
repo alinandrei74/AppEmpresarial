@@ -10,18 +10,25 @@ const ColorTable = () => {
     { name: "Primary Default", variable: "--primary-default" },
     { name: "Primary Dark", variable: "--primary-dark" },
     { name: "Primary Light", variable: "--primary-light" },
+
     { name: "Secondary Default", variable: "--secondary-default" },
     { name: "Secondary Dark", variable: "--secondary-dark" },
     { name: "Secondary Light", variable: "--secondary-light" },
+
+    { name: "Desactivado", variable: "--disabled" },
+
     { name: "SuperUser Default", variable: "--superUser-default" },
     { name: "SuperUser Dark", variable: "--superUser-dark" },
     { name: "SuperUser Light", variable: "--superUser-light" },
+
     { name: "Cleaning Default", variable: "--cleaning-default" },
     { name: "Cleaning Dark", variable: "--cleaning-dark" },
     { name: "Cleaning Light", variable: "--cleaning-light" },
+
     { name: "Delivery Default", variable: "--delivery-default" },
     { name: "Delivery Dark", variable: "--delivery-dark" },
     { name: "Delivery Light", variable: "--delivery-light" },
+
     { name: "Maintenance Default", variable: "--maintenance-default" },
     { name: "Maintenance Dark", variable: "--maintenance-dark" },
     { name: "Maintenance Light", variable: "--maintenance-light" },
@@ -30,15 +37,27 @@ const ColorTable = () => {
   const dynamicColors = [
     { name: "Background", variable: "--clr-background" },
     { name: "On Background", variable: "--clr-OnBackground" },
+
     { name: "Text", variable: "--clr-text" },
     { name: "On Text", variable: "--clr-OnText" },
-    { name: "Navigation Bar", variable: "--clr-navbar" },
+
+    { name: "Primary", variable: "--clr-primary" },
+    { name: "On Primary", variable: "--clr-OnPrimary" },
+
+    { name: "Secondary", variable: "--clr-secondary" },
+    { name: "On Secondary", variable: "--clr-OnSecondary" },
+
+    { name: "Error", variable: "--clr-error" },
+
     { name: "SuperUser", variable: "--clr-superUser" },
     { name: "SuperUser Hover", variable: "--clr-superUser-hover" },
+
     { name: "Cleaning", variable: "--clr-cleaning" },
     { name: "Cleaning Hover", variable: "--clr-cleaning-hover" },
+
     { name: "Delivery", variable: "--clr-delivery" },
     { name: "Delivery Hover", variable: "--clr-delivery-hover" },
+
     { name: "Maintenance", variable: "--clr-maintenance" },
     { name: "Maintenance Hover", variable: "--clr-maintenance-hover" },
   ];

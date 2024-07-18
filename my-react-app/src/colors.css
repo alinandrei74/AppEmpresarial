@@ -8,6 +8,7 @@
     --secondary-dark: #216b9c;
     --secondary-light: #5daee0;
 
+    --disabled: darkgrey;
 
 
     /*? Roles */
@@ -35,6 +36,17 @@
     --clr-text: black;
     --clr-OnText: white;
 
+    /*? Primario */
+    --clr-primary: var(--primary-light);
+    --clr-OnPrimary: var(--primary-dark);
+
+    /*? Secundario */
+    --clr-secondary: var(--secondary-light);
+    --clr-OnSecondary: var(--secondary-dark);
+
+    /*? Error */
+    --clr-error: rgb(255, 48, 48);
+
     /*? Roles */
     --clr-superUser: var(--superUser-light);
     --clr-cleaning: var(--cleaning-light);
@@ -45,9 +57,6 @@
     --clr-cleaning-hover: var(--cleaning-dark);
     --clr-delivery-hover: var(--delivery-dark);
     --clr-maintenance-hover: var(--maintenance-dark);
-
-    /*? Navbar */
-    --clr-navbar: var(--secondary-light);
 }
 
 /*todo: Colores Dinamicos (Modo Oscuro) */
@@ -57,6 +66,17 @@
     --clr-OnBackground: #ecf0f1;
     --clr-text: white;
     --clr-OnText: black;
+
+    /*? Primario */
+    --clr-primary: var(--primary-dark);
+    --clr-OnPrimary: var(--primary-light);
+
+    /*? Secundario */
+    --clr-secondary: var(--secondary-dark);
+    --clr-OnSecondary: var(--secondary-light);
+
+    /*? Error */
+    --clr-error: rgb(182, 0, 0);
 
     /*? Roles */
     --clr-superUser: var(--superUser-dark);
@@ -68,7 +88,4 @@
     --clr-cleaning-hover: var(--cleaning-light);
     --clr-delivery-hover: var(--delivery-light);
     --clr-maintenance-hover: var(--maintenance-light);
-
-    /*? Navbar */
-    --clr-navbar: var(--secondary-dark);
 }
