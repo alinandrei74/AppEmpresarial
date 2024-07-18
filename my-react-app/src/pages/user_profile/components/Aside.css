@@ -6,29 +6,9 @@
   /* Asegura que el sidebar ocupe toda la altura de la pantalla */
   box-sizing: border-box;
   /* Asegura que el padding no aumente la altura */
-  background-color: #f5f5f5;
   overflow: auto;
   /* Añade scroll si el contenido es más largo que la pantalla */
-}
-
-.user-photo {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  margin-bottom: 20px;
-}
-
-.user-info {
-  margin-bottom: 20px;
-}
-
-.user-name {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.user-role {
-  font-size: 16px;
+  background-color: var(--clr-primary) !important;
 }
 
 .aside-items {
@@ -44,7 +24,6 @@
 }
 
 .aside-items li:hover {
-  background-color: #e0e0e0;
   /* Cambia el fondo al pasar el ratón */
   cursor: pointer;
   /* Cambia el cursor al pasar el ratón */
@@ -52,5 +31,11 @@
 
 .aside-items a {
   text-decoration: none;
-  color: inherit;
+  color: var(--clr-OnBackground) !important;
+  /* color: var(--clr-text) !important; */
+}
+
+.aside-items a:hover {
+  /* background-color: var(--clr-OnSecondary) !important; */
+  background-color: var(--primary-default) !important;
 }

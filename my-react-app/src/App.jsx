@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Login from "./pages/login/Login";
 import UserProfile from "./pages/user_profile/UserProfile";
+import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
@@ -20,6 +21,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/user-profile/*" element={<UserProfile />} />
             </Routes>
+            <SampleWebStyle />
           </div>
         </main>
       </div>
