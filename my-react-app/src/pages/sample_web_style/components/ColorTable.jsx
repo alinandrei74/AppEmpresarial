@@ -48,6 +48,7 @@ const ColorTable = () => {
     { name: "On Secondary", variable: "--clr-OnSecondary" },
 
     { name: "Error", variable: "--clr-error" },
+    { name: "On Error", variable: "--clr-OnError" },
 
     { name: "SuperUser", variable: "--clr-superUser" },
     { name: "SuperUser Hover", variable: "--clr-superUser-hover" },
