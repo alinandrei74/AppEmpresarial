@@ -1,7 +1,11 @@
+//! Instalación de librería - npm install formik yup - para la gestión de formularios o validación
+
 import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./components/RegisterCss.css";
+
+//! PENDIENTE: Mostrar contraseña y verificar contraseña (escribirla 2 veces)
 
 function Register() {
   const formik = useFormik({
@@ -101,6 +105,7 @@ function Register() {
     }),
 
     onSubmit: (values) => {
+        //!  número de espacios para la indentación (2 en este caso), lo que hace que el JSON resultante sea más fácil de leer
       alert(JSON.stringify(values, null, 2));
     },
   });
@@ -114,6 +119,7 @@ function Register() {
             id="rol"
             name="rol"
             onChange={formik.handleChange}
+             //! formik.handleBlur : Cuando un campo pierde el foco, Formik marca ese campo como "touched" (tocado). Esto es útil para manejar la lógica de validación y errores. Por ejemplo, puedes decidir mostrar errores de validación solo después de que un campo haya sido tocado.
             onBlur={formik.handleBlur}
             value={formik.values.rol}
           >
