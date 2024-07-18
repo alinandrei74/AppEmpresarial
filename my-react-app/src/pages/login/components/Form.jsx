@@ -30,9 +30,13 @@ const Form = () => {
         false
       );
 
-      if (newValue.length > 39) {
-        newValue = newValue.slice(0, 39);
+      if (newValue.length > 30) {
+        newValue = newValue.slice(0, 30);
       }
+    }
+
+    if (name === "password" && value.length > 30) {
+      newValue = value.slice(0, 30);
     }
 
     setFormData({
