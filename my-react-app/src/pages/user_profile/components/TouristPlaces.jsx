@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function TouristPlaces() {
-  return (
-    <div>TouristPlaces</div>
-  )
-}
+const TouristPlaces = ({ role }) => {
+  return <div>{role} Tourist Places</div>;
+};
 
-export default TouristPlaces
+export default TouristPlaces;

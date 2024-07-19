@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
-function Notes() {
-  return (
-    <div>Notes</div>
-  )
-}
+const Notes = ({ role }) => {
+  return <div>{role} Notes</div>;
+};
 
-export default Notes
+export default Notes;
