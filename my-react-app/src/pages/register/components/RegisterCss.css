@@ -51,7 +51,7 @@
   }
 
   .admin{
-    background-color: var(--superUser-default);
+    background-color: var(--admin-default);
   }
 
   .entrega{

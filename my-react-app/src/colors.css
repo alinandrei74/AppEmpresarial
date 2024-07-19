@@ -12,9 +12,9 @@
 
 
     /*? Roles */
-    --superUser-default: rgb(247, 238, 112);
-    --superUser-dark: rgb(200, 192, 90);
-    --superUser-light: rgb(255, 247, 145);
+    --admin-default: rgb(247, 238, 112);
+    --admin-dark: rgb(200, 192, 90);
+    --admin-light: rgb(255, 247, 145);
 
     --cleaning-default: #bc54f4;
     --cleaning-dark: #933cbe;
@@ -49,12 +49,12 @@
     --clr-OnError: rgb(182, 0, 0);
 
     /*? Roles */
-    --clr-superUser: var(--superUser-light);
+    --clr-admin: var(--admin-light);
     --clr-cleaning: var(--cleaning-light);
     --clr-delivery: var(--delivery-light);
     --clr-maintenance: var(--maintenance-light);
 
-    --clr-superUser-hover: var(--superUser-dark);
+    --clr-admin-hover: var(--admin-dark);
     --clr-cleaning-hover: var(--cleaning-dark);
     --clr-delivery-hover: var(--delivery-dark);
     --clr-maintenance-hover: var(--maintenance-dark);
@@ -77,16 +77,16 @@
     --clr-OnSecondary: var(--secondary-light);
 
     /*? Error */
-    --clr-error:  rgb(182, 0, 0);
+    --clr-error: rgb(182, 0, 0);
     --clr-OnError: rgb(255, 48, 48);
 
     /*? Roles */
-    --clr-superUser: var(--superUser-dark);
+    --clr-admin: var(--admin-dark);
     --clr-cleaning: var(--cleaning-dark);
     --clr-delivery: var(--delivery-dark);
     --clr-maintenance: var(--maintenance-dark);
 
-    --clr-superUser-hover: var(--superUser-light);
+    --clr-admin-hover: var(--admin-light);
     --clr-cleaning-hover: var(--cleaning-light);
     --clr-delivery-hover: var(--delivery-light);
     --clr-maintenance-hover: var(--maintenance-light);

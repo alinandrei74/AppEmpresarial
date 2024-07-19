@@ -22,7 +22,7 @@ export default function Navbar() {
       { role: "cleaning", label: "Limpieza" },
       { role: "maintenance", label: "Mantenimiento" },
       { role: "delivery", label: "Reparto" },
-      { role: "superUser", label: "Admin" },
+      { role: "admin", label: "Admin" },
     ];
 
     return roles.map(({ role, label }) => (

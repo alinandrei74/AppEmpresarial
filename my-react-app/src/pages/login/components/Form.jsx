@@ -1,9 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
+import {
+  userAuthData,
+  userRoles,
+  userPersonalData,
+  userContactData,
+  userAdditionalData,
+} from "../../../data_base/usersData";
 
 /**
- *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
+ * Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
@@ -11,8 +19,8 @@ const Form = () => {
     username: "",
     password: "",
   });
-
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate(); // Hook para la navegación
 
   /**
    ** Maneja el cambio en los campos del formulario.
@@ -63,7 +71,34 @@ const Form = () => {
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Datos del formulario:", formData);
+
+    let isAuthenticated = false;
+    let userIndex = -1;
+
+    userAuthData.forEach((user, index) => {
+      if (
+        user.username === formData.username &&
+        user.password === formData.password
+      ) {
+        isAuthenticated = true;
+        userIndex = index; // Guarda el índice del usuario autenticado
+      }
+    });
+
+    if (isAuthenticated) {
+      const userData = {
+        ...userAuthData[userIndex],
+        ...userRoles[userIndex],
+        ...userPersonalData[userIndex],
+        ...userContactData[userIndex],
+        ...userAdditionalData[userIndex],
+      };
+
+      sessionStorage.setItem("userData", JSON.stringify(userData));
+      navigate(`/user-profile/${userData.role}`);
+    } else {
+      alert("Usuario o contraseña incorrectos");
+    }
   };
 
   /**

@@ -17,9 +17,9 @@ const ColorTable = () => {
 
     { name: "Desactivado", variable: "--disabled" },
 
-    { name: "SuperUser Default", variable: "--superUser-default" },
-    { name: "SuperUser Dark", variable: "--superUser-dark" },
-    { name: "SuperUser Light", variable: "--superUser-light" },
+    { name: "Admin Default", variable: "--admin-default" },
+    { name: "Admin Dark", variable: "--admin-dark" },
+    { name: "Admin Light", variable: "--admin-light" },
 
     { name: "Cleaning Default", variable: "--cleaning-default" },
     { name: "Cleaning Dark", variable: "--cleaning-dark" },
@@ -50,8 +50,8 @@ const ColorTable = () => {
     { name: "Error", variable: "--clr-error" },
     { name: "On Error", variable: "--clr-OnError" },
 
-    { name: "SuperUser", variable: "--clr-superUser" },
-    { name: "SuperUser Hover", variable: "--clr-superUser-hover" },
+    { name: "Admin", variable: "--clr-admin" },
+    { name: "Admin Hover", variable: "--clr-admin-hover" },
 
     { name: "Cleaning", variable: "--clr-cleaning" },
     { name: "Cleaning Hover", variable: "--clr-cleaning-hover" },

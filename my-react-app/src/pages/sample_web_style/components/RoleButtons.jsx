@@ -27,7 +27,7 @@ const RoleButtons = () => {
             </tr>
           </thead>
           <tbody>
-            {["superUser", "cleaning", "delivery", "maintenance"].map(
+            {["admin", "cleaning", "delivery", "maintenance"].map(
               (role) => (
                 <tr key={role}>
                   <td>
