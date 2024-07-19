@@ -1,30 +1,22 @@
 import React, { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { DarkModeContext } from "../../contexts/DarkModeContext";
 import RoleButton from "../../utilities/components/RoleButton";
 
-/**
- *1/ Componente de barra de navegación que incluye botones de acción y de cambio de modo oscuro.
- *
- * @returns {JSX.Element} La barra de navegación.
- */
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useContext(DarkModeContext);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  /**
-   ** Maneja el evento de login/logout alternando el estado de `isLoggedIn`.
-   */
   const handleLoginLogout = () => {
     setIsLoggedIn(!isLoggedIn);
   };
 
-  /**
-   *2/ Renderiza los botones de rol cuando el usuario está logueado.
-   *
-   * @returns {JSX.Element} Los botones de rol.
-   */
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   const renderRoleButtons = () => {
     const roles = [
       { role: "cleaning", label: "Limpieza" },
@@ -46,15 +38,22 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`navbar`}>
+    <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <h1>Mi perfil</h1>
+          <Link to="/user-profile/">
+            <h1>Mi perfil</h1>
+          </Link>
+        </div>
+        <div className="menu-icon" onClick={toggleMenu}>
+          ☰
         </div>
         {isLoggedIn && (
-          <div className="navbar-buttons">{renderRoleButtons()}</div>
+          <div className={`navbar-buttons ${isMenuOpen ? 'active' : ''}`}>
+            {renderRoleButtons()}
+          </div>
         )}
-        <div className="navbar-actions">
+        <div className={`navbar-actions ${isMenuOpen ? 'active' : ''}`}>
           <button className="login-button" onClick={handleLoginLogout}>
             {isLoggedIn ? "Logout" : "Login"}
           </button>

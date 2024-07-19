@@ -27,20 +27,95 @@
   gap: 1rem;
 }
 
+.navbar-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-logo a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.navbar-logo a:hover {
+  text-decoration: underline;
+}
+
+
 .login-button,
 .toggle-mode {
   padding: 0.5rem 1rem;
   border-radius: 4px;
-
 }
-
 
 .login-button:hover,
 .toggle-mode:hover {
-  background-color: var(--primary-dark)
+  background-color: var(--primary-dark);
 }
 
 .toggle-mode {
   background-color: transparent;
   font-size: 1.2rem;
+}
+
+.menu-icon {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 720px) {
+  .navbar-container {
+    flex-wrap: wrap;
+  }
+
+  .navbar-buttons,
+  .navbar-actions {
+    display: none;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem 0;
+  }
+
+  .navbar-buttons.active,
+  .navbar-actions.active {
+    display: flex;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+}
+
+@media screen and (max-width: 520px) {
+  .navbar-container {
+    padding: 0.5rem 1.5rem;
+  }
+
+  .navbar-logo h1 {
+    font-size: 1.3rem;
+  }
+
+  .login-button,
+  .toggle-mode {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .navbar-container {
+    padding: 0.5rem 1rem;
+  }
+
+  .navbar-logo h1 {
+    font-size: 1.1rem;
+  }
+
+  .login-button,
+  .toggle-mode {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+  }
 }
