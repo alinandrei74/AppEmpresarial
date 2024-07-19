@@ -11,7 +11,7 @@ import {
 } from "../../../data_base/usersData";
 
 /**
- *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
+ * Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
@@ -85,15 +85,27 @@ const Form = () => {
       }
     });
 
+    /**
+     * Elimina la propiedad 'id' de un objeto.
+     * @param {Object} obj - El objeto del que se eliminará la propiedad 'id'.
+     * @returns {Object} El objeto sin la propiedad 'id'.
+     */
+    const removeId = (obj) => {
+      const { id, ...rest } = obj;
+      return rest;
+    };
+
     if (isAuthenticated) {
       const userData = {
-        ...userAuthData[userIndex],
-        ...userRoles[userIndex],
-        ...userPersonalData[userIndex],
-        ...userContactData[userIndex],
-        ...userAdditionalData[userIndex],
+        id: userAuthData[userIndex].id,
+        role: userRoles[userIndex].role,
+        userAuthData: removeId(userAuthData[userIndex]),
+        userPersonalData: removeId(userPersonalData[userIndex]),
+        userContactData: removeId(userContactData[userIndex]),
+        userAdditionalData: removeId(userAdditionalData[userIndex]),
       };
 
+      console.log(userData);
       sessionStorage.setItem("userData", JSON.stringify(userData));
       navigate(`/user-profile/${userData.role}`);
     } else {
