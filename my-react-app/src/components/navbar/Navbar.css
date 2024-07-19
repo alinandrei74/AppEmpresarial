@@ -1,3 +1,5 @@
+/* Estilos para nuestro navbar actualizado */
+
 .navbar {
   position: fixed;
   top: 0;
@@ -17,19 +19,13 @@
   margin: 0 auto;
 }
 
+.navbar-logo {
+  flex: 0 0 auto;
+}
+
 .navbar-logo h1 {
   margin: 0;
   font-size: 1.5rem;
-}
-
-.navbar-buttons {
-  display: flex;
-  gap: 1rem;
-}
-
-.navbar-actions {
-  display: flex;
-  gap: 1rem;
 }
 
 .navbar-logo a {
@@ -41,6 +37,20 @@
   text-decoration: underline;
 }
 
+.navbar-menu {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex: 1;
+}
+
+.navbar-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
 
 .login-button,
 .toggle-mode {
@@ -64,51 +74,75 @@
   cursor: pointer;
 }
 
-@media screen and (max-width: 720px) {
+/* Responsividad */
+@media screen and (max-width: 768px) {
   .navbar-container {
     flex-wrap: wrap;
-  }
-
-  .navbar-buttons,
-  .navbar-actions {
-    display: none;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0;
-  }
-
-  .navbar-buttons.active,
-  .navbar-actions.active {
-    display: flex;
+    padding: 0.5rem 1rem;
   }
 
   .menu-icon {
     display: block;
+    order: 2;
+    margin-top:  -165px; /* Mueve hacia abajo */
+    margin-left: 0px; /* Mueve hacia la derecha */
   }
+
+  .navbar-logo {
+    flex: 1;
+    order: 1;
+    text-align: center;
+    margin-top:  -160px; /* Mueve hacia abajo */
+    margin-left: 10px; /* Mueve hacia la derecha */
+  }
+
+  .navbar-actions {
+    order: 4;
+    margin-top:  -20px; /* Mueve hacia abajo */
+    margin-left: 0px;
+    
+  }
+
+  .navbar-menu {
+    display: none;
+    width: 100%;
+    order: 4;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0;
+  }
+
+  .navbar-menu.active {
+    display: flex;
+  }
+
+  .navbar-logo.menu-item {
+    order: 4;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 0;
+  }
+  
 }
 
-@media screen and (max-width: 520px) {
-  .navbar-container {
-    padding: 0.5rem 1.5rem;
-  }
-
+/* Ajustes para pantallas más pequeñas */
+@media screen and (max-width: 480px) {
   .navbar-logo h1 {
-    font-size: 1.3rem;
+    margin-top:  -0px; /* Mueve hacia abajo */
+    margin-left: 0px; /* Mueve hacia la derecha */
   }
 
   .login-button,
   .toggle-mode {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+    margin-top:  -130px; /* Mueve hacia abajo */
+    margin-left: 0px; /* Mueve hacia la derecha */
   }
 }
 
+/* Para móviles muy pequeños */
 @media screen and (max-width: 320px) {
-  .navbar-container {
-    padding: 0.5rem 1rem;
-  }
-
   .navbar-logo h1 {
     font-size: 1.1rem;
   }
