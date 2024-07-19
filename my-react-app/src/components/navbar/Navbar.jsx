@@ -40,20 +40,25 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div className="navbar-logo">
+        {/* Menú hamburguesa a la izquierda */}
+        <div className="menu-icon" onClick={toggleMenu}>
+          ☰
+        </div>
+
+        {/* Logo en el centro para pantallas grandes, dentro del menú para móviles */}
+        <div className={`navbar-logo ${isMenuOpen ? 'menu-item' : ''}`}>
           <Link to="/user-profile/">
             <h1>Mi perfil</h1>
           </Link>
         </div>
-        <div className="menu-icon" onClick={toggleMenu}>
-          ☰
+
+        {/* Menú desplegable con los botones de rol */}
+        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
+          {isLoggedIn && renderRoleButtons()}
         </div>
-        {isLoggedIn && (
-          <div className={`navbar-buttons ${isMenuOpen ? 'active' : ''}`}>
-            {renderRoleButtons()}
-          </div>
-        )}
-        <div className={`navbar-actions ${isMenuOpen ? 'active' : ''}`}>
+
+        {/* Botones de acción siempre a la derecha */}
+        <div className="navbar-actions">
           <button className="login-button" onClick={handleLoginLogout}>
             {isLoggedIn ? "Logout" : "Login"}
           </button>
