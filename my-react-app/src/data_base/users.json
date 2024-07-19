@@ -2,21 +2,53 @@
   {
     "username": "Admin",
     "password": "Admin",
-    "rol": "superUser"
+    "rol": "superUser",
+    "name": "John",
+    "firstSurname": "Doe",
+    "secondSurname": "Smith",
+    "email": "example1@example.com",
+    "phone": "1234567890",
+    "dni": "123456789A",
+    "address": "123 Example St",
+    "postalCode": "12345"
   },
   {
     "username": "Limpieza",
     "password": "Limpieza",
-    "rol": "cleaning"
+    "rol": "cleaning",
+    "name": "Jane",
+    "firstSurname": "Doe",
+    "secondSurname": "Smith",
+    "email": "example2@example.com",
+    "phone": "2345678901",
+    "dni": "234567890B",
+    "address": "456 Test Ave",
+    "postalCode": "23456"
   },
   {
     "username": "Entrega",
     "password": "Entrega",
-    "rol": "delivery"
+    "rol": "delivery",
+    "name": "Michael",
+    "firstSurname": "Johnson",
+    "secondSurname": "Brown",
+    "email": "example3@example.com",
+    "phone": "3456789012",
+    "dni": "345678901C",
+    "address": "789 Sample Rd",
+    "postalCode": "34567"
   },
   {
     "username": "Mantenimiento",
     "password": "Mantenimiento",
-    "rol": "maintenance"
+    "rol": "maintenance",
+    "name": "Emily",
+    "firstSurname": "Taylor",
+    "secondSurname": "Martinez",
+    "email": "example4@example.com",
+    "phone": "4567890123",
+    "dni": "456789012D",
+    "address": "012 Mockingbird Ln",
+    "postalCode": "45678"
   }
 ]
