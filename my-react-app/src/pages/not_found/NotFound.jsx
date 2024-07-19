@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import "./NotFound.css";
 
 /**
- * Componente que muestra un mensaje de error cuando la página no se encuentra.
+ *1/ Componente que muestra un mensaje de error cuando la página no se encuentra.
  * @component
  * @returns {JSX.Element} NotFound
  */

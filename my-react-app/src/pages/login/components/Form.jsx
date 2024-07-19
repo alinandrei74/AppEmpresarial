@@ -25,18 +25,22 @@ const Form = () => {
     if (name === "username") {
       newValue = Str.replaceExceptChars(
         value,
-        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-_",
+        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÑ-_",
         "",
         false
       );
 
-      if (newValue.length > 30) {
-        newValue = newValue.slice(0, 30);
+      // Limita la longitud del nombre de usuario
+      if (newValue.length > 20) {
+        newValue = newValue.slice(0, 20);
       }
     }
 
-    if (name === "password" && value.length > 30) {
-      newValue = value.slice(0, 30);
+    if (name === "password") {
+      // Limita la longitud de la contraseña
+      if (newValue.length > 30) {
+        newValue = newValue.slice(0, 30);
+      }
     }
 
     setFormData({

@@ -8,7 +8,7 @@ import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
 import NotFound from "./pages/not_found/NotFound"; // Importar el nuevo componente
 
 /**
- * Componente principal de la aplicación que maneja la navegación global.
+ *1/ Componente principal de la aplicación que maneja la navegación global.
  * @component
  * @returns {JSX.Element} App
  */
@@ -26,7 +26,7 @@ const App = () => {
               <Route path="/user-profile/*" element={<UserProfile />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <SampleWebStyle />
+            {/* <SampleWebStyle /> */}
           </div>
         </main>
       </div>

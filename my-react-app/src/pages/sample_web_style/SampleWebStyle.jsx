@@ -3,7 +3,7 @@ import ColorTable from "./components/ColorTable";
 
 /**
  *1/ Componente principal de la aplicación para la página de colores de muestra.
- *
+ * @component
  * @returns {JSX.Element} La interfaz principal de la página de colores de muestra.
  */
 const SampleWebStyle = () => {
