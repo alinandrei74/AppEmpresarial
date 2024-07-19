@@ -11,7 +11,7 @@ import {
 } from "../../../data_base/usersData";
 
 /**
- * Componente de formulario controlado que utiliza las variables de CSS del root.
+ *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
