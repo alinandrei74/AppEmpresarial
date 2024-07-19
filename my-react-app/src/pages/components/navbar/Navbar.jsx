@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
-import { DarkModeContext } from "../../contexts/DarkModeContext";
-import RoleButton from "../../utilities/components/RoleButton";
+import { DarkModeContext } from "../../../contexts/DarkModeContext";
+import RoleButton from "../../../utilities/components/RoleButton";
 
 export default function Navbar() {
   const { darkMode, toggleDarkMode } = useContext(DarkModeContext);

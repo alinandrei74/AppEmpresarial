@@ -9,10 +9,10 @@ import "./Aside.css";
  */
 const Aside = () => {
   const menuItems = [
-    { name: "Tasks", path: "/user-profile/tasks" },
-    { name: "Notes", path: "/user-profile/notes" },
-    { name: "Calendar", path: "/user-profile/calendar" },
-    { name: "Tourist Places", path: "/user-profile/tourist-places" },
+    { name: "Tasks", path: "tasks" },
+    { name: "Notes", path: "notes" },
+    { name: "Calendar", path: "calendar" },
+    { name: "Tourist Places", path: "tourist-places" },
   ];
 
   return (
