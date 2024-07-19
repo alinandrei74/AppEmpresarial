@@ -20,8 +20,8 @@ const App = () => {
         <main>
           <div className="app-container">
             <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Login />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-profile/*" element={<UserProfile />} />
               <Route path="*" element={<NotFound />} />

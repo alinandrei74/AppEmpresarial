@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
  *
  * @param {Object} props - Las propiedades del componente.
  * @param {string} props.role - El rol del botón.
- * @param {string} [props.theme="Default"] - El tema del botón (Dark, Light, Default, Dynamic).
+ * @param {string} [props.theme="Default"] - El tema del botón (Dynamic, Reverse, Dark, Light, Default).
  * @param {string} [props.label=""] - La etiqueta del botón.
  * @param {string} [props.size="10px 20px"] - El tamaño del botón en formato CSS.
  * @param {function} [props.onClick] - La función al pulsar el botón.

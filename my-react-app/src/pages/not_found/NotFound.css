@@ -7,7 +7,7 @@
 .error-message {
   font-size: 3rem;
   margin-bottom: 20px;
-  color: var(--clr-OnError);
+  color: var(--clr-error);
   /* Usar color de error */
 }
 

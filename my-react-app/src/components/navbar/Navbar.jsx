@@ -36,7 +36,7 @@ export default function Navbar() {
     return roles.map(({ role, label }) => (
       <RoleButton
         key={role}
-        theme="reverse"
+        theme="Default"
         role={role}
         label={label}
         size="0.5rem 1rem"
