@@ -11,7 +11,7 @@ import {
 } from "../../../data_base/usersData";
 
 /**
- * Componente de formulario controlado que utiliza las variables de CSS del root.
+ *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
@@ -86,7 +86,7 @@ const Form = () => {
     });
 
     /**
-     * Elimina la propiedad 'id' de un objeto.
+     ** Elimina la propiedad 'id' de un objeto.
      * @param {Object} obj - El objeto del que se eliminará la propiedad 'id'.
      * @returns {Object} El objeto sin la propiedad 'id'.
      */

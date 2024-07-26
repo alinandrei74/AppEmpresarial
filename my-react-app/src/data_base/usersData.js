@@ -1,6 +1,4 @@
-// UserManager.js
-
-// Datos de autenticación
+//* Datos de autenticación
 export const userAuthData = [
   { id: 1, username: "Admin", password: "Admin" },
   { id: 2, username: "Limpieza", password: "Limpieza" },
