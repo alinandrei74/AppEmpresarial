@@ -2,10 +2,10 @@
 
 // Datos de autenticación
 export const userAuthData = [
-  { id: 1, username: "Admin", password: "Admin" },
-  { id: 2, username: "Limpieza", password: "Limpieza" },
-  { id: 3, username: "Entrega", password: "Entrega" },
-  { id: 4, username: "Mantenimiento", password: "Mantenimiento" },
+  { id: 1, username: "Admin", password: "Admin1." },
+  { id: 2, username: "Limpieza", password: "Limpieza1." },
+  { id: 3, username: "Entrega", password: "Entrega1." },
+  { id: 4, username: "Mantenimiento", password: "Mantenimiento1." },
 ];
 
 // Datos de roles
