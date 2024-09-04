@@ -4,7 +4,6 @@ import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
 import {
   loginUser, // Importar función para iniciar sesión
-  verifyToken, // Importar función para verificar token
 } from "../../../data_base/mockDatabase"; // Asegúrate de importar correctamente desde el archivo
 
 /**
@@ -74,20 +73,8 @@ const Form = () => {
     if (loginResult) {
       sessionStorage.setItem("authToken", loginResult.token);
       alert("Inicio de sesión exitoso.");
-
-      // Verificar el token para obtener la información del usuario actual
-      const userData = verifyToken(loginResult.token);
-
-      if (userData === -1) {
-        alert("El token ha caducado. Por favor, inicie sesión de nuevo.");
-        navigate("/login"); // Redirige al usuario al login si el token ha caducado
-      } else if (userData === 0) {
-        alert("El token es incorrecto. Por favor, inicie sesión de nuevo.");
-        navigate("/login"); // Redirige al usuario al login si el token es incorrecto
-      } else if (userData) {
-        console.log("Datos del usuario autenticado:", userData); // Mostrar datos del usuario en consola
-        navigate(`/user-profile`); // Redirige al perfil de usuario si la autenticación es exitosa
-      }
+      console.log("Datos del usuario autenticado:", loginResult.user); // Mostrar datos del usuario en consola
+      navigate(`/user-profile`); // Redirige al perfil de usuario si la autenticación es exitosa
     } else {
       alert("Usuario o contraseña incorrectos.");
     }

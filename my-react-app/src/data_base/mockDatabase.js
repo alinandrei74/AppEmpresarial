@@ -175,8 +175,17 @@ const verifyToken = (token) => {
     }
 
     return user; // Retorna los datos del usuario si todo es válido
-  } catch (error) {
-    console.error("Error al verificar el token:", error);
+  } catch (e) {
+    //! Uso para depurar problemas subyacentes más específicos.
+    // // Usar el error capturado y añadir más detalles personalizados
+    // console.error("Error original:", e.message); // Mensaje de error original
+
+    // Crear un nuevo Error con información personalizada
+    const customError = new Error("Error al verificar el token");
+    customError.info = "Error al decodificar o procesar el token";
+
+    // Mostrar solo el mensaje de error personalizado
+    console.error(`${customError.message}:`, customError.info);
     return 0; // Código de error para token incorrecto
   }
 };
