@@ -20,7 +20,8 @@ const UserDetails = ({ userData }) => {
   return (
     <div className="user-details-container">
       <div className="user-details-header">
-        <h2>Información del Usuario</h2>
+        {/* <h2>Información del Usuario</h2> */}
+        <h2>user_id: '{userData.user_id}'</h2>
         {userData.role_name && (
           <div className={`user-role ${userData.role_name.toLowerCase()}`}>
             {userData.role_name}
