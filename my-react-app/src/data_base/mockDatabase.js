@@ -122,7 +122,7 @@ const GeneralTasks = [
   {
     task_id: 2,
     description: "Reparación de tuberías en el apartamento 2B",
-    status: "send_to",
+    status: "done",
     user_id: "uuid-4",
     entry_date: "2024-08-26",
   },
@@ -152,7 +152,7 @@ const generateToken = (userId) => {
 /**
  * Función para verificar un token de autenticación.
  * @param {string} token - El token de autenticación.
- * @returns {Object|null} Los datos del usuario si el token es válido y no ha caducado, o `null` si no lo es.
+ * @returns {Object|number} Los datos del usuario si el token es válido, `-1` si el token ha caducado, `0` si el token es incorrecto.
  */
 const verifyToken = (token) => {
   try {
@@ -162,14 +162,22 @@ const verifyToken = (token) => {
 
     // Verificar si el token ha caducado
     if (new Date().getTime() > expirationTime) {
-      console.log("El token ha caducado.");
-      return null;
+      console.warn("El token ha caducado.");
+      return -1; // Código de error para token caducado
     }
 
     const user = getUserData(userId);
-    return user ? user : null;
-  } catch {
-    return null;
+
+    // Verificar si el usuario existe
+    if (!user) {
+      console.warn("El token es incorrecto o el usuario no existe.");
+      return 0; // Código de error para token incorrecto
+    }
+
+    return user; // Retorna los datos del usuario si todo es válido
+  } catch (error) {
+    console.error("Error al verificar el token:", error);
+    return 0; // Código de error para token incorrecto
   }
 };
 
@@ -279,7 +287,7 @@ const getAllTasks = () => {
  * Función para crear una nueva tarea (simulación de POST).
  * @param {Object} newTask - Objeto que representa la nueva tarea a crear.
  * @param {string} newTask.description - Descripción de la tarea.
- * @param {string} newTask.status - Estado de la tarea (ej. 'pending', 'send_to', 'canceled').
+ * @param {string} newTask.status - Estado de la tarea (ej. 'pending', 'done', 'canceled').
  * @param {string} newTask.user_id - ID del usuario al que se asigna la tarea.
  * @param {string} newTask.entry_date - Fecha de creación de la tarea en formato 'YYYY-MM-DD'.
  * @returns {Object} La nueva tarea creada con su `task_id`.

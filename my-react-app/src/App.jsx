@@ -17,7 +17,7 @@ const App = () => {
         <main>
           <div className="app-container">
             <AppRoutes />
-            {/* <SampleWebStyle /> */}
+            <SampleWebStyle />
           </div>
         </main>
       </div>
