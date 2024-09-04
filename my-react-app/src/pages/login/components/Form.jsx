@@ -81,7 +81,7 @@ const Form = () => {
         console.log("Datos del usuario autenticado:", userData); // Mostrar datos del usuario en consola
       }
 
-      navigate(`/user-profile/`);
+      navigate(`/user-profile`);
     } else {
       alert("Usuario o contraseña incorrectos.");
     }

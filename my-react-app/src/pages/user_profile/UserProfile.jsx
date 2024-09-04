@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Aside from "./components/Aside";
 import Tasks from "./components/Tasks";
 import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
+import UserDetails from "./components/UserDetails"; // Importa el nuevo componente
 import "./UserProfile.css";
 import { verifyToken } from "../../data_base/mockDatabase"; // Importa la función para verificar el token
 
@@ -16,6 +17,7 @@ import { verifyToken } from "../../data_base/mockDatabase"; // Importa la funci�
  */
 const UserProfile = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Hook para obtener la ubicación actual
   const [userData, setUserData] = useState(null); // Estado para almacenar los datos del usuario
 
   useEffect(() => {
@@ -37,6 +39,11 @@ const UserProfile = () => {
     <div className="user-profile-container">
       <Aside />
       <div className={`user-profile-content`}>
+        {/* Renderiza UserDetails solo si la ruta es exactamente /user-profile */}
+        {location.pathname === "/user-profile" && (
+          <UserDetails userData={userData} />
+        )}
+
         <Routes>
           <Route path="tasks" element={<Tasks role={userData.role_name} />} />
           <Route path="notes" element={<Notes role={userData.role_name} />} />
