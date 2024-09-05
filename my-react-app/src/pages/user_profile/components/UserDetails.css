@@ -1,11 +1,13 @@
 .user-details-container {
     background-color: var(--clr-background);
-    border: 1px solid var(--clr-secondary);
+    /* background-color: var(--clr-OnSecondary); */
+    /* background-color: rgb(148, 153, 157); */
+    border: 5px solid var(--clr-secondary);
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
     color: var(--clr-text);

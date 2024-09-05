@@ -24,11 +24,20 @@ const UserProfile = () => {
     const token = sessionStorage.getItem("authToken");
     const verifiedUser = verifyToken(token);
 
-    if (!verifiedUser) {
-      console.log("Token inválido o expirado.");
-      navigate("/"); // Redirige a la página de login si el token es inválido
-    } else {
-      console.log("Datos del usuario autenticado:", verifiedUser);
+    if (verifiedUser === -1) {
+      console.warn("El token ha caducado. Redirigiendo al login.");
+      alert(
+        "Su sesión ha expirado. Por favor, vuelva a iniciar sesión para continuar."
+      );
+      navigate("/login"); // Redirige al usuario al login si el token ha caducado
+    } else if (verifiedUser === 0) {
+      console.warn("El token es incorrecto. Redirigiendo al login.");
+      alert(
+        "Se ha detectado un problema con su autenticación. Por favor, inicie sesión de nuevo."
+      );
+      navigate("/login"); // Redirige al usuario al login si el token es incorrecto
+    } else if (verifiedUser) {
+      console.log("Todos los datos del usuario autenticado:", verifiedUser);
       setUserData(verifiedUser); // Almacena los datos del usuario autenticado
     }
   }, [navigate]);
