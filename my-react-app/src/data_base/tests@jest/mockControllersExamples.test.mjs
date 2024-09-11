@@ -1,7 +1,10 @@
+import { Users } from "../mockTables.mjs"; //; Importa la tabla simulada de usuarios
+
 //; Importa las funciones desde el archivo de controladores
 import {
   generateToken,
   verifyToken,
+  loginUser,
   getAllUsers,
   getUserById,
   createUser,
@@ -23,7 +26,7 @@ import {
   deleteTask,
 } from "../mockDatabase.mjs"; //; Importa los controladores desde el archivo relativo
 
-//;MARK:*
+//;MARK:generateToken
 //^---------------- Generar Token (generateToken) ----------------^\\
 
 describe("Autenticación (Tokens)", () => {
@@ -43,7 +46,7 @@ describe("Autenticación (Tokens)", () => {
   });
 });
 
-//;MARK:*
+//;MARK:verifyToken
 //^---------------- Verificar Token (verifyToken) ----------------^\\
 
 import { TOKEN_EXPIRATION_TIME, HTTP_STATUS } from "../mockDatabase.mjs"; //; Importa constantes necesarias
@@ -134,7 +137,71 @@ describe("Autenticación (Tokens)", () => {
   });
 });
 
-//;MARK:*
+//;MARK:Login
+//^---------------- Inicio de Sesión (Login) ----------------^\\
+
+describe("Inicio de Sesión (Login)", () => {
+  beforeAll(() => {
+    //; Prepara algunos usuarios de prueba para la autenticación
+    Users.push({
+      user_id: "uuid-5",
+      username: "TestUser1",
+      password: "Password1.",
+      role_name: "admin",
+    });
+
+    Users.push({
+      user_id: "uuid-6",
+      username: "TestUser2",
+      password: "Password2.",
+      role_name: "cleaning",
+    });
+  });
+
+  afterAll(() => {
+    // Limpiar usuarios de prueba después de los tests
+    Users.splice(Users.length - 2, 2);
+  });
+
+  test("Inicio de sesión exitoso con credenciales válidas", () => {
+    const result = loginUser("TestUser1", "Password1.");
+    expect(result.status).toBe(200);
+    expect(result.message).toBe("Usuario autenticado exitosamente.");
+    expect(result.data).toHaveProperty("username", "TestUser1");
+  });
+
+  test("Usuario no encontrado al proporcionar un nombre de usuario inexistente", () => {
+    const result = loginUser("NonExistentUser", "Password1.");
+    expect(result.status).toBe(404);
+    expect(result.message).toBe("Usuario no encontrado.");
+  });
+
+  test("Contraseña incorrecta al proporcionar una contraseña no coincidente", () => {
+    const result = loginUser("TestUser1", "WrongPassword");
+    expect(result.status).toBe(401);
+    expect(result.message).toBe("Contraseña incorrecta.");
+  });
+
+  test("Inicio de sesión con nombre de usuario válido pero contraseña vacía", () => {
+    const result = loginUser("TestUser1", "");
+    expect(result.status).toBe(401);
+    expect(result.message).toBe("Contraseña incorrecta.");
+  });
+
+  test("Inicio de sesión con nombre de usuario vacío y contraseña válida", () => {
+    const result = loginUser("", "Password1.");
+    expect(result.status).toBe(404);
+    expect(result.message).toBe("Usuario no encontrado.");
+  });
+
+  test("Inicio de sesión con nombre de usuario y contraseña vacíos", () => {
+    const result = loginUser("", "");
+    expect(result.status).toBe(404);
+    expect(result.message).toBe("Usuario no encontrado.");
+  });
+});
+
+//;MARK:Users
 //^---------------- Usuarios (Users) ----------------^\\
 
 describe("Usuarios (Users)", () => {
@@ -157,21 +224,21 @@ describe("Usuarios (Users)", () => {
     expect(result.message).toBe("Usuario no encontrado.");
   });
 
-  test("Crear un nuevo usuario", () => {
+  test("Crear un nuevo usuario con datos válidos", () => {
     const result = createUser({
-      username: "NuevoUsuario",
-      password: "NuevaPass1.",
-      role_name: "user",
+      username: "NuevoUsuario123", // Nombre de usuario válido.
+      password: "NuevaPass1.", // Contraseña válida que cumple con los requisitos.
+      role_name: "admin", // Rol permitido.
     });
     expect(result.status).toBe(201);
-    expect(result.data).toHaveProperty("username", "NuevoUsuario");
+    expect(result.data).toHaveProperty("username", "NuevoUsuario123");
   });
 
   test("Crear un usuario sin un campo requerido", () => {
     const result = createUser({
       username: "UsuarioFaltante",
       password: "Pass1.",
-      //; Falta 'role_name'
+      // Falta 'role_name'
     });
     expect(result.status).toBe(400);
     expect(result.message).toMatch(
@@ -179,10 +246,45 @@ describe("Usuarios (Users)", () => {
     );
   });
 
+  test("Crear un usuario con un nombre de usuario que empiece o termine con '-' o '_'", () => {
+    const result1 = createUser({
+      username: "_UsuarioInvalido",
+      password: "Pass1.",
+      role_name: "admin",
+    });
+    const result2 = createUser({
+      username: "UsuarioInvalido-",
+      password: "Pass1.",
+      role_name: "admin",
+    });
+    expect(result1.status).toBe(400);
+    expect(result1.message).toMatch(
+      /El nombre de usuario debe tener entre 3 y 20 caracteres. No debe comenzar ni terminar con '-' o '_', y puede contener letras, números, '-' y '_'./
+    );
+    expect(result2.status).toBe(400);
+    expect(result2.message).toMatch(
+      /El nombre de usuario debe tener entre 3 y 20 caracteres. No debe comenzar ni terminar con '-' o '_', y puede contener letras, números, '-' y '_'./
+    );
+  });
+
+  test("Crear un usuario con una contraseña que no cumple los requisitos", () => {
+    const result = createUser({
+      username: "UsuarioValido",
+      password: "pass", // Contraseña no válida (no cumple con las reglas de seguridad)
+      role_name: "admin",
+    });
+    expect(result.status).toBe(400);
+    expect(result.message).toMatch(
+      /La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, un número y un carácter especial \(@, \$, !, %, \*, \?, &, #, \.\)\./
+    );
+  });
+
   test("Actualizar un usuario existente", () => {
-    const result = updateUser("uuid-1", { password: "NuevaContraseñaSegura!" });
+    const result = updateUser("uuid-1", {
+      password: "NuevaContraseñaSegura1!",
+    });
     expect(result.status).toBe(200);
-    expect(result.data).toHaveProperty("password", "NuevaContraseñaSegura!");
+    expect(result.data).toHaveProperty("password", "NuevaContraseñaSegura1!");
   });
 
   test("Actualizar un usuario inexistente", () => {
@@ -202,9 +304,21 @@ describe("Usuarios (Users)", () => {
     expect(result.status).toBe(404);
     expect(result.message).toBe("Usuario no encontrado.");
   });
+
+  test("Validar que el nombre de usuario no contenga caracteres no permitidos", () => {
+    const result = createUser({
+      username: "Us#rInvalid", // Contiene caracteres no permitidos
+      password: "Password1.",
+      role_name: "admin",
+    });
+    expect(result.status).toBe(400);
+    expect(result.message).toMatch(
+      /El nombre de usuario debe tener entre 3 y 20 caracteres. No debe comenzar ni terminar con '-' o '_', y puede contener letras, números, '-' y '_'./
+    );
+  });
 });
 
-//;MARK:*
+//;MARK:UserPersonalData
 //^---------------- Información Personal de Usuarios (UserPersonalData) ----------------^\\
 
 describe("Información Personal de Usuarios (UserPersonalData)", () => {
@@ -244,7 +358,7 @@ describe("Información Personal de Usuarios (UserPersonalData)", () => {
   });
 });
 
-//;MARK:*
+//;MARK:UserContactData
 //^---------------- Información de Contacto de Usuarios (UserContactData) ----------------^\\
 
 describe("Información de Contacto de Usuarios (UserContactData)", () => {
@@ -286,7 +400,7 @@ describe("Información de Contacto de Usuarios (UserContactData)", () => {
   });
 });
 
-//;MARK:*
+//;MARK:UserAdditionalData
 //^---------------- Información Adicional de Usuarios (UserAdditionalData) ----------------^\\
 
 describe("Información Adicional de Usuarios (UserAdditionalData)", () => {
@@ -328,7 +442,23 @@ describe("Información Adicional de Usuarios (UserAdditionalData)", () => {
   });
 });
 
+//;MARK:Tasks
+//^---------------- Tareas (Tasks) ----------------^\\
+
 describe("Tareas (Tasks)", () => {
+  let createdTaskId; //; Variable para almacenar el ID de una tarea creada
+
+  beforeAll(() => {
+    //; Inicializa una tarea antes de las pruebas y guarda su ID
+    const newTask = createTask({
+      description: "Tarea de prueba",
+      status: "pending",
+      user_id: "uuid-1",
+      entry_date: "2024-09-10",
+    });
+    createdTaskId = newTask.data.task_id; //; Guardar el ID de la tarea creada
+  });
+
   test("Obtener todas las tareas", () => {
     const result = getAllTasks();
     expect(result.status).toBe(200);
@@ -337,18 +467,18 @@ describe("Tareas (Tasks)", () => {
   });
 
   test("Obtener una tarea por su ID", () => {
-    const result = getTaskById(1);
+    const result = getTaskById(createdTaskId); //; Utiliza el ID de la tarea creada
     expect(result.status).toBe(200);
-    expect(result.data).toHaveProperty("task_id", 1);
+    expect(result.data).toHaveProperty("task_id", createdTaskId);
   });
 
   test("Obtener una tarea inexistente por su ID", () => {
-    const result = getTaskById(999);
+    const result = getTaskById(999); //; ID que no existe
     expect(result.status).toBe(404);
     expect(result.message).toBe("Tarea no encontrada.");
   });
 
-  test("Crear una nueva tarea con todos los campos", () => {
+  test("Crear una nueva tarea con todos los campos requeridos", () => {
     const newTask = {
       description: "Nueva tarea de ejemplo",
       status: "pending",
@@ -377,13 +507,13 @@ describe("Tareas (Tasks)", () => {
 
   test("Actualizar una tarea existente", () => {
     const updateData = { status: "done" };
-    const result = updateTask(1, updateData);
+    const result = updateTask(createdTaskId, updateData); //; Utiliza el ID de la tarea creada
     expect(result.status).toBe(200);
     expect(result.data).toHaveProperty("status", "done");
   });
 
-  test("Actualizar una tarea existente con campos faltantes", () => {
-    const result = updateTask(1, {}); //; No se proporciona información para actualizar
+  test("Actualizar una tarea con campos faltantes", () => {
+    const result = updateTask(createdTaskId, {}); //; No se proporciona información para actualizar
     expect(result.status).toBe(400);
     expect(result.message).toMatch(
       /No se proporcionó información para actualizar/
@@ -391,19 +521,19 @@ describe("Tareas (Tasks)", () => {
   });
 
   test("Actualizar una tarea inexistente", () => {
-    const result = updateTask(999, { status: "in-progress" });
+    const result = updateTask(999, { status: "in-progress" }); //; ID que no existe
     expect(result.status).toBe(404);
     expect(result.message).toBe("Tarea no encontrada.");
   });
 
   test("Eliminar una tarea existente", () => {
-    const result = deleteTask(1);
+    const result = deleteTask(createdTaskId); //; Utiliza el ID de la tarea creada
     expect(result.status).toBe(200);
     expect(result.message).toBe("Tarea eliminada exitosamente.");
   });
 
   test("Eliminar una tarea inexistente", () => {
-    const result = deleteTask(999);
+    const result = deleteTask(999); //; ID que no existe
     expect(result.status).toBe(404);
     expect(result.message).toBe("Tarea no encontrada.");
   });

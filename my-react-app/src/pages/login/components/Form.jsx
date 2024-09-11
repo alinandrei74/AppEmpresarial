@@ -1,4 +1,4 @@
-// En el archivo de login (Form.jsx)
+//; En el archivo de login (Form.jsx)
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
@@ -32,14 +32,17 @@ const Form = () => {
       newValue = Str.replaceExceptChars(
         value,
         "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÑ-_",
-        "",
-        false
+        "", //; Reemplazar caracteres no permitidos por una cadena vacía
+        false //; Insensibilidad a mayúsculas y minúsculas
       );
 
-      //; Limita la longitud del nombre de usuario
+      //; Limitar la longitud del nombre de usuario
       if (newValue.length > 20) {
         newValue = newValue.slice(0, 20);
       }
+
+      //; Validar que el nombre de usuario no empiece ni termine con "-" o "_"
+      newValue = newValue.replace(/^[-_]+|[-_]+$/g, "");
     }
 
     if (name === "password") {
@@ -89,13 +92,13 @@ const Form = () => {
    */
   const isFormValid = () => {
     const { username, password } = formData;
-    const isUsernameValid =
-      username &&
-      !username.startsWith("_") &&
-      !username.startsWith("-") &&
-      !username.endsWith("_") &&
-      !username.endsWith("-");
-    const isPasswordValid = password.length > 0;
+
+    //; Expresión regular para validar el nombre de usuario
+    const usernameRegex = /^[A-Z0-9Ñ](?!.*[-_]$)[A-Z0-9Ñ-_]{1,18}[A-Z0-9Ñ]$/;
+
+    const isUsernameValid = usernameRegex.test(username);
+    const isPasswordValid = password.length > 0; //; Verifica que la contraseña no esté vacía
+
     return isUsernameValid && isPasswordValid;
   };
 

@@ -47,20 +47,45 @@ const createErrorResponse = (status, message) => ({
 });
 
 /**
- * Función auxiliar para validar la entrada de datos.
- * @param {Object} data - Los datos a validar.
- * @param {Array<string>} requiredFields - Los campos requeridos.
- * @returns {Object|null} Un objeto de error si faltan campos, de lo contrario, null.
+ * Función auxiliar para validar la entrada de datos según campos requeridos y un esquema de validación.
+ * @param {Object} data - Objeto con los datos a validar.
+ * @param {Array<string>} requiredFields - Lista de nombres de campos que son obligatorios.
+ * @param {Object} [schema={}] - Esquema opcional que define validaciones adicionales como regex y mensajes de error para cada campo.
+ * @returns {Object|null} Un objeto con `status` y `message` si hay un error de validación, o `null` si todos los campos son válidos.
  */
-const validateInput = (data, requiredFields) => {
-  const missingFields = requiredFields.filter((field) => !data[field]);
-  if (missingFields.length > 0) {
+const validateInput = (data, requiredFields, schema = {}) => {
+  const errors = [];
+
+  //; Validar si todos los campos requeridos están presentes
+  for (const field of requiredFields) {
+    if (!data[field]) {
+      errors.push(`Faltan los siguientes campos requeridos: ${field}`);
+    }
+  }
+
+  //; Validar los formatos de los campos con el esquema proporcionado
+  for (const field of requiredFields) {
+    const value = data[field];
+    const fieldSchema = schema[field];
+
+    if (
+      value &&
+      fieldSchema &&
+      fieldSchema.regex &&
+      !fieldSchema.regex.test(value)
+    ) {
+      errors.push(fieldSchema.errorMessage);
+    }
+  }
+
+  if (errors.length > 0) {
     return createErrorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Faltan los siguientes campos requeridos: ${missingFields.join(", ")}`
+      errors.join(" | ") //; Combinar todos los errores en un solo mensaje
     );
   }
-  return null;
+
+  return null; //; No hay errores
 };
 
 //;todo---MARK: Auth Service
@@ -158,7 +183,7 @@ const loginUser = (username, password) => {
       );
     }
 
-    // Verifica si la contraseña proporcionada coincide
+    //; Verifica si la contraseña proporcionada coincide
     if (user.password !== password) {
       return createErrorResponse(
         HTTP_STATUS.UNAUTHORIZED,
@@ -178,6 +203,7 @@ const loginUser = (username, password) => {
     );
   }
 };
+
 /**
  * Función para obtener todos los usuarios.
  * @returns {Object} Un objeto con `status`, `message` y `data` (lista de usuarios).
@@ -220,6 +246,27 @@ const getUserById = (userId) => {
   }
 };
 
+const userSchema = {
+  username: {
+    type: "string",
+    regex: /^(?![-_])[A-Za-z0-9Ñ_-]{1,18}[A-Za-z0-9Ñ](?<![-_])$/,
+    errorMessage:
+      "El nombre de usuario debe tener entre 3 y 20 caracteres. No debe comenzar ni terminar con '-' o '_', y puede contener letras, números, '-' y '_'.",
+  },
+  password: {
+    type: "string",
+    regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#])[A-Za-z\d@$!%*?&.]{8,30}$/,
+    errorMessage:
+      "La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, un número y un carácter especial (@, $, !, %, *, ?, &, #, .).",
+  },
+  role_name: {
+    type: "string",
+    regex: /^(admin|cleaning|delivery|maintenance)$/i,
+    errorMessage:
+      "El rol de usuario debe ser uno de los siguientes valores permitidos: 'admin', 'cleaning', 'delivery', 'maintenance'.",
+  },
+};
+
 /**
  * Función para crear un nuevo usuario (simulación de POST).
  * @param {Object} newUser - Objeto que representa el nuevo usuario a crear.
@@ -227,11 +274,17 @@ const getUserById = (userId) => {
  */
 const createUser = (newUser) => {
   try {
-    //; Validar datos de entrada
-    const error = validateInput(newUser, ["username", "password", "role_name"]);
-    if (error) return error;
+    //; Validar todos los campos requeridos de una sola vez
+    const error = validateInput(
+      newUser,
+      ["username", "password", "role_name"],
+      userSchema
+    );
+    if (error) {
+      return error;
+    }
 
-    const newUserId = uuidv4(); //; Genera un nuevo UUID para el usuario
+    const newUserId = uuidv4();
     const user = { user_id: newUserId, ...newUser };
     Users.push(user);
 
