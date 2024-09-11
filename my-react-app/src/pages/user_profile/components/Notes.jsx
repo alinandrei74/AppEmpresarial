@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getNotes, addNote, deleteNote } from "../../../data_base/mockDatabase";
+import { getNotes, addNote, deleteNote } from "../../../data_base/fixAndEliminate.js";
 import AddNoteForm from "./AddNoteForm";
 import "./Notes.css";
 

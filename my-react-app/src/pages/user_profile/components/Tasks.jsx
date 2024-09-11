@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { obtenerTareas, crearTarea, marcarTareaComoCompletada, eliminarTarea } from "../../../data_base/mockDatabase";
+import { obtenerTareas, crearTarea, marcarTareaComoCompletada, eliminarTarea } from "../../../data_base/fixAndEliminate.js";
 import "./Tasks.css";
 
 const Tasks = ({ role, userId }) => {

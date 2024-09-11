@@ -7,7 +7,14 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "jest --watch",
+    "test:all": "jest --all --passWithNoTests",
+    "test:coverage": "jest --coverage",
+    "test:ci": "jest --ci --runInBand --coverage",
+    "test:changed": "jest --changedSince=master",
+    "test:update-snapshots": "jest --updateSnapshot",
+    "test:clear-cache": "jest --clearCache"
   },
   "dependencies": {
     "formik": "^2.4.6",
@@ -17,6 +24,10 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-typescript": "^7.18.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
@@ -24,6 +35,7 @@
     "eslint-plugin-react": "^7.34.3",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
+    "jest": "^29.7.0",
     "vite": "^5.3.4"
   }
 }

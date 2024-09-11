@@ -1,0 +1,726 @@
+//;todo---MARK: Imports
+
+import { v4 as uuidv4 } from "uuid";
+import {
+  Users,
+  UserPersonalData,
+  UserContactData,
+  UserAdditionalData,
+  Tasks,
+} from "./mockTables.mjs"; //; Importa las tablas simuladas
+
+//;todo---MARK: Global Variables
+
+//; Constantes de tiempo y códigos de estado HTTP
+const TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; //; 1 hora en milisegundos
+const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  INTERNAL_SERVER_ERROR: 500,
+};
+
+export { TOKEN_EXPIRATION_TIME, HTTP_STATUS };
+
+//;todo---MARK: Functions
+
+//
+//
+//
+
+//;MARK:*
+//^---------------- Auxiliary ----------------^\\
+
+/**
+ * Función auxiliar para crear una respuesta de error estándar.
+ * @param {number} status - El código de estado HTTP.
+ * @param {string} message - El mensaje de error.
+ * @returns {Object} Un objeto con `status` y `message`.
+ */
+const createErrorResponse = (status, message) => ({
+  status,
+  message,
+  data: null,
+});
+
+/**
+ * Función auxiliar para validar la entrada de datos.
+ * @param {Object} data - Los datos a validar.
+ * @param {Array<string>} requiredFields - Los campos requeridos.
+ * @returns {Object|null} Un objeto de error si faltan campos, de lo contrario, null.
+ */
+const validateInput = (data, requiredFields) => {
+  const missingFields = requiredFields.filter((field) => !data[field]);
+  if (missingFields.length > 0) {
+    return createErrorResponse(
+      HTTP_STATUS.BAD_REQUEST,
+      `Faltan los siguientes campos requeridos: ${missingFields.join(", ")}`
+    );
+  }
+  return null;
+};
+
+//;todo---MARK: Auth Service
+
+//
+//
+//
+
+//;MARK:*
+//^----- Tokens -----^\\
+
+/**
+ * Función para generar un token simulado (base64) para autenticación.
+ * @param {string} userId - El ID del usuario.
+ * @returns {string} Un token simulado.
+ */
+const generateToken = (userId) => {
+  const expirationTime = new Date().getTime() + TOKEN_EXPIRATION_TIME; //; Hora actual + 1 hora
+  return btoa(`${userId}:${expirationTime}`);
+};
+
+/**
+ * Función para verificar un token de autenticación.
+ * @param {string} token - El token de autenticación.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (si es exitoso).
+ */
+const verifyToken = (token) => {
+  try {
+    if (!token) {
+      return createErrorResponse(
+        HTTP_STATUS.UNAUTHORIZED,
+        "Token no proporcionado. Por favor, inicie sesión."
+      );
+    }
+
+    const decoded = atob(token).split(":");
+    const userId = decoded[0];
+    const expirationTime = parseInt(decoded[1], 10);
+
+    //; Verificar si el token ha caducado
+    if (new Date().getTime() > expirationTime) {
+      return createErrorResponse(
+        HTTP_STATUS.FORBIDDEN,
+        "El token ha caducado. Por favor, inicie sesión de nuevo."
+      );
+    }
+
+    const user = getUserById(userId).data; //; Obtiene datos del usuario
+
+    //; Verificar si el usuario existe
+    if (!user) {
+      return createErrorResponse(
+        HTTP_STATUS.UNAUTHORIZED,
+        "Token no válido. Por favor, inicie sesión de nuevo."
+      );
+    }
+
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Token verificado exitosamente.",
+      data: user,
+    };
+  } catch (e) {
+    return createErrorResponse(
+      HTTP_STATUS.UNAUTHORIZED,
+      "Token no válido. Error al decodificar el token."
+    );
+  }
+};
+
+export { generateToken, verifyToken };
+
+//;todo---MARK: Controladores
+
+//
+//
+//
+
+//;MARK:*
+//^---------------- Usuarios (Users) ----------------^\\
+
+/**
+ * Función para manejar el inicio de sesión de un usuario por su nombre de usuario (username) y contraseña.
+ * @param {string} username - Nombre de usuario del usuario.
+ * @param {string} password - Contraseña del usuario.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (usuario autenticado o error si no se encontró o la contraseña no coincide).
+ */
+const loginUser = (username, password) => {
+  try {
+    const user = Users.find((user) => user.username === username) || null;
+    if (!user) {
+      return createErrorResponse(
+        HTTP_STATUS.NOT_FOUND,
+        "Usuario no encontrado."
+      );
+    }
+
+    // Verifica si la contraseña proporcionada coincide
+    if (user.password !== password) {
+      return createErrorResponse(
+        HTTP_STATUS.UNAUTHORIZED,
+        "Contraseña incorrecta."
+      );
+    }
+
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Usuario autenticado exitosamente.",
+      data: user,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al autenticar el usuario."
+    );
+  }
+};
+/**
+ * Función para obtener todos los usuarios.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de usuarios).
+ */
+const getAllUsers = () => {
+  try {
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Usuarios obtenidos exitosamente.",
+      data: Users,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener usuarios."
+    );
+  }
+};
+
+/**
+ * Función para obtener un usuario por su ID.
+ * @param {string} userId - ID del usuario a obtener.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (usuario o null si no se encontró).
+ */
+const getUserById = (userId) => {
+  try {
+    const user = Users.find((user) => user.user_id === userId) || null;
+    return user
+      ? {
+          status: HTTP_STATUS.OK,
+          message: "Usuario encontrado.",
+          data: user,
+        }
+      : createErrorResponse(HTTP_STATUS.NOT_FOUND, "Usuario no encontrado.");
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener el usuario."
+    );
+  }
+};
+
+/**
+ * Función para crear un nuevo usuario (simulación de POST).
+ * @param {Object} newUser - Objeto que representa el nuevo usuario a crear.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (nuevo usuario creado).
+ */
+const createUser = (newUser) => {
+  try {
+    //; Validar datos de entrada
+    const error = validateInput(newUser, ["username", "password", "role_name"]);
+    if (error) return error;
+
+    const newUserId = uuidv4(); //; Genera un nuevo UUID para el usuario
+    const user = { user_id: newUserId, ...newUser };
+    Users.push(user);
+
+    return {
+      status: HTTP_STATUS.CREATED,
+      message: "Usuario creado exitosamente.",
+      data: user,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al crear el usuario."
+    );
+  }
+};
+
+/**
+ * Función para actualizar un usuario existente (simulación de PUT).
+ * @param {string} userId - ID del usuario que se va a actualizar.
+ * @param {Object} updatedUser - Objeto que contiene los campos a actualizar del usuario.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (usuario actualizado o null si no se encontró).
+ */
+const updateUser = (userId, updatedUser) => {
+  try {
+    const userIndex = Users.findIndex((user) => user.user_id === userId);
+    if (userIndex !== -1) {
+      Users[userIndex] = { ...Users[userIndex], ...updatedUser };
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Usuario actualizado exitosamente.",
+        data: Users[userIndex],
+      };
+    }
+    return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Usuario no encontrado.");
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al actualizar el usuario."
+    );
+  }
+};
+
+/**
+ * Función para eliminar un usuario (simulación de DELETE).
+ * @param {string} userId - ID del usuario que se va a eliminar.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (usuario eliminado o null si no se encontró).
+ */
+const deleteUser = (userId) => {
+  try {
+    const userIndex = Users.findIndex((user) => user.user_id === userId);
+    if (userIndex !== -1) {
+      const deletedUser = Users.splice(userIndex, 1)[0];
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Usuario eliminado exitosamente.",
+        data: deletedUser,
+      };
+    }
+    return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Usuario no encontrado.");
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al eliminar el usuario."
+    );
+  }
+};
+
+export {
+  loginUser,
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+};
+
+//;MARK:*
+//^---------------- Información Personal de Usuarios (UserPersonalData) ----------------^\\
+
+/**
+ * Función para obtener toda la información personal de usuarios.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de información personal).
+ */
+const getAllUserPersonalData = () => {
+  try {
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Datos personales de usuarios obtenidos exitosamente.",
+      data: UserPersonalData,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos personales de usuarios."
+    );
+  }
+};
+
+/**
+ * Función para obtener la información personal de un usuario por su ID.
+ * @param {string} userId - ID del usuario a obtener.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información personal del usuario o null si no se encontró).
+ */
+const getUserPersonalDataById = (userId) => {
+  try {
+    const personalData = UserPersonalData.find(
+      (data) => data.user_id === userId
+    );
+    return personalData
+      ? {
+          status: HTTP_STATUS.OK,
+          message: "Datos personales obtenidos exitosamente.",
+          data: personalData,
+        }
+      : createErrorResponse(
+          HTTP_STATUS.NOT_FOUND,
+          "Datos personales no encontrados."
+        );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos personales del usuario."
+    );
+  }
+};
+
+/**
+ * Función para actualizar la información personal de un usuario (simulación de PUT).
+ * @param {string} userId - ID del usuario cuya información personal se va a actualizar.
+ * @param {Object} updatedData - Objeto que contiene los campos a actualizar de la información personal.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información personal actualizada o null si no se encontró).
+ */
+const updateUserPersonalData = (userId, updatedData) => {
+  try {
+    const dataIndex = UserPersonalData.findIndex(
+      (data) => data.user_id === userId
+    );
+    if (dataIndex !== -1) {
+      UserPersonalData[dataIndex] = {
+        ...UserPersonalData[dataIndex],
+        ...updatedData,
+      };
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Datos personales actualizados exitosamente.",
+        data: UserPersonalData[dataIndex],
+      };
+    }
+    return createErrorResponse(
+      HTTP_STATUS.NOT_FOUND,
+      "Datos personales no encontrados."
+    );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al actualizar datos personales del usuario."
+    );
+  }
+};
+
+export {
+  getAllUserPersonalData,
+  getUserPersonalDataById,
+  updateUserPersonalData,
+};
+
+//;MARK:*
+//^---------------- Información de Contacto de Usuarios (UserContactData) ----------------^\\
+
+/**
+ * Función para obtener toda la información de contacto de usuarios.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de información de contacto).
+ */
+const getAllUserContactData = () => {
+  try {
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Datos de contacto de usuarios obtenidos exitosamente.",
+      data: UserContactData,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos de contacto de usuarios."
+    );
+  }
+};
+
+/**
+ * Función para obtener la información de contacto de un usuario por su ID.
+ * @param {string} userId - ID del usuario a obtener.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información de contacto del usuario o null si no se encontró).
+ */
+const getUserContactDataById = (userId) => {
+  try {
+    const contactData = UserContactData.find((data) => data.user_id === userId);
+    return contactData
+      ? {
+          status: HTTP_STATUS.OK,
+          message: "Datos de contacto obtenidos exitosamente.",
+          data: contactData,
+        }
+      : createErrorResponse(
+          HTTP_STATUS.NOT_FOUND,
+          "Datos de contacto no encontrados."
+        );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos de contacto del usuario."
+    );
+  }
+};
+
+/**
+ * Función para actualizar la información de contacto de un usuario (simulación de PUT).
+ * @param {string} userId - ID del usuario cuya información de contacto se va a actualizar.
+ * @param {Object} updatedData - Objeto que contiene los campos a actualizar de la información de contacto.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información de contacto actualizada o null si no se encontró).
+ */
+const updateUserContactData = (userId, updatedData) => {
+  try {
+    const dataIndex = UserContactData.findIndex(
+      (data) => data.user_id === userId
+    );
+    if (dataIndex !== -1) {
+      UserContactData[dataIndex] = {
+        ...UserContactData[dataIndex],
+        ...updatedData,
+      };
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Datos de contacto actualizados exitosamente.",
+        data: UserContactData[dataIndex],
+      };
+    }
+    return createErrorResponse(
+      HTTP_STATUS.NOT_FOUND,
+      "Datos de contacto no encontrados."
+    );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al actualizar datos de contacto del usuario."
+    );
+  }
+};
+
+export { getAllUserContactData, getUserContactDataById, updateUserContactData };
+
+//;MARK:*
+//^---------------- Información Adicional de Usuarios (UserAdditionalData) ----------------^\\
+
+/**
+ * Función para obtener toda la información adicional de usuarios.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de información adicional).
+ */
+const getAllUserAdditionalData = () => {
+  try {
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Datos adicionales de usuarios obtenidos exitosamente.",
+      data: UserAdditionalData,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos adicionales de usuarios."
+    );
+  }
+};
+
+/**
+ * Función para obtener la información adicional de un usuario por su ID.
+ * @param {string} userId - ID del usuario a obtener.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información adicional del usuario o null si no se encontró).
+ */
+const getUserAdditionalDataById = (userId) => {
+  try {
+    const additionalData = UserAdditionalData.find(
+      (data) => data.user_id === userId
+    );
+    return additionalData
+      ? {
+          status: HTTP_STATUS.OK,
+          message: "Datos adicionales obtenidos exitosamente.",
+          data: additionalData,
+        }
+      : createErrorResponse(
+          HTTP_STATUS.NOT_FOUND,
+          "Datos adicionales no encontrados."
+        );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener datos adicionales del usuario."
+    );
+  }
+};
+
+/**
+ * Función para actualizar la información adicional de un usuario (simulación de PUT).
+ * @param {string} userId - ID del usuario cuya información adicional se va a actualizar.
+ * @param {Object} updatedData - Objeto que contiene los campos a actualizar de la información adicional.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (información adicional actualizada o null si no se encontró).
+ */
+const updateUserAdditionalData = (userId, updatedData) => {
+  try {
+    const dataIndex = UserAdditionalData.findIndex(
+      (data) => data.user_id === userId
+    );
+    if (dataIndex !== -1) {
+      UserAdditionalData[dataIndex] = {
+        ...UserAdditionalData[dataIndex],
+        ...updatedData,
+      };
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Datos adicionales actualizados exitosamente.",
+        data: UserAdditionalData[dataIndex],
+      };
+    }
+    return createErrorResponse(
+      HTTP_STATUS.NOT_FOUND,
+      "Datos adicionales no encontrados."
+    );
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al actualizar datos adicionales del usuario."
+    );
+  }
+};
+
+export {
+  getAllUserAdditionalData,
+  getUserAdditionalDataById,
+  updateUserAdditionalData,
+};
+
+//;MARK:*
+//^---------------- Tareas (Tasks) ----------------^\\
+
+/**
+ * Función para obtener todas las Tareas .
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de todas las Tareas ).
+ */
+const getAllTasks = () => {
+  try {
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Tareas obtenidas exitosamente.",
+      data: Tasks,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener tareas."
+    );
+  }
+};
+
+/**
+ * Función para obtener una tarea general por su ID.
+ * @param {number} taskId - ID de la tarea a obtener.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (tarea o null si no se encontró).
+ */
+const getTaskById = (taskId) => {
+  try {
+    const task = Tasks.find((task) => task.task_id === taskId);
+    return task
+      ? {
+          status: HTTP_STATUS.OK,
+          message: "Tarea encontrada.",
+          data: task,
+        }
+      : createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al obtener la tarea."
+    );
+  }
+};
+
+/**
+ * Función para crear una nueva tarea (simulación de POST).
+ * @param {Object} newTask - Objeto que representa la nueva tarea a crear.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (nueva tarea creada).
+ */
+const createTask = (newTask) => {
+  try {
+    //; Validar datos de entrada
+    const error = validateInput(newTask, [
+      "description",
+      "status",
+      "user_id",
+      "entry_date",
+    ]);
+    if (error) return error;
+
+    const newTaskId = Tasks.length + 1; //; Genera un nuevo ID para la tarea
+    const task = { task_id: newTaskId, ...newTask };
+    Tasks.push(task);
+
+    return {
+      status: HTTP_STATUS.CREATED,
+      message: "Tarea creada exitosamente.",
+      data: task,
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al crear la tarea."
+    );
+  }
+};
+
+/**
+ * Función para actualizar una tarea existente (simulación de PUT).
+ * @param {number} taskId - ID de la tarea que se va a actualizar.
+ * @param {Object} updatedTask - Objeto que contiene los campos a actualizar de la tarea.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (tarea actualizada o null si no se encontró).
+ */
+const updateTask = (taskId, updatedTask) => {
+  try {
+    if (Object.keys(updatedTask).length === 0) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "No se proporcionó información para actualizar."
+      );
+    }
+
+    const taskIndex = Tasks.findIndex((task) => task.task_id === taskId);
+
+    if (taskIndex === -1) {
+      return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
+    }
+
+    //; Validar los campos obligatorios en la actualización
+    const error = validateInput(updatedTask, ["status"]);
+    if (error) return error;
+
+    //; Realizar la actualización
+    Tasks[taskIndex] = { ...Tasks[taskIndex], ...updatedTask };
+
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Tarea actualizada exitosamente.",
+      data: Tasks[taskIndex],
+    };
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al actualizar la tarea."
+    );
+  }
+};
+
+/**
+ * Función para eliminar una tarea (simulación de DELETE).
+ * @param {number} taskId - ID de la tarea que se va a eliminar.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (tarea eliminada o null si no se encontró).
+ */
+const deleteTask = (taskId) => {
+  try {
+    if (typeof taskId !== "number" || taskId <= 0) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "ID de tarea inválido."
+      );
+    }
+
+    const taskIndex = Tasks.findIndex((task) => task.task_id === taskId);
+    if (taskIndex !== -1) {
+      const deletedTask = Tasks.splice(taskIndex, 1)[0];
+      return {
+        status: HTTP_STATUS.OK,
+        message: "Tarea eliminada exitosamente.",
+        data: deletedTask,
+      };
+    }
+    return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
+  } catch (error) {
+    return createErrorResponse(
+      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      "Error al eliminar la tarea."
+    );
+  }
+};
+
+export { getAllTasks, getTaskById, createTask, updateTask, deleteTask };

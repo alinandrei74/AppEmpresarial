@@ -5,9 +5,9 @@ import Tasks from "./components/Tasks";
 import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/UserDetails"; // Importa el nuevo componente
+import UserDetails from "./components/UserDetails"; //; Importa el nuevo componente
 import "./UserProfile.css";
-import { verifyToken } from "../../data_base/mockDatabase"; // Importa la función para verificar el token
+import { verifyToken } from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
 
 /**
  * Componente de perfil de usuario que maneja la navegación entre diferentes secciones.
@@ -17,32 +17,32 @@ import { verifyToken } from "../../data_base/mockDatabase"; // Importa la funci�
  */
 const UserProfile = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // Hook para obtener la ubicación actual
-  const [userData, setUserData] = useState(null); // Estado para almacenar los datos del usuario
+  const location = useLocation(); //; Hook para obtener la ubicación actual
+  const [userData, setUserData] = useState(null); //; Estado para almacenar los datos del usuario
 
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
-    const verifiedUser = verifyToken(token);
 
-    if (verifiedUser === -1) {
-      console.warn("El token ha caducado. Redirigiendo al login.");
-      alert(
-        "Su sesión ha expirado. Por favor, vuelva a iniciar sesión para continuar."
-      );
-      navigate("/login"); // Redirige al usuario al login si el token ha caducado
-    } else if (verifiedUser === 0) {
-      console.warn("El token es incorrecto. Redirigiendo al login.");
-      alert(
-        "Se ha detectado un problema con su autenticación. Por favor, inicie sesión de nuevo."
-      );
-      navigate("/login"); // Redirige al usuario al login si el token es incorrecto
-    } else if (verifiedUser) {
-      console.log("Todos los datos del usuario autenticado:", verifiedUser);
-      setUserData(verifiedUser); // Almacena los datos del usuario autenticado
+    //; Verificar el token utilizando la API simulada
+    const result = verifyToken(token);
+
+    if (result.status === 401 || result.status === 403) {
+      //; Si el token ha caducado o es inválido, redirigir al login
+      console.warn(result.message);
+      alert(result.message);
+      navigate("/login");
+    } else if (result.status === 200) {
+      //; Si el token es válido, almacenar los datos del usuario autenticado
+      console.log("Todos los datos del usuario autenticado:", result.data);
+      setUserData(result.data);
+    } else {
+      console.warn("Error desconocido al verificar el token.");
+      alert("Ha ocurrido un error. Por favor, intente de nuevo.");
+      navigate("/login");
     }
   }, [navigate]);
 
-  if (!userData) return null; // Muestra nada hasta que los datos del usuario sean verificados
+  if (!userData) return null; //; Muestra nada hasta que los datos del usuario sean verificados
 
   return (
     <div className="user-profile-container">

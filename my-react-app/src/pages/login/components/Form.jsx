@@ -1,10 +1,12 @@
+// En el archivo de login (Form.jsx)
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
 import {
-  loginUser, // Importar función para iniciar sesión
-} from "../../../data_base/mockDatabase"; // Asegúrate de importar correctamente desde el archivo
+  loginUser, //; Importa la función correcta para la autenticación
+  generateToken, //; Importa la función para generar un token de autenticación simulado
+} from "../../../data_base/mockDatabase.mjs"; //; Importa desde el archivo adecuado
 
 /**
  *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
@@ -16,7 +18,7 @@ const Form = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // Hook para la navegación
+  const navigate = useNavigate(); //; Hook para la navegación
 
   /**
    ** Maneja el cambio en los campos del formulario.
@@ -34,14 +36,14 @@ const Form = () => {
         false
       );
 
-      // Limita la longitud del nombre de usuario
+      //; Limita la longitud del nombre de usuario
       if (newValue.length > 20) {
         newValue = newValue.slice(0, 20);
       }
     }
 
     if (name === "password") {
-      // Limita la longitud de la contraseña
+      //; Limita la longitud de la contraseña
       if (newValue.length > 30) {
         newValue = newValue.slice(0, 30);
       }
@@ -65,16 +67,17 @@ const Form = () => {
    ** Maneja el envío del formulario de autenticación.
    * @param {React.FormEvent<HTMLFormElement>} e - El evento de envío.
    */
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const loginResult = loginUser(formData.username, formData.password);
+    //; Simulación de login: obtiene usuario y verifica contraseña
+    const userResult = loginUser(formData.username, formData.password);
 
-    if (loginResult) {
-      sessionStorage.setItem("authToken", loginResult.token);
-      alert("Inicio de sesión exitoso.");
-      console.log("Datos del usuario autenticado:", loginResult.user); // Mostrar datos del usuario en consola
-      navigate(`/user-profile`); // Redirige al perfil de usuario si la autenticación es exitosa
+    if (userResult.status === 200) {
+      const token = generateToken(userResult.data.user_id);
+      sessionStorage.setItem("authToken", token);
+      console.log("Datos del usuario autenticado:", userResult.data); //; Mostrar datos del usuario en consola
+      navigate(`/user-profile`); //; Redirige al perfil de usuario si la autenticación es exitosa
     } else {
       alert("Usuario o contraseña incorrectos.");
     }
