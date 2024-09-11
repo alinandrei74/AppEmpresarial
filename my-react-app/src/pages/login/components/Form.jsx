@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
 import {
-  userAuthData,
-  userRoles,
-  userPersonalData,
-  userContactData,
-  userAdditionalData,
-} from "../../../data_base/usersData";
+  loginUser, // Importar función para iniciar sesión
+} from "../../../data_base/mockDatabase"; // Asegúrate de importar correctamente desde el archivo
 
 /**
  *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
@@ -66,50 +62,21 @@ const Form = () => {
   };
 
   /**
-   ** Maneja el envío del formulario.
+   ** Maneja el envío del formulario de autenticación.
    * @param {React.FormEvent<HTMLFormElement>} e - El evento de envío.
    */
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    let isAuthenticated = false;
-    let userIndex = -1;
+    const loginResult = loginUser(formData.username, formData.password);
 
-    userAuthData.forEach((user, index) => {
-      if (
-        user.username === formData.username &&
-        user.password === formData.password
-      ) {
-        isAuthenticated = true;
-        userIndex = index; // Guarda el índice del usuario autenticado
-      }
-    });
-
-    /**
-     ** Elimina la propiedad 'id' de un objeto.
-     * @param {Object} obj - El objeto del que se eliminará la propiedad 'id'.
-     * @returns {Object} El objeto sin la propiedad 'id'.
-     */
-    const removeId = (obj) => {
-      const { id, ...rest } = obj;
-      return rest;
-    };
-
-    if (isAuthenticated) {
-      const userData = {
-        id: userAuthData[userIndex].id,
-        role: userRoles[userIndex].role,
-        userAuthData: removeId(userAuthData[userIndex]),
-        userPersonalData: removeId(userPersonalData[userIndex]),
-        userContactData: removeId(userContactData[userIndex]),
-        userAdditionalData: removeId(userAdditionalData[userIndex]),
-      };
-
-      console.log(userData);
-      sessionStorage.setItem("userData", JSON.stringify(userData));
-      navigate(`/user-profile/${userData.role}`);
+    if (loginResult) {
+      sessionStorage.setItem("authToken", loginResult.token);
+      alert("Inicio de sesión exitoso.");
+      console.log("Datos del usuario autenticado:", loginResult.user); // Mostrar datos del usuario en consola
+      navigate(`/user-profile`); // Redirige al perfil de usuario si la autenticación es exitosa
     } else {
-      alert("Usuario o contraseña incorrectos");
+      alert("Usuario o contraseña incorrectos.");
     }
   };
 

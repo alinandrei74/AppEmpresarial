@@ -5,29 +5,25 @@ import UserProfile from "./user_profile/UserProfile";
 import Register from "./register/Register";
 import NotFound from "./not_found/NotFound";
 
+/**
+ * Componente que maneja las rutas de la aplicación.
+ * @component
+ * @returns {JSX.Element} AppRoutes
+ */
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Ruta para el inicio de sesión */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
+
+      {/* Ruta para el registro de nuevos usuarios */}
       <Route path="/register" element={<Register />} />
+
+      {/* Ruta general para el perfil de usuario */}
       <Route path="/user-profile/*" element={<UserProfile />} />
-      <Route
-        path="/user-profile/admin/*"
-        element={<UserProfile role="admin" />}
-      />
-      <Route
-        path="/user-profile/cleaning/*"
-        element={<UserProfile role="cleaning" />}
-      />
-      <Route
-        path="/user-profile/delivery/*"
-        element={<UserProfile role="delivery" />}
-      />
-      <Route
-        path="/user-profile/maintenance/*"
-        element={<UserProfile role="maintenance" />}
-      />
+
+      {/* Ruta para manejar páginas no encontradas */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

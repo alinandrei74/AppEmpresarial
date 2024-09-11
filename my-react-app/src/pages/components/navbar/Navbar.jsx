@@ -47,7 +47,7 @@ export default function Navbar() {
 
         {/* Logo en el centro para pantallas grandes, dentro del menú para móviles */}
         <div className={`navbar-logo ${isMenuOpen ? 'menu-item' : ''}`}>
-          <Link to="/user-profile/">
+          <Link to="/user-profile">
             <h1>Mi perfil</h1>
           </Link>
         </div>

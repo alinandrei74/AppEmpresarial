@@ -1,5 +1,6 @@
 :root {
-    /*todo: Colores Estaticos */
+
+    /*todo---MARK: Colores Estaticos */
     --primary-default: #8ac8f1;
     --primary-dark: #5b8099;
     --primary-light: #b3e1ff;
@@ -29,7 +30,7 @@
     --maintenance-light: #f5c17b;
 
 
-    /*todo: Colores Dinamicos (Modo Claro) */
+    /*todo---MARK: Colores Dinamicos (Modo Claro) */
     /*? Fondo y Contra Fondo */
     --clr-background: #b2cad0;
     --clr-OnBackground: #1b232d;
@@ -60,7 +61,7 @@
     --clr-maintenance-hover: var(--maintenance-dark);
 }
 
-/*todo: Colores Dinamicos (Modo Oscuro) */
+/*todo---MARK: Colores Dinamicos (Modo Oscuro) */
 .dark-mode {
     /*? Fondo y Contra Fondo */
     --clr-background: #2c3e50;

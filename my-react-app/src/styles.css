@@ -2,7 +2,7 @@
 
 /*! Si necesitais cambiar o añadir algo aqui podeis hacerlo siempre que aviseis de ello */
 
-/*todo || GENERAL STYLES */
+/*todo---MARK: GENERAL STYLES */
 
 /*? All */
 * {
@@ -54,8 +54,7 @@ th {
 }
 
 
-
-/*todo || GENERAL STYLES App */
+/*todo---MARK: GENERAL STYLES App */
 
 /*? Contenedor principal */
 .app-container {
@@ -63,4 +62,28 @@ th {
     text-align: center;
     max-width: 700px;
     margin: 0 auto;
+}
+
+
+/*todo---MARK: Roles */
+
+/* Clases de colores para cada rol de usuario */
+.user-role.admin {
+    background-color: var(--clr-admin) !important;
+    color: var(--clr-text) !important;
+}
+
+.user-role.cleaning {
+    background-color: var(--clr-cleaning) !important;
+    color: var(--clr-text) !important;
+}
+
+.user-role.delivery {
+    background-color: var(--clr-delivery) !important;
+    color: var(--clr-text) !important;
+}
+
+.user-role.maintenance {
+    background-color: var(--clr-maintenance) !important;
+    color: var(--clr-text) !important;
 }
