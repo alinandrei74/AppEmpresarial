@@ -3,9 +3,9 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./components/RegisterCss.css";
 
-// Función simulada para crear un nuevo usuario (simula una API)
+//; Función simulada para crear un nuevo usuario (simula una API)
 const createUser = async (userData) => {
-  // Simulación de una llamada API con validación simple
+  //; Simulación de una llamada API con validación simple
   return new Promise((resolve) => {
     setTimeout(() => {
       if (userData.username === "existe") {
@@ -36,7 +36,7 @@ function Register() {
       address: "",
       cp: "",
       password: "",
-      confirmPassword: "", // Nuevo campo
+      confirmPassword: "", //; Nuevo campo
     },
 
     validationSchema: Yup.object({
@@ -117,7 +117,7 @@ function Register() {
 
     onSubmit: async (values) => {
       const response = await createUser(values);
-      alert(response.message); // Simulación de manejo de respuesta
+      alert(response.message); //; Simulación de manejo de respuesta
     },
   });
 

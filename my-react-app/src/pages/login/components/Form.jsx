@@ -94,7 +94,7 @@ const Form = () => {
     const { username, password } = formData;
 
     //; Expresión regular para validar el nombre de usuario
-    const usernameRegex = /^[A-Z0-9Ñ](?!.*[-_]$)[A-Z0-9Ñ-_]{1,18}[A-Z0-9Ñ]$/;
+    const usernameRegex = /^(?![-_])[A-Za-z0-9Ñ_-]{1,18}[A-Za-z0-9Ñ](?<![-_])$/;
 
     const isUsernameValid = usernameRegex.test(username);
     const isPasswordValid = password.length > 0; //; Verifica que la contraseña no esté vacía

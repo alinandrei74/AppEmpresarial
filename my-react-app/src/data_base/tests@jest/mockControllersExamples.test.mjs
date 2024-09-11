@@ -159,7 +159,7 @@ describe("Inicio de Sesión (Login)", () => {
   });
 
   afterAll(() => {
-    // Limpiar usuarios de prueba después de los tests
+    //; Limpiar usuarios de prueba después de los tests
     Users.splice(Users.length - 2, 2);
   });
 
@@ -226,9 +226,9 @@ describe("Usuarios (Users)", () => {
 
   test("Crear un nuevo usuario con datos válidos", () => {
     const result = createUser({
-      username: "NuevoUsuario123", // Nombre de usuario válido.
-      password: "NuevaPass1.", // Contraseña válida que cumple con los requisitos.
-      role_name: "admin", // Rol permitido.
+      username: "NuevoUsuario123", //; Nombre de usuario válido.
+      password: "NuevaPass1.", //; Contraseña válida que cumple con los requisitos.
+      role_name: "admin", //; Rol permitido.
     });
     expect(result.status).toBe(201);
     expect(result.data).toHaveProperty("username", "NuevoUsuario123");
@@ -238,7 +238,7 @@ describe("Usuarios (Users)", () => {
     const result = createUser({
       username: "UsuarioFaltante",
       password: "Pass1.",
-      // Falta 'role_name'
+      //; Falta 'role_name'
     });
     expect(result.status).toBe(400);
     expect(result.message).toMatch(
@@ -270,7 +270,7 @@ describe("Usuarios (Users)", () => {
   test("Crear un usuario con una contraseña que no cumple los requisitos", () => {
     const result = createUser({
       username: "UsuarioValido",
-      password: "pass", // Contraseña no válida (no cumple con las reglas de seguridad)
+      password: "pass", //; Contraseña no válida (no cumple con las reglas de seguridad)
       role_name: "admin",
     });
     expect(result.status).toBe(400);
@@ -307,7 +307,7 @@ describe("Usuarios (Users)", () => {
 
   test("Validar que el nombre de usuario no contenga caracteres no permitidos", () => {
     const result = createUser({
-      username: "Us#rInvalid", // Contiene caracteres no permitidos
+      username: "Us#rInvalid", //; Contiene caracteres no permitidos
       password: "Password1.",
       role_name: "admin",
     });
