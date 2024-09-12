@@ -5,8 +5,8 @@
   height: 100vh !important;
   box-sizing: border-box !important;
   overflow: auto !important;
-  /* background-color: var(--clr-primary) !important; */
-  background-color: var(--clr-background) !important;
+  background-color: var(--clr-primary) !important;
+  /* background-color: var(--clr-background) !important; */
   /* background-color: var(--clr-OnSecondary) !important; */
 
 }
