@@ -1,67 +1,75 @@
 .aside {
-  width: 200px !important;
-  padding: 0 !important;
-  /* Elimina todo el padding para que no haya espacio alrededor */
-  height: 100vh !important;
-  box-sizing: border-box !important;
-  overflow: auto !important;
-  background-color: var(--clr-primary) !important;
-  /* background-color: var(--clr-background) !important; */
-  /* background-color: var(--clr-OnSecondary) !important; */
-
+  width: 200px;
+  padding: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: auto;
+  background-color: var(--clr-primary);
+  transition: transform 0.3s ease-in-out;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
 }
 
 .aside-items {
-  list-style: none !important;
-  padding: 0 !important;
-  /* Elimina el padding para que los elementos de la lista estén alineados con el contenedor */
-  margin: 0 !important;
-  /* Elimina cualquier margen del contenedor de la lista */
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .aside-items li:first-child {
-  margin-top: 40px !important;
+  margin-top: 40px;
 }
 
 .aside-items li {
-  margin-bottom: 1px !important;
-  /* Elimina cualquier margen entre los elementos de la lista */
-  text-align: left !important;
+  margin-bottom: 1px;
+  text-align: left;
 }
 
 .aside-items li:hover {
-  cursor: pointer !important;
+  cursor: pointer;
 }
 
 .aside-items a {
-  display: block !important;
-  /* Asegura que el enlace ocupe todo el ancho del elemento li */
-  text-decoration: none !important;
-  padding: 10px 15px !important;
-  /* Añade padding para mejorar la usabilidad */
-  color: var(--clr-OnBackground) !important;
-
+  display: block;
+  text-decoration: none;
+  padding: 10px 15px;
+  color: var(--clr-OnBackground);
   width: 100%;
-  border-radius: 0px !important;
-
-
-  /* width: 80%; */
-  /* border-top-right-radius: 90px !important; */
-  /* border-bottom-right-radius: 90px !important; */
-
+  border-radius: 0px;
 }
 
 .aside-items a:hover {
-  background-color: var(--primary-default) !important;
-  /* background-color: var(--clr-primary) !important; */
-  /* Fondo al pasar el ratón */
+  background-color: var(--primary-default);
 }
 
-/* Nueva clase para el enlace activo */
 .active-link {
-  background-color: var(--clr-secondary) !important;
-  /* background-color: var(--clr-OnPrimary) !important; */
-  /* Fondo para el enlace activo */
-  color: var(--clr-OnText) !important;
-  /* Texto para el enlace activo */
+  background-color: var(--clr-secondary);
+  color: var(--clr-OnText);
+}
+
+.menu-icon {
+  display: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+}
+
+@media screen and (max-width: 768px) {
+  .aside {
+    transform: translateX(-100%);
+  }
+
+  .aside.open {
+    transform: translateX(0);
+  }
+
+  .menu-icon {
+    display: block;
+  }
 }

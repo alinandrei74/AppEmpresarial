@@ -1,62 +1,69 @@
 .tasks-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .create-task-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .create-task-form input,
-  .create-task-form select {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid var(--clr-secondary);
-    border-radius: 5px;
-  }
-  
-  .create-task-form button,
-  .task-item button {
-    padding: 10px 15px;
-    background-color: var(--clr-primary);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .tasks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .task-item {
-    background-color: var(--clr-OnPrimary);
-    border: 1px solid var(--clr-secondary);
-    border-radius: 5px;
-    padding: 10px;
-  }
-  
-  .task-item p {
-    margin: 0 0 10px 0;
-  }
-  
-  .task-item small {
-    display: block;
-    color: var(--clr-OnText);
-    font-size: 0.8em;
-    margin-bottom: 5px;
-  }
-  
-  .task-item.completed {
-    background-color: var(--clr-success);
-    color: white;
-  }
-  
-  .task-item.pending {
-    background-color: var(--clr-warning);
-  }
+  padding: 20px;
+  background-color: var(--clr-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.create-task-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.create-task-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid var(--clr-border);
+  border-radius: 4px;
+}
+
+.create-task-form button {
+  padding: 8px 16px;
+  background-color: var(--clr-primary);
+  color: var(--clr-OnPrimary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.tasks-list {
+  display: grid;
+  gap: 10px;
+}
+
+.task-item {
+  background-color: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.task-item.pending {
+  border-left: 4px solid orange;
+}
+
+.task-item.done {
+  border-left: 4px solid green;
+}
+
+.task-item p {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+.task-item small {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--clr-OnSurfaceVariant);
+}
+
+.task-item button {
+  margin-top: 10px;
+  padding: 5px 10px;
+  background-color: var(--clr-secondary);
+  color: var(--clr-OnSecondary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}

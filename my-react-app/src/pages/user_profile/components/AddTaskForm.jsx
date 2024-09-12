@@ -1,23 +1,33 @@
-import React, { useState } from "react";
-import { getUsers } from "../../../data_base/fixAndEliminate.js";
+import React, { useState, useEffect } from "react";
+import { getAllUsers } from "../../../data_base/mockDatabase.mjs";
 
 const AddTaskForm = ({ onAddTask }) => {
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
-  const users = getUsers();
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    const usersResult = await getAllUsers();
+    if (usersResult.status === 200) {
+      setUsers(usersResult.data);
+    } else {
+      console.error('Error al cargar los usuarios:', usersResult.message);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title.trim() && description.trim() && assignedTo) {
-      const assignedUser = users.find((user) => user.user_id === assignedTo);
+    if (description.trim() && assignedTo) {
       onAddTask({
-        title,
         description,
-        assignedTo,
-        assignedToName: assignedUser ? assignedUser.username : "Unknown",
+        user_id: assignedTo,
+        status: "pending",
+        entry_date: new Date().toISOString().split('T')[0]
       });
-      setTitle("");
       setDescription("");
       setAssignedTo("");
     }
@@ -27,12 +37,6 @@ const AddTaskForm = ({ onAddTask }) => {
     <form onSubmit={handleSubmit} className="add-task-form">
       <input
         type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Título de la tarea"
-        required
-      />
-      <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Descripción de la tarea"

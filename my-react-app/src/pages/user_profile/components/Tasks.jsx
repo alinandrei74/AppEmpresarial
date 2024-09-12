@@ -1,41 +1,55 @@
-import React, { useState, useEffect } from "react";
-import { obtenerTareas, crearTarea, marcarTareaComoCompletada, eliminarTarea } from "../../../data_base/fixAndEliminate.js";
-import "./Tasks.css";
+import React, { useState, useEffect } from 'react';
+import { getAllTasks, createTask, updateTask, deleteTask } from '../../../data_base/mockDatabase.mjs';
+import AddTaskForm from './AddTaskForm';
+import './Tasks.css';
 
-const Tasks = ({ role, userId }) => {
+const Tasks = ({ userData }) => {
   const [tasks, setTasks] = useState([]);
-  const [newTask, setNewTask] = useState({ description: "", assignedTo: "" });
 
   useEffect(() => {
-    cargarTareas();
+    loadTasks();
   }, []);
 
-  const cargarTareas = () => {
-    const tareasCargadas = obtenerTareas();
-    setTasks(tareasCargadas);
-  };
-
-  const handleCreateTask = (e) => {
-    e.preventDefault();
-    if (role === "admin" && newTask.description && newTask.assignedTo) {
-      const tarea = crearTarea(newTask);
-      setTasks([...tasks, tarea]);
-      setNewTask({ description: "", assignedTo: "" });
+  const loadTasks = async () => {
+    const tasksResult = await getAllTasks();
+    if (tasksResult.status === 200) {
+      setTasks(tasksResult.data);
+    } else {
+      console.error('Error al cargar las tareas:', tasksResult.message);
     }
   };
 
-  const handleCompleteTask = (taskId) => {
-    const tareaActualizada = marcarTareaComoCompletada(taskId);
-    if (tareaActualizada) {
-      setTasks(tasks.map(task => task.id === taskId ? tareaActualizada : task));
+  const handleAddTask = async (newTask) => {
+    if (userData.role_name === 'admin') {
+      const result = await createTask(newTask);
+      if (result.status === 201) {
+        setTasks([...tasks, result.data]);
+      } else {
+        console.error('Error al crear la tarea:', result.message);
+      }
     }
   };
 
-  const handleDeleteTask = (taskId) => {
-    if (role === "admin") {
-      const eliminada = eliminarTarea(taskId);
-      if (eliminada) {
-        setTasks(tasks.filter(task => task.id !== taskId));
+  const handleCompleteTask = async (taskId) => {
+    const taskToUpdate = tasks.find(task => task.task_id === taskId);
+    if (taskToUpdate && taskToUpdate.user_id === userData.user_id) {
+      const updatedTask = { ...taskToUpdate, status: 'done' };
+      const result = await updateTask(taskId, updatedTask);
+      if (result.status === 200) {
+        setTasks(tasks.map(task => task.task_id === taskId ? result.data : task));
+      } else {
+        console.error('Error al completar la tarea:', result.message);
+      }
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    if (userData.role_name === 'admin') {
+      const result = await deleteTask(taskId);
+      if (result.status === 200) {
+        setTasks(tasks.filter(task => task.task_id !== taskId));
+      } else {
+        console.error('Error al eliminar la tarea:', result.message);
       }
     }
   };
@@ -43,39 +57,20 @@ const Tasks = ({ role, userId }) => {
   return (
     <div className="tasks-container">
       <h2>Tareas</h2>
-      {role === "admin" && (
-        <form onSubmit={handleCreateTask} className="create-task-form">
-          <input
-            type="text"
-            value={newTask.description}
-            onChange={(e) => setNewTask({...newTask, description: e.target.value})}
-            placeholder="Descripción de la tarea"
-            required
-          />
-          <select
-            value={newTask.assignedTo}
-            onChange={(e) => setNewTask({...newTask, assignedTo: e.target.value})}
-            required
-          >
-            <option value="">Asignar a...</option>
-            <option value="cleaning">Limpieza</option>
-            <option value="maintenance">Mantenimiento</option>
-            <option value="delivery">Entrega</option>
-          </select>
-          <button type="submit">Crear Tarea</button>
-        </form>
+      {userData.role_name === 'admin' && (
+        <AddTaskForm onAddTask={handleAddTask} />
       )}
       <div className="tasks-list">
         {tasks.map((task) => (
-          <div key={task.id} className={`task-item ${task.completed ? 'completed' : 'pending'}`}>
+          <div key={task.task_id} className={`task-item ${task.status}`}>
             <p>{task.description}</p>
-            <small>Asignado a: {task.assignedTo}</small>
-            <small>Estado: {task.completed ? 'Completada' : 'Pendiente'}</small>
-            {!task.completed && task.assignedTo === role && (
-              <button onClick={() => handleCompleteTask(task.id)}>Marcar como completada</button>
+            <small>Asignado a: {task.user_id}</small>
+            <small>Estado: {task.status}</small>
+            {task.status === 'pending' && task.user_id === userData.user_id && (
+              <button onClick={() => handleCompleteTask(task.task_id)}>Marcar como completada</button>
             )}
-            {role === "admin" && task.completed && (
-              <button onClick={() => handleDeleteTask(task.id)}>Eliminar</button>
+            {userData.role_name === 'admin' && (
+              <button onClick={() => handleDeleteTask(task.task_id)}>Eliminar</button>
             )}
           </div>
         ))}

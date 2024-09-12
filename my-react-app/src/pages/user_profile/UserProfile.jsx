@@ -5,67 +5,47 @@ import Tasks from "./components/Tasks";
 import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/UserDetails"; //; Importa el nuevo componente
+import UserDetails from "./components/UserDetails";
 import "./UserProfile.css";
-import { verifyToken } from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
+import { verifyToken } from "../../data_base/mockDatabase.mjs";
 
-/**
- * Componente de perfil de usuario que maneja la navegación entre diferentes secciones.
- * Renderiza diferentes vistas y estilos según el rol del usuario.
- * @component
- * @returns {JSX.Element} UserProfile
- */
 const UserProfile = () => {
   const navigate = useNavigate();
-  const location = useLocation(); //; Hook para obtener la ubicación actual
-  const [userData, setUserData] = useState(null); //; Estado para almacenar los datos del usuario
+  const location = useLocation();
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
-    const verificationResult = verifyToken(token); //; Cambiamos el nombre para reflejar mejor que es un resultado de verificación
+    const verificationResult = verifyToken(token);
 
-    //; Verificar el resultado de la verificación del token
-    if (
-      verificationResult.status === 401 ||
-      verificationResult.status === 403
-    ) {
+    if (verificationResult.status === 401 || verificationResult.status === 403) {
       console.warn(verificationResult.message);
       alert(verificationResult.message);
-      navigate("/login"); //; Redirige al usuario al login si el token no es válido o ha caducado
+      navigate("/login");
     } else if (verificationResult.status === 200) {
-      console.log(
-        "Todos los datos del usuario autenticado:",
-        verificationResult.data
-      );
-      setUserData(verificationResult.data); //; Almacena los datos del usuario autenticado
+      console.log("Todos los datos del usuario autenticado:", verificationResult.data);
+      setUserData(verificationResult.data);
     } else {
       console.error("Error inesperado al verificar el token.");
-      navigate("/login"); //; Redirige al usuario al login si ocurre un error inesperado
+      navigate("/login");
     }
   }, [navigate]);
 
-  if (!userData) return null; //; Muestra nada hasta que los datos del usuario sean verificados
+  if (!userData) return null;
 
   return (
     <div className="user-profile-container">
       <Aside />
-      <div className={`user-profile-content`}>
-        {/* Renderiza UserDetails solo si la ruta es exactamente /user-profile */}
+      <div className="user-profile-content">
         {location.pathname === "/user-profile" && (
           <UserDetails userData={userData} />
         )}
 
         <Routes>
-          <Route path="tasks" element={<Tasks role={userData.role_name} />} />
-          <Route path="notes" element={<Notes role={userData.role_name} />} />
-          <Route
-            path="calendar"
-            element={<Calendar role={userData.role_name} />}
-          />
-          <Route
-            path="tourist-places"
-            element={<TouristPlaces role={userData.role_name} />}
-          />
+          <Route path="tasks" element={<Tasks userData={userData} />} />
+          <Route path="notes" element={<Notes userData={userData} />} />
+          <Route path="calendar" element={<Calendar userData={userData} />} />
+          <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
         </Routes>
       </div>
     </div>
