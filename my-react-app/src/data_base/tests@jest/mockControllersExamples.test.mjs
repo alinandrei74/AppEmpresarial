@@ -85,6 +85,38 @@ describe("Autenticación (Tokens)", () => {
     expect(result.status).toBe(HTTP_STATUS.OK);
     expect(result.message).toBe("Token verificado exitosamente.");
     expect(result.data).toHaveProperty("user_id", "uuid-1");
+
+    //; Verifica los datos adicionales del usuario
+    expect(result.data).toHaveProperty("personalData");
+    expect(result.data).toHaveProperty("contactData");
+    expect(result.data).toHaveProperty("additionalData");
+    expect(result.data).toHaveProperty("tasks");
+
+    //; Verifica que los datos personales sean correctos
+    expect(result.data.personalData).toEqual({
+      user_id: "uuid-1",
+      first_name: "John",
+      last_name: "Doe",
+      middle_name: "Smith",
+    });
+
+    //; Verifica que los datos de contacto sean correctos
+    expect(result.data.contactData).toEqual({
+      user_id: "uuid-1",
+      email: "example1@example.com",
+      phone_number: "1234567890",
+    });
+
+    //; Verifica que los datos adicionales sean correctos
+    expect(result.data.additionalData).toEqual({
+      user_id: "uuid-1",
+      dni: "123456789A",
+      address: "123 Example St",
+      postal_code: "12345",
+    });
+
+    //; Verifica que las tareas sean correctas (en este caso vacío)
+    expect(result.data.tasks).toEqual([]);
   });
 
   test("Verificar un token caducado", () => {
@@ -128,6 +160,13 @@ describe("Autenticación (Tokens)", () => {
     const result = verifyToken(manipulatedToken);
     expect(result.status).toBe(HTTP_STATUS.OK); //; Este test espera un estado OK porque el token es válido
     expect(result.message).toBe("Token verificado exitosamente.");
+
+    //; Verifica que los datos del usuario también sean completos en este caso
+    expect(result.data).toHaveProperty("user_id", "uuid-1");
+    expect(result.data).toHaveProperty("personalData");
+    expect(result.data).toHaveProperty("contactData");
+    expect(result.data).toHaveProperty("additionalData");
+    expect(result.data).toHaveProperty("tasks");
   });
 
   //; Test adicional para verificar el formato del token

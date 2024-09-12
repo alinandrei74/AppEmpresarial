@@ -133,7 +133,8 @@ const verifyToken = (token) => {
       );
     }
 
-    const user = getUserById(userId).data; //; Obtiene datos del usuario
+    const userResult = getUserById(userId); //; Obtiene datos del usuario
+    const user = userResult.data;
 
     //; Verificar si el usuario existe
     if (!user) {
@@ -143,10 +144,29 @@ const verifyToken = (token) => {
       );
     }
 
+    //; Obtener datos adicionales del usuario
+    const personalData = UserPersonalData.find(
+      (data) => data.user_id === userId
+    );
+    const contactData = UserContactData.find((data) => data.user_id === userId);
+    const additionalData = UserAdditionalData.find(
+      (data) => data.user_id === userId
+    );
+    const tasks = Tasks.filter((task) => task.user_id === userId);
+
+    //; Combina todos los datos del usuario
+    const fullUserData = {
+      ...user,
+      personalData: personalData || {},
+      contactData: contactData || {},
+      additionalData: additionalData || {},
+      tasks: tasks || [],
+    };
+
     return {
       status: HTTP_STATUS.OK,
       message: "Token verificado exitosamente.",
-      data: user,
+      data: fullUserData,
     };
   } catch (e) {
     return createErrorResponse(
