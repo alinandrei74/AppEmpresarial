@@ -50,6 +50,9 @@ const ColorTable = () => {
     { name: "Error", variable: "--clr-error" },
     { name: "On Error", variable: "--clr-OnError" },
 
+    { name: "Success", variable: "--clr-success" },
+    { name: "On Success", variable: "--clr-OnSuccess" },
+
     { name: "Admin", variable: "--clr-admin" },
     { name: "Admin Hover", variable: "--clr-admin-hover" },
 

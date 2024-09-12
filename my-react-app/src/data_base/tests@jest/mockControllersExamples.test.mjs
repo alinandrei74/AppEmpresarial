@@ -318,6 +318,23 @@ describe("Usuarios (Users)", () => {
     );
   });
 
+  test("Crear un usuario con un nombre de usuario duplicado", () => {
+    createUser({
+      username: "UsuarioDuplicado",
+      password: "Password1.",
+      role_name: "admin",
+    });
+
+    const result = createUser({
+      username: "UsuarioDuplicado", //; Nombre de usuario ya existente.
+      password: "Password2.",
+      role_name: "cleaning",
+    });
+
+    expect(result.status).toBe(400);
+    expect(result.message).toBe("El nombre de usuario ya está en uso.");
+  });
+
   test("Actualizar un usuario existente", () => {
     const result = updateUser("uuid-1", {
       password: "NuevaContraseñaSegura1!",

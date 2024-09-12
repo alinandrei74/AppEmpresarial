@@ -304,6 +304,18 @@ const createUser = (newUser) => {
       return error;
     }
 
+    //; Verificar si el username ya existe
+    const existingUser = Users.find(
+      (user) => user.username === newUser.username
+    );
+    if (existingUser) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "El nombre de usuario ya está en uso."
+      );
+    }
+
+    //; Proceder a crear el nuevo usuario
     const newUserId = uuidv4();
     const user = { user_id: newUserId, ...newUser };
     Users.push(user);

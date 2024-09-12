@@ -7,6 +7,7 @@ import { createUser } from "../../../data_base/mockDatabase.mjs";
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [responseMessage, setResponseMessage] = useState(""); // Mensaje de respuesta de la API
+  const [isErrorMessage, setIsErrorMessage] = useState(false); // Nueva variable de estado para manejar el estilo del mensaje
 
   const formik = useFormik({
     initialValues: {
@@ -93,12 +94,14 @@ const Form = () => {
 
       if (response.status === 201) {
         setResponseMessage("Usuario registrado con éxito.");
-        alert("Usuario registrado con éxito.");
+        setIsErrorMessage(false); // Indica que el mensaje es de éxito
+        // alert("Usuario registrado con éxito.");
       } else {
         setResponseMessage(
           "Error al registrar el usuario: " + response.message
         );
-        alert("Error al registrar el usuario: " + response.message);
+        setIsErrorMessage(true); // Indica que el mensaje es de error
+        // alert("Error al registrar el usuario: " + response.message);
       }
     },
   });
@@ -138,7 +141,6 @@ const Form = () => {
         ) : null}
       </div>
 
-      {/* Otros campos del formulario */}
       <div className="form-group">
         <label htmlFor="username" className="form-label required">
           Nombre de usuario
@@ -246,7 +248,6 @@ const Form = () => {
           <div>{formik.errors.telephone}</div>
         ) : null}
       </div>
-
       {/* Campo de Contraseña */}
       <div className="form-group">
         <label htmlFor="password" className="form-label required">
@@ -311,7 +312,13 @@ const Form = () => {
 
       {/* Mensaje de Respuesta */}
       {responseMessage && (
-        <div className="responseMessage">{responseMessage}</div>
+        <div
+          className={`responseMessage ${
+            isErrorMessage ? "responseMessage-error" : "responseMessage-success"
+          }`}
+        >
+          {responseMessage}
+        </div>
       )}
     </form>
   );

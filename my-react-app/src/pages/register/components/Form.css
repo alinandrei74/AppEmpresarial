@@ -94,7 +94,17 @@
 
 .responseMessage {
   margin-top: 20px;
-  /* Más margen superior */
-  color: var(--clr-OnError);
   font-weight: bold;
+}
+
+/* Nueva clase para mensajes de error */
+.responseMessage-error {
+  color: var(--clr-OnError);
+  /* Color rojo para mensajes de error */
+}
+
+/* Nueva clase para mensajes de éxito */
+.responseMessage-success {
+  color: var(--clr-OnSuccess);
+  /* Color verde para mensajes de éxito */
 }

@@ -49,6 +49,10 @@
     --clr-error: rgb(255, 48, 48);
     --clr-OnError: rgb(182, 0, 0);
 
+    /*? Success */
+    --clr-success: rgb(89, 255, 48);
+    --clr-OnSuccess: rgb(0, 182, 9);
+
     /*? Roles */
     --clr-admin: var(--admin-light);
     --clr-cleaning: var(--cleaning-light);
@@ -80,6 +84,10 @@
     /*? Error */
     --clr-error: rgb(182, 0, 0);
     --clr-OnError: rgb(255, 48, 48);
+
+    /*? Success */
+    --clr-success: rgb(0, 182, 9);
+    --clr-OnSuccess: rgb(89, 255, 48);
 
     /*? Roles */
     --clr-admin: var(--admin-dark);
