@@ -165,6 +165,7 @@ export const saveAllTablesToLocalStorage = () => {
 
 //; Función para restablecer todas las tablas a sus valores predeterminados
 export const resetAllTablesToDefaults = () => {
+  console.info("Tablas restablecidas a sus valores predeterminados");
   saveToLocalStorage("Users", defaultUsers);
   saveToLocalStorage("UserPersonalData", defaultUserPersonalData);
   saveToLocalStorage("UserContactData", defaultUserContactData);

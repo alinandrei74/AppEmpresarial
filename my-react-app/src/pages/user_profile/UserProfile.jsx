@@ -7,10 +7,7 @@ import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
 import UserDetails from "./components/UserDetails"; //; Importa el nuevo componente
 import "./UserProfile.css";
-import {
-  verifyToken,
-  resetAllTablesToDefaults,
-} from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
+import { verifyToken } from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
 
 /**
  * Componente de perfil de usuario que maneja la navegación entre diferentes secciones.
@@ -19,7 +16,6 @@ import {
  * @returns {JSX.Element} UserProfile
  */
 const UserProfile = () => {
-  // resetAllTablesToDefaults(); //! Resetear por defecto todas las tablas (debug)
   const navigate = useNavigate();
   const location = useLocation(); //; Hook para obtener la ubicación actual
   const [userData, setUserData] = useState(null); //; Estado para almacenar los datos del usuario

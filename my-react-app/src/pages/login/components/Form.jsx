@@ -1,4 +1,3 @@
-//; En el archivo de login (Form.jsx)
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
@@ -9,10 +8,14 @@ import {
 } from "../../../data_base/mockDatabase.mjs"; //; Importa desde el archivo adecuado
 
 /**
- * 1/ Componente de formulario controlado que utiliza las variables de CSS del root.
+ *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); //; Hook para la navegación
 
@@ -99,29 +102,25 @@ const Form = () => {
   };
 
   return (
-    <form className="form" onSubmit={formik.handleSubmit}>
+    <form className="form" onSubmit={handleSubmit}>
       <div className="form-title">Inicio de Sesión</div>
       <div className="form-description">
         Por favor, inicie sesión para usar la aplicación.
       </div>
       <br />
       <div className="form-group">
-        <label htmlFor="email" className="form-label">
-          Email
+        <label htmlFor="username" className="form-label">
+          Usuario
         </label>
         <input
-          type="email"
-          id="email"
-          name="email"
+          type="text"
+          id="username"
+          name="username"
           className="form-input"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.email}
-          autoComplete="email"
+          value={formData.username}
+          onChange={handleChange}
+          autoComplete="username"
         />
-        {formik.touched.email && formik.errors.email ? (
-          <div className="form-error">{formik.errors.email}</div>
-        ) : null}
       </div>
       <div className="form-group">
         <label htmlFor="password" className="form-label">
@@ -132,21 +131,17 @@ const Form = () => {
           id="password"
           name="password"
           className="form-input"
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-          value={formik.values.password}
+          value={formData.password}
+          onChange={handleChange}
           autoComplete="current-password"
         />
-        {formik.touched.password && formik.errors.password ? (
-          <div className="form-error">{formik.errors.password}</div>
-        ) : null}
       </div>
       <div className="form-group form-checkbox-group">
         <input
           type="checkbox"
           id="show-password"
           checked={showPassword}
-          onChange={() => setShowPassword(!showPassword)}
+          onChange={handleCheckboxChange}
           className="form-checkbox"
         />
         <label htmlFor="show-password" className="form-checkbox-label">
@@ -156,9 +151,9 @@ const Form = () => {
       <button
         type="submit"
         className={`form-button ${
-          !formik.isValid ? "form-button-disabled" : ""
+          !isFormValid() ? "form-button-disabled" : ""
         }`}
-        disabled={!formik.isValid}
+        disabled={!isFormValid()}
       >
         Iniciar Sesión
       </button>
