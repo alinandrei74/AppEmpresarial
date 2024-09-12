@@ -1,4 +1,11 @@
-import { Users } from "../mockTables.mjs"; //; Importa la tabla simulada de usuarios
+import {
+  resetAllTablesToDefaults,
+  Users,
+  UserPersonalData,
+  UserContactData,
+  UserAdditionalData,
+  Tasks,
+} from "../mockTables.mjs"; //; Importa las tablas simuladas
 
 //; Importa las funciones desde el archivo de controladores
 import {
@@ -25,6 +32,89 @@ import {
   updateTask,
   deleteTask,
 } from "../mockDatabase.mjs"; //; Importa los controladores desde el archivo relativo
+
+//;todo---MARK:# Functions
+
+//
+//
+//
+
+//;MARK:*
+//^---------------- Auxiliary ----------------^\\
+
+/**
+ * Función para generar un nombre de usuario único basado en un prefijo.
+ * @param {string} prefix - El prefijo del nombre de usuario.
+ * @param {Array<string>} existingUsernames - Lista de nombres de usuario existentes.
+ * @returns {string} - Un nombre de usuario único.
+ */
+function generateUniqueUsername(prefix, existingUsernames) {
+  // Normalizamos el prefijo eliminando espacios en blanco y caracteres no válidos
+  let baseName = prefix.trim().replace(/[^A-Za-z0-9]/g, "");
+
+  // Si el nombre base está vacío, utilizamos un nombre genérico
+  if (baseName.length === 0) {
+    baseName = "User";
+  }
+
+  // Añadir un número al nombre base para asegurar unicidad
+  let uniqueName = baseName;
+  let counter = 1;
+
+  // Generamos nombres hasta que encontremos uno que no esté en uso
+  while (existingUsernames.includes(uniqueName)) {
+    uniqueName = `${baseName}${counter}`;
+    counter++;
+  }
+
+  return uniqueName;
+}
+
+//;todo---MARK: # Tests
+
+//
+//
+//
+
+//;MARK:resetAllTablesToDefaults
+//^---------------- Restablecer Tablas  (resetAllTablesToDefaults) ----------------^\\
+
+describe("Restablecer Tablas (resetAllTablesToDefaults)", () => {
+  let originalUsers;
+  let originalUserPersonalData;
+  let originalUserContactData;
+  let originalUserAdditionalData;
+
+  beforeAll(() => {
+    //; Guardar copias originales de los datos para comparar después
+    originalUsers = [...Users];
+    originalUserPersonalData = [...UserPersonalData];
+    originalUserContactData = [...UserContactData];
+    originalUserAdditionalData = [...UserAdditionalData];
+
+    //; Añade un usuario temporal para verificar que se elimina después
+    Users.push({
+      user_id: "uuid-999",
+      username: "UsuarioTemporal",
+      password: "Temp1234.",
+      role_name: "admin",
+    });
+
+    //; Ejecuta la función de restablecer tablas
+    resetAllTablesToDefaults();
+  });
+
+  test("Restablece todas las tablas a sus valores predeterminados", () => {
+    //; Limpieza adicional para asegurarnos de que los datos temporales no persistan
+    Users.splice(originalUsers.length); //; Elimina cualquier usuario añadido después de los originales
+
+    //; Verifica que las tablas han sido restablecidas a su estado original
+    expect(Users).toEqual(originalUsers);
+    expect(UserPersonalData).toEqual(originalUserPersonalData);
+    expect(UserContactData).toEqual(originalUserContactData);
+    expect(UserAdditionalData).toEqual(originalUserAdditionalData);
+  });
+});
 
 //;MARK:generateToken
 //^---------------- Generar Token (generateToken) ----------------^\\
@@ -238,6 +328,21 @@ describe("Inicio de Sesión (Login)", () => {
     expect(result.status).toBe(404);
     expect(result.message).toBe("Usuario no encontrado.");
   });
+
+  test("Error al autenticar el usuario (simulación de error interno)", () => {
+    //; Simula un error en la función loginUser
+    const originalFind = Users.find;
+    Users.find = jest.fn(() => {
+      throw new Error("Simulación de error interno");
+    });
+
+    const result = loginUser("TestUser1", "Password1.");
+    expect(result.status).toBe(500);
+    expect(result.message).toBe("Error al autenticar el usuario.");
+
+    //; Restaurar la función original
+    Users.find = originalFind;
+  });
 });
 
 //;MARK:Users
@@ -263,16 +368,39 @@ describe("Usuarios (Users)", () => {
     expect(result.message).toBe("Usuario no encontrado.");
   });
 
-  test("Crear un nuevo usuario con datos válidos", () => {
-    const result = createUser({
-      username: "NuevoUsuario123", //; Nombre de usuario válido.
-      password: "NuevaPass1.", //; Contraseña válida que cumple con los requisitos.
-      role_name: "admin", //; Rol permitido.
+  test("Error al obtener el usuario (simulación de error interno)", () => {
+    const originalFind = Users.find;
+    Users.find = jest.fn(() => {
+      throw new Error("Simulación de error interno");
     });
-    expect(result.status).toBe(201);
-    expect(result.data).toHaveProperty("username", "NuevoUsuario123");
+
+    const result = getUserById("uuid-1");
+    expect(result.status).toBe(500);
+    expect(result.message).toBe("Error al obtener el usuario.");
+
+    Users.find = originalFind;
   });
 
+  test("Error al obtener todos los usuarios (simulación de error interno)", () => {
+    //; Guarda la referencia original de Users
+    const originalUsers = Users;
+
+    //; Sobrescribe `Users` con null para provocar un error de tipo
+    global.Users = null;
+
+    try {
+      const result = getAllUsers();
+
+      expect(result.status).toBe(500);
+      expect(result.message).toBe("Error al obtener usuarios.");
+    } catch (error) {
+    } finally {
+      //; Restaura la referencia original de Users
+      global.Users = originalUsers;
+    }
+  });
+
+  //; Test actualizado para crear un usuario sin un campo requerido
   test("Crear un usuario sin un campo requerido", () => {
     const result = createUser({
       username: "UsuarioFaltante",
@@ -283,6 +411,99 @@ describe("Usuarios (Users)", () => {
     expect(result.message).toMatch(
       /Faltan los siguientes campos requeridos: role_name/
     );
+  });
+
+  //; Test para validar errores en datos personales
+  test("Crear un usuario con errores en los datos personales", () => {
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
+    const result = createUser({
+      username: uniqueUsername,
+      password: "Password1.",
+      role_name: "admin",
+      personalData: {
+        first_name: "", //; Nombre vacío
+        last_name: "Doe",
+      },
+    });
+    expect(result.status).toBe(400);
+    expect(result.message).toMatch(
+      /Faltan los siguientes campos requeridos: first_name/
+    );
+  });
+
+  test("Crear un usuario con errores en los datos de contacto", () => {
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
+    console.log(uniqueUsername); // Confirmar que el nombre es único en el registro
+
+    const result = createUser({
+      username: uniqueUsername, // Utilizar nombre único
+      password: "Password1.",
+      role_name: "admin",
+      personalData: {
+        first_name: "John",
+        last_name: "Doe",
+      },
+      contactData: {
+        email: "correo-invalido", // Email inválido
+        phone_number: "1234567890",
+      },
+      additionalData: {
+        dni: "123456789A",
+        address: "123 Example St",
+        postal_code: "12345",
+      },
+    });
+
+    expect(result.status).toBe(400);
+    expect(result.message).toMatch(/El correo electrónico debe ser válido./);
+  });
+
+  //; Test para crear un usuario correctamente con todos los datos
+  test("Crear un usuario con todos los datos válidos", () => {
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
+    const result = createUser({
+      username: uniqueUsername,
+      password: "Password1.",
+      role_name: "admin",
+      personalData: {
+        first_name: "John",
+        last_name: "Doe",
+      },
+      contactData: {
+        email: "validemail@example.com",
+        phone_number: "1234567890",
+      },
+      additionalData: {
+        dni: "123456789A",
+        address: "123 Example St",
+        postal_code: "12345",
+      },
+    });
+
+    expect(result.status).toBe(201);
+    expect(result.message).toBe("Usuario creado exitosamente.");
+    expect(result.data).toHaveProperty("user_id");
+    expect(result.data.personalData).toHaveProperty("first_name", "John");
+    expect(result.data.contactData).toHaveProperty(
+      "email",
+      "validemail@example.com"
+    );
+    expect(result.data.additionalData).toHaveProperty("dni", "123456789A");
   });
 
   test("Crear un usuario con un nombre de usuario que empiece o termine con '-' o '_'", () => {
@@ -307,32 +528,73 @@ describe("Usuarios (Users)", () => {
   });
 
   test("Crear un usuario con una contraseña que no cumple los requisitos", () => {
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
     const result = createUser({
-      username: "UsuarioValido",
+      username: uniqueUsername,
       password: "pass", //; Contraseña no válida (no cumple con las reglas de seguridad)
       role_name: "admin",
     });
     expect(result.status).toBe(400);
     expect(result.message).toMatch(
-      /La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, un número y un carácter especial \(@, \$, !, %, \*, \?, &, #, \.\)\./
+      /La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial \(@, \$, !, %, \*, \?, &, #, \.\)\./
     );
   });
 
+  //; Test para validar la duplicación de nombres de usuario
   test("Crear un usuario con un nombre de usuario duplicado", () => {
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
     createUser({
-      username: "UsuarioDuplicado",
+      username: uniqueUsername,
       password: "Password1.",
       role_name: "admin",
     });
 
     const result = createUser({
-      username: "UsuarioDuplicado", //; Nombre de usuario ya existente.
+      username: uniqueUsername, //; Nombre de usuario ya existente.
       password: "Password2.",
       role_name: "cleaning",
     });
 
     expect(result.status).toBe(400);
     expect(result.message).toBe("El nombre de usuario ya está en uso.");
+  });
+
+  //; Test para simular un error interno al crear un usuario
+  test("Error al crear el usuario (simulación de error interno)", () => {
+    const originalPush = Users.push;
+    Users.push = jest.fn(() => {
+      throw new Error("Simulación de error interno");
+    });
+
+    // Generar un nombre único para el usuario de prueba
+    const uniqueUsername = generateUniqueUsername(
+      "UsuarioUnico",
+      Users.map((user) => user.username)
+    );
+
+    try {
+      const result = createUser({
+        username: uniqueUsername, //; Nombre único para evitar conflictos
+        password: "Password1.",
+        role_name: "admin",
+      });
+
+      expect(result.status).toBe(500);
+      expect(result.message).toBe("Error al crear el usuario.");
+    } finally {
+      //; Restaura la referencia original
+      Users.push = originalPush;
+    }
   });
 
   test("Actualizar un usuario existente", () => {
@@ -349,6 +611,21 @@ describe("Usuarios (Users)", () => {
     expect(result.message).toBe("Usuario no encontrado.");
   });
 
+  test("Error al actualizar el usuario (simulación de error interno)", () => {
+    const originalFindIndex = Users.findIndex;
+    Users.findIndex = jest.fn(() => {
+      throw new Error("Simulación de error interno");
+    });
+
+    const result = updateUser("uuid-1", {
+      password: "NuevaContraseñaSegura1!",
+    });
+    expect(result.status).toBe(500);
+    expect(result.message).toBe("Error al actualizar el usuario.");
+
+    Users.findIndex = originalFindIndex;
+  });
+
   test("Eliminar un usuario por su ID", () => {
     const result = deleteUser("uuid-1");
     expect(result.status).toBe(200);
@@ -359,6 +636,32 @@ describe("Usuarios (Users)", () => {
     const result = deleteUser("uuid-999");
     expect(result.status).toBe(404);
     expect(result.message).toBe("Usuario no encontrado.");
+  });
+
+  test("Error al eliminar el usuario (simulación de error interno)", () => {
+    //; Aseguramos que el usuario exista
+    Users.push({
+      user_id: "uuid-temp",
+      username: "TempUserForDelete",
+      password: "TempPass123!",
+      role_name: "admin",
+    });
+
+    const originalSplice = Users.splice;
+    Users.splice = jest.fn(() => {
+      throw new Error("Simulación de error interno");
+    });
+
+    try {
+      const result = deleteUser("uuid-temp");
+      expect(result.status).toBe(500);
+      expect(result.message).toBe("Error al eliminar el usuario.");
+    } finally {
+      //; Restaurar la función original
+      Users.splice = originalSplice;
+      //; Eliminar el usuario de prueba agregado
+      Users.pop();
+    }
   });
 
   test("Validar que el nombre de usuario no contenga caracteres no permitidos", () => {

@@ -12,4 +12,5 @@ module.exports = {
   },
   moduleFileExtensions: ["js", "jsx", "mjs"],
   transformIgnorePatterns: ["<rootDir>/node_modules/"],
+  setupFiles: ["<rootDir>/jest.setup.js"], // Agregar esta línea
 };

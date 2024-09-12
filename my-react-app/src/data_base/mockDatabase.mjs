@@ -1,4 +1,4 @@
-//;todo---MARK: Imports
+//;todo---MARK:# Imports
 
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -13,7 +13,7 @@ import {
 
 export { resetAllTablesToDefaults };
 
-//;todo---MARK: Global Variables
+//;todo---MARK:# Global Variables
 
 //; Constantes de tiempo y códigos de estado HTTP
 const TOKEN_EXPIRATION_TIME = 60 * 60 * 1000; //; 1 hora en milisegundos
@@ -29,7 +29,7 @@ const HTTP_STATUS = {
 
 export { TOKEN_EXPIRATION_TIME, HTTP_STATUS };
 
-//;todo---MARK: Functions
+//;todo---MARK:# Functions
 
 //
 //
@@ -92,7 +92,7 @@ const validateInput = (data, requiredFields, schema = {}) => {
   return null; //; No hay errores
 };
 
-//;todo---MARK: Auth Service
+//;todo---MARK:# Auth Service
 
 //
 //
@@ -182,13 +182,13 @@ const verifyToken = (token) => {
 
 export { generateToken, verifyToken };
 
-//;todo---MARK: Controladores
+//;todo---MARK:# Controladores
 
 //
 //
 //
 
-//;MARK:*
+//;MARK:Users
 //^---------------- Usuarios (Users) ----------------^\\
 
 /**
@@ -515,7 +515,7 @@ export {
   deleteUser,
 };
 
-//;MARK:*
+//;MARK:UserPersonalData
 //^---------------- Información Personal de Usuarios (UserPersonalData) ----------------^\\
 
 /**
@@ -620,7 +620,7 @@ export {
   updateUserPersonalData,
 };
 
-//;MARK:*
+//;MARK:UserContactData
 //^---------------- Información de Contacto de Usuarios (UserContactData) ----------------^\\
 
 /**
@@ -719,7 +719,7 @@ const updateUserContactData = (userId, updatedData) => {
 
 export { getAllUserContactData, getUserContactDataById, updateUserContactData };
 
-//;MARK:*
+//;MARK:UserAdditionalData
 //^---------------- Información Adicional de Usuarios (UserAdditionalData) ----------------^\\
 
 /**
@@ -824,7 +824,7 @@ export {
   updateUserAdditionalData,
 };
 
-//;MARK:*
+//;MARK:Tasks
 //^---------------- Tareas (Tasks) ----------------^\\
 
 /**
@@ -926,14 +926,11 @@ const updateTask = (taskId, updatedTask) => {
       return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
     }
 
-    //; Validar los campos obligatorios en la actualización
-    const error = validateInput(updatedTask, [
-      "description",
-      "status",
-      "user_id",
-      "entry_date",
-    ]);
-    if (error) return error;
+    //; Validar solo los campos proporcionados en la actualización
+    for (const field in updatedTask) {
+      const error = validateInput(updatedTask, [field]);
+      if (error) return error;
+    }
 
     //; Realizar la actualización
     Tasks[taskIndex] = { ...Tasks[taskIndex], ...updatedTask };
