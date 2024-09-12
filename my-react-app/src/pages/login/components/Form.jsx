@@ -2,122 +2,83 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
 import { Str } from "../../../utilities/js/utilities";
-import {
-  loginUser, // Importar función para iniciar sesión
-} from "../../../data_base/mockDatabase"; // Asegúrate de importar correctamente desde el archivo
+import { loginUser } from "../../../../../backend/src/services/authService"; // Asegúrate de importar desde el archivo correcto
+import * as Yup from "yup";
+import { useFormik } from "formik";
 
 /**
- *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
+ * 1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); // Hook para la navegación
 
-  /**
-   ** Maneja el cambio en los campos del formulario.
-   * @param {React.ChangeEvent<HTMLInputElement>} e - El evento de cambio.
-   */
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    let newValue = value;
-
-    if (name === "username") {
-      newValue = Str.replaceExceptChars(
-        value,
-        "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÑ-_",
-        "",
-        false
-      );
-
-      // Limita la longitud del nombre de usuario
-      if (newValue.length > 20) {
-        newValue = newValue.slice(0, 20);
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Formato de email inválido")
+        .required("Requerido"),
+      password: Yup.string()
+        .min(8, "La contraseña debe tener mínimo 8 caracteres")
+        .max(30, "La contraseña debe tener máximo 30 caracteres")
+        .matches(
+          /[A-Z]/,
+          "La contraseña debe contener al menos una letra mayúscula"
+        )
+        .matches(
+          /[a-z]/,
+          "La contraseña debe contener al menos una letra minúscula"
+        )
+        .matches(/\d/, "La contraseña debe contener al menos un número")
+        .matches(/[\W_]/, "La contraseña debe contener al menos un símbolo")
+        .matches(
+          /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!¡?¿.\-_&%$#@+])[A-Za-z\d!¡?¿.\-_&%$#@+]{6,}$/,
+          "La contraseña admite los siguientes símbolos: !¡?¿.-_&%$#@+ "
+        )
+        .required("Requerido"),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const response = await loginUser(values.email, values.password);
+        sessionStorage.setItem("authToken", response.token);
+        alert("Inicio de sesión exitoso.");
+        console.log("Datos del usuario autenticado:", response.user); // Mostrar datos del usuario en consola
+        navigate("/user-profile"); // Redirige al perfil de usuario si la autenticación es exitosa
+      } catch (error) {
+        alert("Usuario o contraseña incorrectos.");
       }
-    }
-
-    if (name === "password") {
-      // Limita la longitud de la contraseña
-      if (newValue.length > 30) {
-        newValue = newValue.slice(0, 30);
-      }
-    }
-
-    setFormData({
-      ...formData,
-      [name]: newValue,
-    });
-  };
-
-  /**
-   ** Maneja el cambio en el checkbox para mostrar la contraseña.
-   * @param {React.ChangeEvent<HTMLInputElement>} e - El evento de cambio.
-   */
-  const handleCheckboxChange = (e) => {
-    setShowPassword(e.target.checked);
-  };
-
-  /**
-   ** Maneja el envío del formulario de autenticación.
-   * @param {React.FormEvent<HTMLFormElement>} e - El evento de envío.
-   */
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    const loginResult = loginUser(formData.username, formData.password);
-
-    if (loginResult) {
-      sessionStorage.setItem("authToken", loginResult.token);
-      alert("Inicio de sesión exitoso.");
-      console.log("Datos del usuario autenticado:", loginResult.user); // Mostrar datos del usuario en consola
-      navigate(`/user-profile`); // Redirige al perfil de usuario si la autenticación es exitosa
-    } else {
-      alert("Usuario o contraseña incorrectos.");
-    }
-  };
-
-  
-
-  /**
-   ** Verifica si el nombre de usuario y la contraseña son válidos.
-   * @returns {boolean} - true si el nombre de usuario y la contraseña son válidos, false en caso contrario.
-   */
-  const isFormValid = () => {
-    const { username, password } = formData;
-    const isUsernameValid =
-      username &&
-      !username.startsWith("_") &&
-      !username.startsWith("-") &&
-      !username.endsWith("_") &&
-      !username.endsWith("-");
-    const isPasswordValid = password.length > 0;
-    return isUsernameValid && isPasswordValid;
-  };
+    },
+  });
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form className="form" onSubmit={formik.handleSubmit}>
       <div className="form-title">Inicio de Sesión</div>
       <div className="form-description">
         Por favor, inicie sesión para usar la aplicación.
       </div>
       <br />
       <div className="form-group">
-        <label htmlFor="username" className="form-label">
-          Usuario
+        <label htmlFor="email" className="form-label">
+          Email
         </label>
         <input
-          type="text"
-          id="username"
-          name="username"
+          type="email"
+          id="email"
+          name="email"
           className="form-input"
-          value={formData.username}
-          onChange={handleChange}
-          autoComplete="username"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.email}
+          autoComplete="email"
         />
+        {formik.touched.email && formik.errors.email ? (
+          <div className="form-error">{formik.errors.email}</div>
+        ) : null}
       </div>
       <div className="form-group">
         <label htmlFor="password" className="form-label">
@@ -128,17 +89,21 @@ const Form = () => {
           id="password"
           name="password"
           className="form-input"
-          value={formData.password}
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
           autoComplete="current-password"
         />
+        {formik.touched.password && formik.errors.password ? (
+          <div className="form-error">{formik.errors.password}</div>
+        ) : null}
       </div>
       <div className="form-group form-checkbox-group">
         <input
           type="checkbox"
           id="show-password"
           checked={showPassword}
-          onChange={handleCheckboxChange}
+          onChange={() => setShowPassword(!showPassword)}
           className="form-checkbox"
         />
         <label htmlFor="show-password" className="form-checkbox-label">
@@ -148,9 +113,9 @@ const Form = () => {
       <button
         type="submit"
         className={`form-button ${
-          !isFormValid() ? "form-button-disabled" : ""
+          !formik.isValid ? "form-button-disabled" : ""
         }`}
-        disabled={!isFormValid()}
+        disabled={!formik.isValid}
       >
         Iniciar Sesión
       </button>
