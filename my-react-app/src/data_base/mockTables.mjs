@@ -1,9 +1,20 @@
-//* Simulación de la tabla de Usuarios (users)
-const Users = [
+//; Función genérica para cargar datos desde localStorage o usar valores predeterminados si no están disponibles
+const loadFromLocalStorage = (key, defaultValue = []) => {
+  const dataFromStorage = localStorage.getItem(key);
+  return dataFromStorage ? JSON.parse(dataFromStorage) : defaultValue;
+};
+
+//; Función genérica para guardar datos en localStorage
+const saveToLocalStorage = (key, data) => {
+  localStorage.setItem(key, JSON.stringify(data));
+};
+
+//; Datos predeterminados para cada tabla
+const defaultUsers = [
   {
     user_id: "uuid-1",
     username: "Admin",
-    password: "Admin1.", //! Nota: nunca almacenes contraseñas en texto plano en un entorno de producción.
+    password: "Admin1.", //; ¡Nunca almacenes contraseñas en texto plano en producción!
     role_name: "admin",
   },
   {
@@ -26,8 +37,7 @@ const Users = [
   },
 ];
 
-//* Simulación de la tabla de Información Personal de Usuarios (user_personal_data)
-const UserPersonalData = [
+const defaultUserPersonalData = [
   {
     user_id: "uuid-1",
     first_name: "John",
@@ -54,8 +64,7 @@ const UserPersonalData = [
   },
 ];
 
-//* Simulación de la tabla de Información de Contacto de Usuarios (user_contact_data)
-const UserContactData = [
+const defaultUserContactData = [
   {
     user_id: "uuid-1",
     email: "example1@example.com",
@@ -78,8 +87,7 @@ const UserContactData = [
   },
 ];
 
-//* Simulación de la tabla de Información Adicional de Usuarios (user_additional_data)
-const UserAdditionalData = [
+const defaultUserAdditionalData = [
   {
     user_id: "uuid-1",
     dni: "123456789A",
@@ -106,8 +114,7 @@ const UserAdditionalData = [
   },
 ];
 
-//* Simulación de la tabla de Tareas (tasks)
-const Tasks = [
+const defaultTasks = [
   {
     task_id: 1,
     description: "Revisar limpieza del piso 1",
@@ -131,5 +138,51 @@ const Tasks = [
   },
 ];
 
-//* Exportar las tablas simuladas
-export { Users, UserPersonalData, UserContactData, UserAdditionalData, Tasks };
+//; Cargamos los datos de todas las tablas desde localStorage o usamos los datos predeterminados
+export const Users = loadFromLocalStorage("Users", defaultUsers);
+export const UserPersonalData = loadFromLocalStorage(
+  "UserPersonalData",
+  defaultUserPersonalData
+);
+export const UserContactData = loadFromLocalStorage(
+  "UserContactData",
+  defaultUserContactData
+);
+export const UserAdditionalData = loadFromLocalStorage(
+  "UserAdditionalData",
+  defaultUserAdditionalData
+);
+export const Tasks = loadFromLocalStorage("Tasks", defaultTasks);
+
+//; Función para guardar todas las tablas en localStorage
+export const saveAllTablesToLocalStorage = () => {
+  saveToLocalStorage("Users", Users);
+  saveToLocalStorage("UserPersonalData", UserPersonalData);
+  saveToLocalStorage("UserContactData", UserContactData);
+  saveToLocalStorage("UserAdditionalData", UserAdditionalData);
+  saveToLocalStorage("Tasks", Tasks);
+};
+
+//; Función para restablecer todas las tablas a sus valores predeterminados
+export const resetAllTablesToDefaults = () => {
+  saveToLocalStorage("Users", defaultUsers);
+  saveToLocalStorage("UserPersonalData", defaultUserPersonalData);
+  saveToLocalStorage("UserContactData", defaultUserContactData);
+  saveToLocalStorage("UserAdditionalData", defaultUserAdditionalData);
+  saveToLocalStorage("Tasks", defaultTasks);
+
+  //; Actualizar las variables en memoria con los valores predeterminados
+  Users.splice(0, Users.length, ...defaultUsers);
+  UserPersonalData.splice(
+    0,
+    UserPersonalData.length,
+    ...defaultUserPersonalData
+  );
+  UserContactData.splice(0, UserContactData.length, ...defaultUserContactData);
+  UserAdditionalData.splice(
+    0,
+    UserAdditionalData.length,
+    ...defaultUserAdditionalData
+  );
+  Tasks.splice(0, Tasks.length, ...defaultTasks);
+};

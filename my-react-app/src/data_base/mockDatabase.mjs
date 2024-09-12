@@ -7,7 +7,11 @@ import {
   UserContactData,
   UserAdditionalData,
   Tasks,
-} from "./mockTables.mjs"; //; Importa las tablas simuladas
+  saveAllTablesToLocalStorage, //; Importa la función para guardar todas las tablas en localStorage
+  resetAllTablesToDefaults, //; Importa la función para guardar todas las tablas en localStorage
+} from "./mockTables.mjs";
+
+export { resetAllTablesToDefaults };
 
 //;todo---MARK: Global Variables
 
@@ -275,15 +279,63 @@ const userSchema = {
   },
   password: {
     type: "string",
-    regex: /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.#])[A-Za-z\d@$!%*?&.]{8,30}$/,
+    regex:
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&.#])[A-Za-z\d@$!%*?&.#]{8,30}$/,
     errorMessage:
-      "La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, un número y un carácter especial (@, $, !, %, *, ?, &, #, .).",
+      "La contraseña debe tener entre 8 y 30 caracteres. Debe incluir al menos una letra mayúscula, una letra minúscula, un número y un carácter especial (@, $, !, %, *, ?, &, #, .).",
   },
   role_name: {
     type: "string",
     regex: /^(admin|cleaning|delivery|maintenance)$/i,
     errorMessage:
       "El rol de usuario debe ser uno de los siguientes valores permitidos: 'admin', 'cleaning', 'delivery', 'maintenance'.",
+  },
+  personalData: {
+    first_name: {
+      type: "string",
+      regex: /^[A-Za-zÀ-ÿ\s]+$/,
+      errorMessage: "El nombre debe contener solo letras y espacios.",
+    },
+    last_name: {
+      type: "string",
+      regex: /^[A-Za-zÀ-ÿ\s]+$/,
+      errorMessage: "El apellido debe contener solo letras y espacios.",
+    },
+    middle_name: {
+      type: "string",
+      regex: /^[A-Za-zÀ-ÿ\s]*$/,
+      errorMessage: "El segundo nombre debe contener solo letras y espacios.",
+    },
+  },
+  contactData: {
+    email: {
+      type: "string",
+      regex: /^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i,
+      errorMessage: "El correo electrónico debe ser válido.",
+    },
+    phone_number: {
+      type: "string",
+      regex: /^\d{9,15}$/,
+      errorMessage: "El número de teléfono debe tener entre 9 y 15 dígitos.",
+    },
+  },
+  additionalData: {
+    dni: {
+      type: "string",
+      regex: /^[A-Za-z0-9]+$/,
+      errorMessage: "El DNI o NIE sólo puede contener números y letras.",
+    },
+    address: {
+      type: "string",
+      regex: /^[A-Za-zÀ-ÿ\d\s,]+$/,
+      errorMessage:
+        "La dirección solo debe contener letras, números, espacios y comas.",
+    },
+    postal_code: {
+      type: "string",
+      regex: /^\d{4,10}$/,
+      errorMessage: "El código postal debe ser un número entre 4 y 10 dígitos.",
+    },
   },
 };
 
@@ -294,15 +346,13 @@ const userSchema = {
  */
 const createUser = (newUser) => {
   try {
-    //; Validar todos los campos requeridos de una sola vez
-    const error = validateInput(
+    //; Validar campos principales del usuario
+    const userError = validateInput(
       newUser,
       ["username", "password", "role_name"],
       userSchema
     );
-    if (error) {
-      return error;
-    }
+    if (userError) return userError;
 
     //; Verificar si el username ya existe
     const existingUser = Users.find(
@@ -315,15 +365,79 @@ const createUser = (newUser) => {
       );
     }
 
-    //; Proceder a crear el nuevo usuario
+    //; Generar un nuevo user_id
     const newUserId = uuidv4();
-    const user = { user_id: newUserId, ...newUser };
-    Users.push(user);
 
+    //; Crear el objeto usuario básico
+    const user = {
+      user_id: newUserId,
+      username: newUser.username,
+      password: newUser.password,
+      role_name: newUser.role_name,
+    };
+    Users.push(user); //; Añadir el usuario a la tabla de Usuarios
+
+    //; Validar y Crear datos personales
+    const personalDataError = validateInput(
+      newUser.personalData || {},
+      ["first_name", "last_name"],
+      userSchema.personalData
+    );
+    if (personalDataError) return personalDataError;
+
+    const personalData = {
+      user_id: newUserId, //; Asignar user_id generado
+      first_name: newUser.personalData?.first_name || "",
+      last_name: newUser.personalData?.last_name || "",
+      middle_name: newUser.personalData?.middle_name || "",
+    };
+    UserPersonalData.push(personalData);
+
+    //; Validar y Crear datos de contacto
+    const contactDataError = validateInput(
+      newUser.contactData || {},
+      ["email", "phone_number"],
+      userSchema.contactData
+    );
+    if (contactDataError) return contactDataError;
+
+    const contactData = {
+      user_id: newUserId, //; Asignar user_id generado
+      email: newUser.contactData?.email || "",
+      phone_number: newUser.contactData?.phone_number || "",
+    };
+    UserContactData.push(contactData);
+
+    //; Validar y Crear datos adicionales
+    const additionalDataError = validateInput(
+      newUser.additionalData || {},
+      ["dni", "address", "postal_code"],
+      userSchema.additionalData
+    );
+    if (additionalDataError) return additionalDataError;
+
+    const additionalData = {
+      user_id: newUserId, //; Asignar user_id generado
+      dni: newUser.additionalData?.dni || "",
+      address: newUser.additionalData?.address || "",
+      postal_code: newUser.additionalData?.postal_code || "",
+    };
+    UserAdditionalData.push(additionalData);
+
+    //; Guardar los cambios en localStorage
+    saveAllTablesToLocalStorage();
+
+    //; Devolver la información del usuario con datos relacionados
     return {
       status: HTTP_STATUS.CREATED,
       message: "Usuario creado exitosamente.",
-      data: user,
+      data: {
+        ...user,
+        personalData,
+        contactData,
+        additionalData,
+        tasks: [], //; Inicialmente, no hay tareas asignadas
+      },
     };
   } catch (error) {
     return createErrorResponse(
@@ -344,6 +458,10 @@ const updateUser = (userId, updatedUser) => {
     const userIndex = Users.findIndex((user) => user.user_id === userId);
     if (userIndex !== -1) {
       Users[userIndex] = { ...Users[userIndex], ...updatedUser };
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Usuario actualizado exitosamente.",
@@ -369,6 +487,10 @@ const deleteUser = (userId) => {
     const userIndex = Users.findIndex((user) => user.user_id === userId);
     if (userIndex !== -1) {
       const deletedUser = Users.splice(userIndex, 1)[0];
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Usuario eliminado exitosamente.",
@@ -451,20 +573,35 @@ const getUserPersonalDataById = (userId) => {
  */
 const updateUserPersonalData = (userId, updatedData) => {
   try {
+    //; Verificar si se proporciona algún dato para actualizar
+    if (Object.keys(updatedData).length === 0) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "No se proporcionó información para actualizar."
+      );
+    }
+
     const dataIndex = UserPersonalData.findIndex(
       (data) => data.user_id === userId
     );
+
     if (dataIndex !== -1) {
+      //; Realizar la actualización
       UserPersonalData[dataIndex] = {
         ...UserPersonalData[dataIndex],
         ...updatedData,
       };
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Datos personales actualizados exitosamente.",
         data: UserPersonalData[dataIndex],
       };
     }
+
     return createErrorResponse(
       HTTP_STATUS.NOT_FOUND,
       "Datos personales no encontrados."
@@ -539,20 +676,35 @@ const getUserContactDataById = (userId) => {
  */
 const updateUserContactData = (userId, updatedData) => {
   try {
+    //; Verificar si se proporciona algún dato para actualizar
+    if (Object.keys(updatedData).length === 0) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "No se proporcionó información para actualizar."
+      );
+    }
+
     const dataIndex = UserContactData.findIndex(
       (data) => data.user_id === userId
     );
+
     if (dataIndex !== -1) {
+      //; Realizar la actualización
       UserContactData[dataIndex] = {
         ...UserContactData[dataIndex],
         ...updatedData,
       };
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Datos de contacto actualizados exitosamente.",
         data: UserContactData[dataIndex],
       };
     }
+
     return createErrorResponse(
       HTTP_STATUS.NOT_FOUND,
       "Datos de contacto no encontrados."
@@ -625,20 +777,35 @@ const getUserAdditionalDataById = (userId) => {
  */
 const updateUserAdditionalData = (userId, updatedData) => {
   try {
+    //; Verificar si se proporciona algún dato para actualizar
+    if (Object.keys(updatedData).length === 0) {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "No se proporcionó información para actualizar."
+      );
+    }
+
     const dataIndex = UserAdditionalData.findIndex(
       (data) => data.user_id === userId
     );
+
     if (dataIndex !== -1) {
+      //; Realizar la actualización
       UserAdditionalData[dataIndex] = {
         ...UserAdditionalData[dataIndex],
         ...updatedData,
       };
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Datos adicionales actualizados exitosamente.",
         data: UserAdditionalData[dataIndex],
       };
     }
+
     return createErrorResponse(
       HTTP_STATUS.NOT_FOUND,
       "Datos adicionales no encontrados."
@@ -722,6 +889,9 @@ const createTask = (newTask) => {
     const task = { task_id: newTaskId, ...newTask };
     Tasks.push(task);
 
+    //; Guardar los cambios en localStorage
+    saveAllTablesToLocalStorage();
+
     return {
       status: HTTP_STATUS.CREATED,
       message: "Tarea creada exitosamente.",
@@ -757,11 +927,19 @@ const updateTask = (taskId, updatedTask) => {
     }
 
     //; Validar los campos obligatorios en la actualización
-    const error = validateInput(updatedTask, ["status"]);
+    const error = validateInput(updatedTask, [
+      "description",
+      "status",
+      "user_id",
+      "entry_date",
+    ]);
     if (error) return error;
 
     //; Realizar la actualización
     Tasks[taskIndex] = { ...Tasks[taskIndex], ...updatedTask };
+
+    //; Guardar los cambios en localStorage
+    saveAllTablesToLocalStorage();
 
     return {
       status: HTTP_STATUS.OK,
@@ -793,6 +971,10 @@ const deleteTask = (taskId) => {
     const taskIndex = Tasks.findIndex((task) => task.task_id === taskId);
     if (taskIndex !== -1) {
       const deletedTask = Tasks.splice(taskIndex, 1)[0];
+
+      //; Guardar los cambios en localStorage
+      saveAllTablesToLocalStorage();
+
       return {
         status: HTTP_STATUS.OK,
         message: "Tarea eliminada exitosamente.",

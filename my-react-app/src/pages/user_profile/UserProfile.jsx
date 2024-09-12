@@ -7,7 +7,10 @@ import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
 import UserDetails from "./components/UserDetails"; //; Importa el nuevo componente
 import "./UserProfile.css";
-import { verifyToken } from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
+import {
+  verifyToken,
+  resetAllTablesToDefaults,
+} from "../../data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
 
 /**
  * Componente de perfil de usuario que maneja la navegación entre diferentes secciones.
@@ -16,29 +19,32 @@ import { verifyToken } from "../../data_base/mockDatabase.mjs"; //; Importa la f
  * @returns {JSX.Element} UserProfile
  */
 const UserProfile = () => {
+  // resetAllTablesToDefaults(); //! Resetear por defecto todas las tablas (debug)
   const navigate = useNavigate();
   const location = useLocation(); //; Hook para obtener la ubicación actual
   const [userData, setUserData] = useState(null); //; Estado para almacenar los datos del usuario
 
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
+    const verificationResult = verifyToken(token); //; Cambiamos el nombre para reflejar mejor que es un resultado de verificación
 
-    //; Verificar el token utilizando la API simulada
-    const result = verifyToken(token);
-
-    if (result.status === 401 || result.status === 403) {
-      //; Si el token ha caducado o es inválido, redirigir al login
-      console.warn(result.message);
-      alert(result.message);
-      navigate("/login");
-    } else if (result.status === 200) {
-      //; Si el token es válido, almacenar los datos del usuario autenticado
-      console.log("Todos los datos del usuario autenticado:", result.data);
-      setUserData(result.data);
+    //; Verificar el resultado de la verificación del token
+    if (
+      verificationResult.status === 401 ||
+      verificationResult.status === 403
+    ) {
+      console.warn(verificationResult.message);
+      alert(verificationResult.message);
+      navigate("/login"); //; Redirige al usuario al login si el token no es válido o ha caducado
+    } else if (verificationResult.status === 200) {
+      console.log(
+        "Todos los datos del usuario autenticado:",
+        verificationResult.data
+      );
+      setUserData(verificationResult.data); //; Almacena los datos del usuario autenticado
     } else {
-      console.warn("Error desconocido al verificar el token.");
-      alert("Ha ocurrido un error. Por favor, intente de nuevo.");
-      navigate("/login");
+      console.error("Error inesperado al verificar el token.");
+      navigate("/login"); //; Redirige al usuario al login si ocurre un error inesperado
     }
   }, [navigate]);
 

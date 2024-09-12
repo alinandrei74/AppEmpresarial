@@ -6,8 +6,8 @@ import { createUser } from "../../../data_base/mockDatabase.mjs";
 
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [responseMessage, setResponseMessage] = useState(""); // Mensaje de respuesta de la API
-  const [isErrorMessage, setIsErrorMessage] = useState(false); // Nueva variable de estado para manejar el estilo del mensaje
+  const [responseMessage, setResponseMessage] = useState(""); //; Mensaje de respuesta de la API
+  const [isErrorMessage, setIsErrorMessage] = useState(false); //; Nueva variable de estado para manejar el estilo del mensaje
 
   const formik = useFormik({
     initialValues: {
@@ -16,6 +16,7 @@ const Form = () => {
       fullName: "",
       dni: "",
       address: "",
+      postal_code: "",
       email: "",
       telephone: "",
       password: "",
@@ -51,7 +52,18 @@ const Form = () => {
           "Dirección sólo admite letras, números, ',' y espacios"
         )
         .required(""),
-      email: Yup.string().email("Formato de email inválido").required(""),
+      postal_code: Yup.string()
+        .matches(
+          /^\d{4,10}$/,
+          "El código postal debe ser un número entre 4 y 10 dígitos."
+        )
+        .required(""),
+      email: Yup.string()
+        .matches(
+          /^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i,
+          "Formato de email inválido"
+        )
+        .required(""),
       telephone: Yup.string()
         .matches(
           /^\d{9,15}$/,
@@ -81,27 +93,36 @@ const Form = () => {
     }),
 
     onSubmit: async (values) => {
+      //; Estructura los datos correctamente para enviarlos al backend
       const response = await createUser({
         username: values.username,
         password: values.password,
         role_name: values.rol.toLowerCase(),
-        full_name: values.fullName,
-        dni: values.dni,
-        address: values.address,
-        email: values.email,
-        telephone: values.telephone,
+        personalData: {
+          first_name: values.fullName.split(" ")[0], //; Primer nombre
+          last_name: values.fullName.split(" ").slice(1).join(" "), //; Apellidos restantes
+          middle_name: "", //; No se obtiene del formulario
+        },
+        contactData: {
+          email: values.email,
+          phone_number: values.telephone,
+        },
+        additionalData: {
+          dni: values.dni,
+          address: values.address,
+          postal_code: values.postal_code,
+        },
+        tasks: [], //; Inicialmente vacío
       });
 
       if (response.status === 201) {
         setResponseMessage("Usuario registrado con éxito.");
-        setIsErrorMessage(false); // Indica que el mensaje es de éxito
-        // alert("Usuario registrado con éxito.");
+        setIsErrorMessage(false); //; Indica que el mensaje es de éxito
       } else {
         setResponseMessage(
           "Error al registrar el usuario: " + response.message
         );
-        setIsErrorMessage(true); // Indica que el mensaje es de error
-        // alert("Error al registrar el usuario: " + response.message);
+        setIsErrorMessage(true); //; Indica que el mensaje es de error
       }
     },
   });
@@ -214,6 +235,24 @@ const Form = () => {
       </div>
 
       <div className="form-group">
+        <label htmlFor="postal_code" className="form-label required">
+          Código Postal
+        </label>
+        <input
+          type="text"
+          id="postal_code"
+          name="postal_code"
+          className="form-input"
+          value={formik.values.postal_code}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.postal_code && formik.errors.postal_code ? (
+          <div>{formik.errors.postal_code}</div>
+        ) : null}
+      </div>
+
+      <div className="form-group">
         <label htmlFor="email" className="form-label required">
           Email
         </label>
@@ -286,7 +325,7 @@ const Form = () => {
           Confirmar Contraseña
         </label>
         <input
-          type="password" // Fijo en "password" para evitar mostrar la confirmación
+          type="password" //; Fijo en "password" para evitar mostrar la confirmación
           id="confirmPassword"
           name="confirmPassword"
           className="form-input"
