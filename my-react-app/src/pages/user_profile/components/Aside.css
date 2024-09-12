@@ -1,41 +1,67 @@
-/* Aside.css */
 .aside {
-  width: 200px;
-  padding: 20px;
-  height: 100vh;
-  /* Asegura que el sidebar ocupe toda la altura de la pantalla */
-  box-sizing: border-box;
-  /* Asegura que el padding no aumente la altura */
-  overflow: auto;
-  /* Añade scroll si el contenido es más largo que la pantalla */
-  background-color: var(--clr-primary) !important;
+  width: 200px !important;
+  padding: 0 !important;
+  /* Elimina todo el padding para que no haya espacio alrededor */
+  height: 100vh !important;
+  box-sizing: border-box !important;
+  overflow: auto !important;
+  /* background-color: var(--clr-primary) !important; */
+  background-color: var(--clr-background) !important;
+  /* background-color: var(--clr-OnSecondary) !important; */
+
 }
 
 .aside-items {
-  list-style: none;
-  padding: 0;
+  list-style: none !important;
+  padding: 0 !important;
+  /* Elimina el padding para que los elementos de la lista estén alineados con el contenedor */
+  margin: 0 !important;
+  /* Elimina cualquier margen del contenedor de la lista */
+}
+
+.aside-items li:first-child {
+  margin-top: 40px !important;
 }
 
 .aside-items li {
-  margin-bottom: 15px;
-  /* Añade más separación entre los elementos */
-  text-align: left;
-  /* Alinea los elementos hacia la izquierda */
+  margin-bottom: 1px !important;
+  /* Elimina cualquier margen entre los elementos de la lista */
+  text-align: left !important;
 }
 
 .aside-items li:hover {
-  /* Cambia el fondo al pasar el ratón */
-  cursor: pointer;
-  /* Cambia el cursor al pasar el ratón */
+  cursor: pointer !important;
 }
 
 .aside-items a {
-  text-decoration: none;
+  display: block !important;
+  /* Asegura que el enlace ocupe todo el ancho del elemento li */
+  text-decoration: none !important;
+  padding: 10px 15px !important;
+  /* Añade padding para mejorar la usabilidad */
   color: var(--clr-OnBackground) !important;
-  /* color: var(--clr-text) !important; */
+
+  width: 100%;
+  border-radius: 0px !important;
+
+
+  /* width: 80%; */
+  /* border-top-right-radius: 90px !important; */
+  /* border-bottom-right-radius: 90px !important; */
+
 }
 
 .aside-items a:hover {
-  /* background-color: var(--clr-OnSecondary) !important; */
   background-color: var(--primary-default) !important;
+  /* background-color: var(--clr-primary) !important; */
+  /* Fondo al pasar el ratón */
+}
+
+/* Nueva clase para el enlace activo */
+.active-link {
+  background-color: var(--clr-secondary) !important;
+  /* background-color: var(--clr-OnPrimary) !important; */
+  /* Fondo para el enlace activo */
+  color: var(--clr-OnText) !important;
+  /* Texto para el enlace activo */
 }
