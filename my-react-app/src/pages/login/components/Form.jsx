@@ -9,14 +9,10 @@ import {
 } from "../../../data_base/mockDatabase.mjs"; //; Importa desde el archivo adecuado
 
 /**
- *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
+ * 1/ Componente de formulario controlado que utiliza las variables de CSS del root.
  * @returns {JSX.Element} El formulario renderizado.
  */
 const Form = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-  });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate(); //; Hook para la navegación
 
@@ -103,25 +99,29 @@ const Form = () => {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form className="form" onSubmit={formik.handleSubmit}>
       <div className="form-title">Inicio de Sesión</div>
       <div className="form-description">
         Por favor, inicie sesión para usar la aplicación.
       </div>
       <br />
       <div className="form-group">
-        <label htmlFor="username" className="form-label">
-          Usuario
+        <label htmlFor="email" className="form-label">
+          Email
         </label>
         <input
-          type="text"
-          id="username"
-          name="username"
+          type="email"
+          id="email"
+          name="email"
           className="form-input"
-          value={formData.username}
-          onChange={handleChange}
-          autoComplete="username"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.email}
+          autoComplete="email"
         />
+        {formik.touched.email && formik.errors.email ? (
+          <div className="form-error">{formik.errors.email}</div>
+        ) : null}
       </div>
       <div className="form-group">
         <label htmlFor="password" className="form-label">
@@ -132,17 +132,21 @@ const Form = () => {
           id="password"
           name="password"
           className="form-input"
-          value={formData.password}
-          onChange={handleChange}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          value={formik.values.password}
           autoComplete="current-password"
         />
+        {formik.touched.password && formik.errors.password ? (
+          <div className="form-error">{formik.errors.password}</div>
+        ) : null}
       </div>
       <div className="form-group form-checkbox-group">
         <input
           type="checkbox"
           id="show-password"
           checked={showPassword}
-          onChange={handleCheckboxChange}
+          onChange={() => setShowPassword(!showPassword)}
           className="form-checkbox"
         />
         <label htmlFor="show-password" className="form-checkbox-label">
@@ -152,9 +156,9 @@ const Form = () => {
       <button
         type="submit"
         className={`form-button ${
-          !isFormValid() ? "form-button-disabled" : ""
+          !formik.isValid ? "form-button-disabled" : ""
         }`}
-        disabled={!isFormValid()}
+        disabled={!formik.isValid}
       >
         Iniciar Sesión
       </button>
