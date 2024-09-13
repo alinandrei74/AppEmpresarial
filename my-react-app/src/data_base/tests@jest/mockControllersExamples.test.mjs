@@ -49,19 +49,19 @@ import {
  * @returns {string} - Un nombre de usuario único.
  */
 function generateUniqueUsername(prefix, existingUsernames) {
-  // Normalizamos el prefijo eliminando espacios en blanco y caracteres no válidos
+  //; Normalizamos el prefijo eliminando espacios en blanco y caracteres no válidos
   let baseName = prefix.trim().replace(/[^A-Za-z0-9]/g, "");
 
-  // Si el nombre base está vacío, utilizamos un nombre genérico
+  //; Si el nombre base está vacío, utilizamos un nombre genérico
   if (baseName.length === 0) {
     baseName = "User";
   }
 
-  // Añadir un número al nombre base para asegurar unicidad
+  //; Añadir un número al nombre base para asegurar unicidad
   let uniqueName = baseName;
   let counter = 1;
 
-  // Generamos nombres hasta que encontremos uno que no esté en uso
+  //; Generamos nombres hasta que encontremos uno que no esté en uso
   while (existingUsernames.includes(uniqueName)) {
     uniqueName = `${baseName}${counter}`;
     counter++;
@@ -415,7 +415,7 @@ describe("Usuarios (Users)", () => {
 
   //; Test para validar errores en datos personales
   test("Crear un usuario con errores en los datos personales", () => {
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
@@ -437,16 +437,14 @@ describe("Usuarios (Users)", () => {
   });
 
   test("Crear un usuario con errores en los datos de contacto", () => {
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
     );
 
-    console.log(uniqueUsername); // Confirmar que el nombre es único en el registro
-
     const result = createUser({
-      username: uniqueUsername, // Utilizar nombre único
+      username: uniqueUsername, //; Utilizar nombre único
       password: "Password1.",
       role_name: "admin",
       personalData: {
@@ -454,7 +452,7 @@ describe("Usuarios (Users)", () => {
         last_name: "Doe",
       },
       contactData: {
-        email: "correo-invalido", // Email inválido
+        email: "correo-invalido", //; Email inválido
         phone_number: "1234567890",
       },
       additionalData: {
@@ -470,7 +468,7 @@ describe("Usuarios (Users)", () => {
 
   //; Test para crear un usuario correctamente con todos los datos
   test("Crear un usuario con todos los datos válidos", () => {
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
@@ -528,7 +526,7 @@ describe("Usuarios (Users)", () => {
   });
 
   test("Crear un usuario con una contraseña que no cumple los requisitos", () => {
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
@@ -547,7 +545,7 @@ describe("Usuarios (Users)", () => {
 
   //; Test para validar la duplicación de nombres de usuario
   test("Crear un usuario con un nombre de usuario duplicado", () => {
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
@@ -576,7 +574,7 @@ describe("Usuarios (Users)", () => {
       throw new Error("Simulación de error interno");
     });
 
-    // Generar un nombre único para el usuario de prueba
+    //; Generar un nombre único para el usuario de prueba
     const uniqueUsername = generateUniqueUsername(
       "UsuarioUnico",
       Users.map((user) => user.username)
@@ -832,7 +830,7 @@ describe("Tareas (Tasks)", () => {
   });
 
   test("Obtener una tarea inexistente por su ID", () => {
-    const result = getTaskById(999); //; ID que no existe
+    const result = getTaskById("non-existent-id"); //; ID que no existe, ahora debe ser un UUID
     expect(result.status).toBe(404);
     expect(result.message).toBe("Tarea no encontrada.");
   });
@@ -848,6 +846,7 @@ describe("Tareas (Tasks)", () => {
     expect(result.status).toBe(201);
     expect(result.data).toHaveProperty("description", "Nueva tarea de ejemplo");
     expect(result.data).toMatchObject(newTask);
+    expect(result.data).toHaveProperty("task_id"); //; Verifica que se genere un task_id
   });
 
   test("Crear una tarea con campos faltantes", () => {
@@ -880,7 +879,7 @@ describe("Tareas (Tasks)", () => {
   });
 
   test("Actualizar una tarea inexistente", () => {
-    const result = updateTask(999, { status: "in-progress" }); //; ID que no existe
+    const result = updateTask("non-existent-id", { status: "in-progress" }); //; ID que no existe
     expect(result.status).toBe(404);
     expect(result.message).toBe("Tarea no encontrada.");
   });
@@ -892,14 +891,8 @@ describe("Tareas (Tasks)", () => {
   });
 
   test("Eliminar una tarea inexistente", () => {
-    const result = deleteTask(999); //; ID que no existe
-    expect(result.status).toBe(404);
+    const result = deleteTask("123e4567-e89b-12d3-a456-426614174000"); //; UUID válido pero que no existe
+    expect(result.status).toBe(404); //; Ahora debe devolver 404
     expect(result.message).toBe("Tarea no encontrada.");
-  });
-
-  test("Eliminar una tarea con ID inválido", () => {
-    const result = deleteTask("invalid-id"); //; ID inválido
-    expect(result.status).toBe(400);
-    expect(result.message).toMatch(/ID de tarea inválido/);
   });
 });

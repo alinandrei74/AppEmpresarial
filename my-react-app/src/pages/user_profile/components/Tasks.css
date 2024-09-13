@@ -1,62 +1,72 @@
 .tasks-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
-  .create-task-form {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .create-task-form input,
-  .create-task-form select {
-    flex-grow: 1;
-    padding: 10px;
-    border: 1px solid var(--clr-secondary);
-    border-radius: 5px;
-  }
-  
-  .create-task-form button,
-  .task-item button {
-    padding: 10px 15px;
-    background-color: var(--clr-primary);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .tasks-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .task-item {
-    background-color: var(--clr-OnPrimary);
-    border: 1px solid var(--clr-secondary);
-    border-radius: 5px;
-    padding: 10px;
-  }
-  
-  .task-item p {
-    margin: 0 0 10px 0;
-  }
-  
-  .task-item small {
-    display: block;
-    color: var(--clr-OnText);
-    font-size: 0.8em;
-    margin-bottom: 5px;
-  }
-  
-  .task-item.completed {
-    background-color: var(--clr-success);
-    color: white;
-  }
-  
-  .task-item.pending {
-    background-color: var(--clr-warning);
-  }
+  width: 100% !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 20px !important;
+  background-color: var(--clr-background) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.create-task-form {
+  display: flex !important;
+  gap: 10px !important;
+  margin-bottom: 20px !important;
+}
+
+.create-task-form input {
+  flex: 1 !important;
+  padding: 8px !important;
+  border: 1px solid var(--clr-border) !important;
+  border-radius: 4px !important;
+}
+
+.create-task-form button {
+  padding: 8px 16px !important;
+  background-color: var(--clr-primary) !important;
+  color: var(--clr-OnPrimary) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}
+
+.tasks-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.task-item {
+  background-color: var(--clr-surface) !important;
+  border: 1px solid var(--clr-border) !important;
+  border-radius: 4px !important;
+  padding: 10px !important;
+}
+
+.task-item.pending {
+  border-left: 4px solid orange !important;
+}
+
+.task-item.done {
+  border-left: 4px solid green !important;
+}
+
+.task-item p {
+  margin: 0 0 10px 0 !important;
+  font-weight: bold !important;
+}
+
+.task-item small {
+  display: block !important;
+  margin-bottom: 5px !important;
+  color: var(--clr-OnSurfaceVariant) !important;
+}
+
+.task-item button {
+  margin-top: 10px !important;
+  padding: 5px 10px !important;
+  background-color: var(--clr-secondary) !important;
+  color: var(--clr-OnSecondary) !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer !important;
+}

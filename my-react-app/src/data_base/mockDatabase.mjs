@@ -1,6 +1,6 @@
 //;todo---MARK:# Imports
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, validate as validateUUID } from "uuid"; //; Importar el método 'validate' de 'uuid'
 import {
   Users,
   UserPersonalData,
@@ -828,17 +828,23 @@ export {
 //^---------------- Tareas (Tasks) ----------------^\\
 
 /**
- * Función para obtener todas las Tareas .
- * @returns {Object} Un objeto con `status`, `message` y `data` (lista de todas las Tareas ).
+ * Función para obtener todas las tareas.
+ * @returns {Object} Un objeto con `status`, `message` y `data` (lista de todas las tareas).
  */
 const getAllTasks = () => {
   try {
+    //; Verificar si la lista de tareas está definida y es un array
+    if (!Array.isArray(Tasks)) {
+      throw new Error("La lista de tareas no es válida.");
+    }
+
     return {
       status: HTTP_STATUS.OK,
       message: "Tareas obtenidas exitosamente.",
       data: Tasks,
     };
   } catch (error) {
+    console.error("Error al obtener tareas:", error.message);
     return createErrorResponse(
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       "Error al obtener tareas."
@@ -848,12 +854,23 @@ const getAllTasks = () => {
 
 /**
  * Función para obtener una tarea general por su ID.
- * @param {number} taskId - ID de la tarea a obtener.
+ * @param {string} taskId - ID de la tarea a obtener.
  * @returns {Object} Un objeto con `status`, `message` y `data` (tarea o null si no se encontró).
  */
 const getTaskById = (taskId) => {
   try {
+    //; Validar el taskId proporcionado
+    if (!taskId || typeof taskId !== "string") {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "ID de tarea inválido. Debe ser un string válido."
+      );
+    }
+
+    //; Buscar la tarea por su ID
     const task = Tasks.find((task) => task.task_id === taskId);
+
+    //; Devolver la tarea encontrada o un error si no se encuentra
     return task
       ? {
           status: HTTP_STATUS.OK,
@@ -862,6 +879,7 @@ const getTaskById = (taskId) => {
         }
       : createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
   } catch (error) {
+    console.error("Error al obtener la tarea:", error.message);
     return createErrorResponse(
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       "Error al obtener la tarea."
@@ -875,6 +893,7 @@ const getTaskById = (taskId) => {
  * @returns {Object} Un objeto con `status`, `message` y `data` (nueva tarea creada).
  */
 const createTask = (newTask) => {
+  console.log("createTask a sido llamada");
   try {
     //; Validar datos de entrada
     const error = validateInput(newTask, [
@@ -885,7 +904,10 @@ const createTask = (newTask) => {
     ]);
     if (error) return error;
 
-    const newTaskId = Tasks.length + 1; //; Genera un nuevo ID para la tarea
+    //; Generar un nuevo task_id único
+    const newTaskId = uuidv4();
+
+    //; Crear el objeto tarea con el ID generado
     const task = { task_id: newTaskId, ...newTask };
     Tasks.push(task);
 
@@ -907,12 +929,19 @@ const createTask = (newTask) => {
 
 /**
  * Función para actualizar una tarea existente (simulación de PUT).
- * @param {number} taskId - ID de la tarea que se va a actualizar.
+ * @param {string} taskId - ID de la tarea que se va a actualizar.
  * @param {Object} updatedTask - Objeto que contiene los campos a actualizar de la tarea.
  * @returns {Object} Un objeto con `status`, `message` y `data` (tarea actualizada o null si no se encontró).
  */
 const updateTask = (taskId, updatedTask) => {
   try {
+    if (!taskId || typeof taskId !== "string") {
+      return createErrorResponse(
+        HTTP_STATUS.BAD_REQUEST,
+        "ID de tarea inválido."
+      );
+    }
+
     if (Object.keys(updatedTask).length === 0) {
       return createErrorResponse(
         HTTP_STATUS.BAD_REQUEST,
@@ -953,33 +982,32 @@ const updateTask = (taskId, updatedTask) => {
 
 /**
  * Función para eliminar una tarea (simulación de DELETE).
- * @param {number} taskId - ID de la tarea que se va a eliminar.
+ * @param {string} taskId - ID de la tarea que se va a eliminar.
  * @returns {Object} Un objeto con `status`, `message` y `data` (tarea eliminada o null si no se encontró).
  */
 const deleteTask = (taskId) => {
   try {
-    if (typeof taskId !== "number" || taskId <= 0) {
-      return createErrorResponse(
-        HTTP_STATUS.BAD_REQUEST,
-        "ID de tarea inválido."
-      );
-    }
-
+    //; Buscar la tarea por su ID
     const taskIndex = Tasks.findIndex((task) => task.task_id === taskId);
-    if (taskIndex !== -1) {
-      const deletedTask = Tasks.splice(taskIndex, 1)[0];
 
-      //; Guardar los cambios en localStorage
-      saveAllTablesToLocalStorage();
-
-      return {
-        status: HTTP_STATUS.OK,
-        message: "Tarea eliminada exitosamente.",
-        data: deletedTask,
-      };
+    //; Si no se encuentra, devolver 404
+    if (taskIndex === -1) {
+      return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
     }
-    return createErrorResponse(HTTP_STATUS.NOT_FOUND, "Tarea no encontrada.");
+
+    //; Eliminar la tarea del array
+    const deletedTask = Tasks.splice(taskIndex, 1)[0];
+
+    //; Guardar los cambios en localStorage
+    saveAllTablesToLocalStorage();
+
+    return {
+      status: HTTP_STATUS.OK,
+      message: "Tarea eliminada exitosamente.",
+      data: deletedTask,
+    };
   } catch (error) {
+    console.error("Error al eliminar la tarea:", error.message);
     return createErrorResponse(
       HTTP_STATUS.INTERNAL_SERVER_ERROR,
       "Error al eliminar la tarea."
