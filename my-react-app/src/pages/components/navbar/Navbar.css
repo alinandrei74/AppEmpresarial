@@ -47,16 +47,19 @@
 /* Esta parte controla la posición de los elementos a la derecha, incluyendo el botón de cierre de sesión */
 .navbar-actions {
   display: flex;
-  gap: 1rem; /* Espacio entre los elementos */
+  gap: 1rem;
+  /* Espacio entre los elementos */
   align-items: center;
-  justify-content: flex-end; /* Alinea los elementos a la derecha */
+  justify-content: flex-end;
+  /* Alinea los elementos a la derecha */
   flex: 0 0 auto;
 }
 
 .logout-button {
   padding: 0.5rem 1rem;
   border-radius: 8px;
-  background-color: #ff4136; /* Color rojo */
+  background-color: var(--clr-error);
+  /* Color rojo */
   color: white;
   border: none;
   cursor: pointer;
@@ -65,7 +68,9 @@
 }
 
 .logout-button:hover {
-  background-color: #e60000; /* Un rojo más oscuro para el hover */
+  /* background-color: #e60000;  */
+  background-color: var(--clr-OnError);
+  /* Un rojo más oscuro para el hover */
 }
 
 .toggle-mode {

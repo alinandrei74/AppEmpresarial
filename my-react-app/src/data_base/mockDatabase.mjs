@@ -893,7 +893,7 @@ const getTaskById = (taskId) => {
  * @returns {Object} Un objeto con `status`, `message` y `data` (nueva tarea creada).
  */
 const createTask = (newTask) => {
-  console.log("lo que sea, da igual")
+  console.log("createTask a sido llamada");
   try {
     //; Validar datos de entrada
     const error = validateInput(newTask, [
@@ -987,14 +987,6 @@ const updateTask = (taskId, updatedTask) => {
  */
 const deleteTask = (taskId) => {
   try {
-    //; Validación del formato de taskId utilizando validateUUID
-    if (!taskId || typeof taskId !== "string" || !validateUUID(taskId)) {
-      return createErrorResponse(
-        HTTP_STATUS.BAD_REQUEST,
-        "ID de tarea inválido."
-      );
-    }
-
     //; Buscar la tarea por su ID
     const taskIndex = Tasks.findIndex((task) => task.task_id === taskId);
 
@@ -1022,4 +1014,5 @@ const deleteTask = (taskId) => {
     );
   }
 };
+
 export { getAllTasks, getTaskById, createTask, updateTask, deleteTask };

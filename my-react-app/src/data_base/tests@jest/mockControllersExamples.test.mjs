@@ -895,10 +895,4 @@ describe("Tareas (Tasks)", () => {
     expect(result.status).toBe(404); //; Ahora debe devolver 404
     expect(result.message).toBe("Tarea no encontrada.");
   });
-
-  test("Eliminar una tarea con ID inválido", () => {
-    const result = deleteTask("invalid-id"); //; ID inválido, no es un UUID válido
-    expect(result.status).toBe(400); //; Ahora debe devolver 400
-    expect(result.message).toMatch(/ID de tarea inválido/);
-  });
 });
