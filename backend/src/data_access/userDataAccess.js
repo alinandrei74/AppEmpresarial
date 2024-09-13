@@ -11,35 +11,71 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserByEmailFromDB = exports.createUserInDB = exports.updateUserInDB = exports.getUserByIdFromDB = void 0;
 const db_1 = require("../config/db");
+// Clase de error personalizada para manejo de datos de usuario
+class UserDataError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'UserDataError';
+    }
+}
 // Obtiene un usuario por ID
 const getUserByIdFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!userId)
+            throw new UserDataError('User ID is required');
         const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE id = $1', [userId]);
         return result;
     }
     catch (error) {
-        throw new Error('Error getting user from DB');
+        if (error instanceof UserDataError) {
+            console.error('User ID error:', error.message);
+            throw error; // Errores específicos
+        }
+        else {
+            console.error('Error getting user by ID from DB:', error);
+            throw new Error('Error getting user from DB'); // Error genérico
+        }
     }
 });
 exports.getUserByIdFromDB = getUserByIdFromDB;
 // Actualiza un usuario en la base de datos
 const updateUserInDB = (userId, userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield db_1.db.one('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [userData.name, userData.email, userId]);
+        if (!userId)
+            throw new UserDataError('User ID is required');
+        if (!userData.name && !userData.email)
+            throw new UserDataError('At least one field (name or email) is required to update');
+        const result = yield db_1.db.one('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [userData.name || null, userData.email || null, userId]);
         return result;
     }
     catch (error) {
-        throw new Error('Error updating user in DB');
+        if (error instanceof UserDataError) {
+            console.error('User update error:', error.message);
+            throw error; // Errores específicos
+        }
+        else {
+            console.error('Error updating user in DB:', error);
+            throw new Error('Error updating user in DB'); // Error genérico
+        }
     }
 });
 exports.updateUserInDB = updateUserInDB;
 // Crea un nuevo usuario
 const createUserInDB = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield db_1.db.one('INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING *', [userData.name, userData.email, userData.password]);
+        // Inserción de todos los campos obligatorios en la base de datos
+        const result = yield db_1.db.one(`INSERT INTO users (rol, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      RETURNING *`, [
+            userData.rol, userData.username, userData.name,
+            userData.firstName, userData.lastName, userData.dni,
+            userData.email, userData.telephone, userData.address,
+            userData.cp, userData.password // Aquí se está almacenando el hash de la contraseña
+        ]);
         return result;
     }
     catch (error) {
+        console.error('Error creating user in DB:', error);
         throw new Error('Error creating user in DB');
     }
 });
@@ -47,11 +83,16 @@ exports.createUserInDB = createUserInDB;
 // Obtiene un usuario por email
 const getUserByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        if (!email) {
+            throw new Error('Email is required');
+        }
+        // Consulta para buscar el usuario por email
         const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE email = $1', [email]);
-        return result;
+        return result; // Si no lo encuentra, debe devolver null
     }
     catch (error) {
-        throw new Error('Error getting user by email from DB');
+        console.error('Error fetching user by email:', error);
+        throw new Error('Error fetching user by email');
     }
 });
 exports.getUserByEmailFromDB = getUserByEmailFromDB;

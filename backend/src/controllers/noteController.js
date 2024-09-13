@@ -11,6 +11,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteNote = exports.updateNote = exports.createNote = exports.getNoteById = exports.getNotes = void 0;
 const db_1 = require("../config/db");
+// Clase de error personalizada para el manejo de notas
+class NoteError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'NoteError';
+    }
+}
 // Obtener todas las notas
 const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -18,6 +25,7 @@ const getNotes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.json(notes);
     }
     catch (error) {
+        console.error('Error fetching notes:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
@@ -35,6 +43,7 @@ const getNoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
     catch (error) {
+        console.error('Error fetching note by ID:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });
@@ -43,11 +52,22 @@ exports.getNoteById = getNoteById;
 const createNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { content, userId } = req.body;
     try {
+        // Verificar que el contenido y el userId estén presentes
+        if (!content || !userId) {
+            throw new NoteError('Content and userId are required');
+        }
         const result = yield db_1.db.one('INSERT INTO notes (content, user_id) VALUES ($1, $2) RETURNING id', [content, userId]);
         res.status(201).json({ id: result.id, content, userId });
     }
     catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        if (error instanceof NoteError) {
+            console.error('Note creation error:', error.message);
+            res.status(400).json({ message: error.message }); // Errores de validación específicos
+        }
+        else {
+            console.error('Error creating note:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
     }
 });
 exports.createNote = createNote;
@@ -56,6 +76,9 @@ const updateNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     const { id } = req.params;
     const { content } = req.body;
     try {
+        if (!content) {
+            throw new NoteError('Content is required');
+        }
         const result = yield db_1.db.result('UPDATE notes SET content = $1 WHERE id = $2', [content, id]);
         if (result.rowCount) {
             res.json({ message: 'Note updated' });
@@ -65,7 +88,14 @@ const updateNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
     catch (error) {
-        res.status(500).json({ message: 'Internal server error' });
+        if (error instanceof NoteError) {
+            console.error('Note update error:', error.message);
+            res.status(400).json({ message: error.message }); // Errores de validación específicos
+        }
+        else {
+            console.error('Error updating note:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
     }
 });
 exports.updateNote = updateNote;
@@ -82,6 +112,7 @@ const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
     }
     catch (error) {
+        console.error('Error deleting note:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 });

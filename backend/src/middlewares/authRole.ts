@@ -10,9 +10,11 @@ export const authorizeRole = (roles: string[]) => {
     if (!token) return res.status(401).json({ message: 'Token no proporcionado' });
 
     jwt.verify(token, JWT_SECRET, (err, decoded: any) => {
-      if (err) return res.status(401).json({ message: 'Token inválido o expirado' });
+      if (err) {
+        return res.status(401).json({ message: 'Token inválido o expirado' });
+      }
 
-      if (!roles.includes(decoded.role)) {
+      if (!decoded || !roles.includes(decoded.role)) {
         return res.status(403).json({ message: 'No tienes permiso para acceder a esta ruta' });
       }
 

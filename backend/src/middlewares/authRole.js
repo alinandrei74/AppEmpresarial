@@ -13,9 +13,10 @@ const authorizeRole = (roles) => {
         if (!token)
             return res.status(401).json({ message: 'Token no proporcionado' });
         jsonwebtoken_1.default.verify(token, JWT_SECRET, (err, decoded) => {
-            if (err)
+            if (err) {
                 return res.status(401).json({ message: 'Token inválido o expirado' });
-            if (!roles.includes(decoded.role)) {
+            }
+            if (!decoded || !roles.includes(decoded.role)) {
                 return res.status(403).json({ message: 'No tienes permiso para acceder a esta ruta' });
             }
             next();
