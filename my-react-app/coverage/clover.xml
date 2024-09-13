@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1726196095861" clover="3.2.0">
-  <project timestamp="1726196095861" name="All files">
+<coverage generated="1726227808327" clover="3.2.0">
+  <project timestamp="1726227808328" name="All files">
     <metrics statements="254" coveredstatements="230" conditionals="114" coveredconditionals="91" methods="46" coveredmethods="46" elements="414" coveredelements="367" complexity="0" loc="254" ncloc="254" packages="1" files="2" classes="2"/>
     <file name="mockDatabase.mjs" path="C:\Users\Eloy\Desktop\CURSOS\DevelHope\FullStack\sharedFolder\FS-ESP10-Team2-Project3\my-react-app\src\data_base\mockDatabase.mjs">
       <metrics statements="221" coveredstatements="197" conditionals="111" coveredconditionals="90" methods="42" coveredmethods="42"/>
