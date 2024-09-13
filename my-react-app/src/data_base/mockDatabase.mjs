@@ -875,6 +875,7 @@ const getTaskById = (taskId) => {
  * @returns {Object} Un objeto con `status`, `message` y `data` (nueva tarea creada).
  */
 const createTask = (newTask) => {
+  console.log("lo que sea, da igual")
   try {
     //; Validar datos de entrada
     const error = validateInput(newTask, [

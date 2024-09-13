@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { getAllTasks, createTask, updateTask, deleteTask } from '../../../data_base/mockDatabase.mjs';
-import AddTaskForm from './AddTaskForm';
+import { getAllTasks, createTask, updateTask, deleteTask, getAllUsers } from '../../../data_base/mockDatabase.mjs';
 import './Tasks.css';
 
 const Tasks = ({ userData }) => {
   const [tasks, setTasks] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [newTaskAssignedTo, setNewTaskAssignedTo] = useState('');
 
   useEffect(() => {
     loadTasks();
+    loadUsers();
   }, []);
 
   const loadTasks = async () => {
@@ -19,10 +22,28 @@ const Tasks = ({ userData }) => {
     }
   };
 
-  const handleAddTask = async (newTask) => {
-    if (userData.role_name === 'admin') {
+  const loadUsers = async () => {
+    const usersResult = await getAllUsers();
+    if (usersResult.status === 200) {
+      setUsers(usersResult.data);
+    } else {
+      console.error('Error al cargar los usuarios:', usersResult.message);
+    }
+  };
+
+  const handleCreateTask = async (e) => {
+    e.preventDefault();
+    if (userData.role_name === 'admin' && newTaskDescription && newTaskAssignedTo) {
+      const newTask = {
+        description: newTaskDescription,
+        status: 'pending',
+        user_id: newTaskAssignedTo,
+        entry_date: new Date().toISOString().split('T')[0]
+      };
       const result = await createTask(newTask);
       if (result.status === 201) {
+        setNewTaskDescription('');
+        setNewTaskAssignedTo('');
         setTasks([...tasks, result.data]);
       } else {
         console.error('Error al crear la tarea:', result.message);
@@ -54,27 +75,54 @@ const Tasks = ({ userData }) => {
     }
   };
 
+  const getUsernameById = (userId) => {
+    const user = users.find(user => user.user_id === userId);
+    return user ? user.username : 'Usuario desconocido';
+  };
+
   return (
     <div className="tasks-container">
       <h2>Tareas</h2>
       {userData.role_name === 'admin' && (
-        <AddTaskForm onAddTask={handleAddTask} />
+        <form onSubmit={handleCreateTask} className="create-task-form">
+          <input
+            type="text"
+            value={newTaskDescription}
+            onChange={(e) => setNewTaskDescription(e.target.value)}
+            placeholder="Descripción de la tarea"
+            required
+          />
+          <select
+            value={newTaskAssignedTo}
+            onChange={(e) => setNewTaskAssignedTo(e.target.value)}
+            required
+          >
+            <option value="">Seleccionar usuario</option>
+            {users.map(user => (
+              <option key={user.user_id} value={user.user_id}>
+                {user.username} ({user.role_name})
+              </option>
+            ))}
+          </select>
+          <button type="submit">Crear Tarea</button>
+        </form>
       )}
       <div className="tasks-list">
-        {tasks.map((task) => (
-          <div key={task.task_id} className={`task-item ${task.status}`}>
-            <p>{task.description}</p>
-            <small>Asignado a: {task.user_id}</small>
-            <small>Estado: {task.status}</small>
-            {task.status === 'pending' && task.user_id === userData.user_id && (
-              <button onClick={() => handleCompleteTask(task.task_id)}>Marcar como completada</button>
-            )}
-            {userData.role_name === 'admin' && (
-              <button onClick={() => handleDeleteTask(task.task_id)}>Eliminar</button>
-            )}
-          </div>
-        ))}
-      </div>
+  {tasks.map((task, index) => (
+    <div key={`${task.task_id}-${index}`} className={`task-item ${task.status}`}>
+      <p>{task.description}</p>
+      <small>Asignado a: {task.user_id}</small>
+      <small>Estado: {task.status}</small>
+      {task.status === 'pending' && task.user_id === userData.user_id && (
+        <button onClick={() => handleCompleteTask(task.task_id)}>Marcar como completada</button>
+      )}
+      {userData.role_name === 'admin' && (
+        <button onClick={() => handleDeleteTask(task.task_id)}>Eliminar</button>
+      )}
+    </div>
+  ))}
+</div>
+
     </div>
   );
 };
