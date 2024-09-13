@@ -116,21 +116,21 @@ const defaultUserAdditionalData = [
 
 const defaultTasks = [
   {
-    task_id: 1,
+    task_id: "tid-1",
     description: "Revisar limpieza del piso 1",
     status: "pending",
     user_id: "uuid-2",
     entry_date: "2024-08-25",
   },
   {
-    task_id: 2,
+    task_id: "tid-2",
     description: "Reparación de tuberías en el apartamento 2B",
     status: "done",
     user_id: "uuid-4",
     entry_date: "2024-08-26",
   },
   {
-    task_id: 3,
+    task_id: "tid-3",
     description: "Entrega de correo a la recepción",
     status: "canceled",
     user_id: "uuid-3",
