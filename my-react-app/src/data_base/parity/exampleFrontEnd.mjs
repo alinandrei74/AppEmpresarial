@@ -1,18 +1,11 @@
 //;todo---MARK:# Tables
 import "./tables.mjs";
 
+const { StatusCodes, getReasonPhrase } = require("http-status-codes"); // Importar `http-status-codes`
+
 //;todo---MARK:# Global Variables
 
-// Definición de códigos de estado HTTP
-const HTTP_STATUS = {
-  OK: 200,
-  CREATED: 201,
-  BAD_REQUEST: 400,
-  UNAUTHORIZED: 401,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  INTERNAL_SERVER_ERROR: 500,
-};
+// Ahora no necesitas definir los códigos de estado HTTP manualmente, usamos `StatusCodes` de `http-status-codes`.
 
 //;todo---MARK:# Functions
 
@@ -55,7 +48,7 @@ function createUser(newUser) {
     // Validar que todos los campos requeridos están presentes
     if (!newUser.name || !newUser.email || !newUser.password) {
       return createErrorResponse(
-        HTTP_STATUS.BAD_REQUEST,
+        StatusCodes.BAD_REQUEST,
         "Faltan campos requeridos: 'name', 'email', 'password'."
       );
     }
@@ -64,7 +57,7 @@ function createUser(newUser) {
     const existingUser = users.find((user) => user.email === newUser.email);
     if (existingUser) {
       return createErrorResponse(
-        HTTP_STATUS.BAD_REQUEST,
+        StatusCodes.BAD_REQUEST,
         "El correo electrónico ya está en uso."
       );
     }
@@ -77,13 +70,13 @@ function createUser(newUser) {
     users.push(user);
 
     return {
-      status: HTTP_STATUS.CREATED,
+      status: StatusCodes.CREATED,
       message: "Usuario creado exitosamente.",
       data: user,
     };
   } catch (error) {
     return createErrorResponse(
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       "Error al crear el usuario."
     );
   }
@@ -100,19 +93,19 @@ function getUserById(userId) {
 
     if (!user) {
       return createErrorResponse(
-        HTTP_STATUS.NOT_FOUND,
+        StatusCodes.NOT_FOUND,
         "Usuario no encontrado."
       );
     }
 
     return {
-      status: HTTP_STATUS.OK,
+      status: StatusCodes.OK,
       message: "Usuario encontrado.",
       data: user,
     };
   } catch (error) {
     return createErrorResponse(
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       "Error al obtener el usuario."
     );
   }
@@ -125,13 +118,13 @@ function getUserById(userId) {
 function getAllUsers() {
   try {
     return {
-      status: HTTP_STATUS.OK,
+      status: StatusCodes.OK,
       message: "Usuarios obtenidos exitosamente.",
       data: users,
     };
   } catch (error) {
     return createErrorResponse(
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       "Error al obtener los usuarios."
     );
   }
@@ -149,7 +142,7 @@ function updateUser(userId, updatedData) {
 
     if (userIndex === -1) {
       return createErrorResponse(
-        HTTP_STATUS.NOT_FOUND,
+        StatusCodes.NOT_FOUND,
         "Usuario no encontrado."
       );
     }
@@ -158,13 +151,13 @@ function updateUser(userId, updatedData) {
     users[userIndex] = { ...users[userIndex], ...updatedData };
 
     return {
-      status: HTTP_STATUS.OK,
+      status: StatusCodes.OK,
       message: "Usuario actualizado exitosamente.",
       data: users[userIndex],
     };
   } catch (error) {
     return createErrorResponse(
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       "Error al actualizar el usuario."
     );
   }
@@ -181,7 +174,7 @@ function deleteUser(userId) {
 
     if (userIndex === -1) {
       return createErrorResponse(
-        HTTP_STATUS.NOT_FOUND,
+        StatusCodes.NOT_FOUND,
         "Usuario no encontrado."
       );
     }
@@ -189,13 +182,13 @@ function deleteUser(userId) {
     const deletedUser = users.splice(userIndex, 1)[0];
 
     return {
-      status: HTTP_STATUS.OK,
+      status: StatusCodes.OK,
       message: "Usuario eliminado exitosamente.",
       data: deletedUser,
     };
   } catch (error) {
     return createErrorResponse(
-      HTTP_STATUS.INTERNAL_SERVER_ERROR,
+      StatusCodes.INTERNAL_SERVER_ERROR,
       "Error al eliminar el usuario."
     );
   }
