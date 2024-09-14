@@ -1,13 +1,13 @@
-//;todo---MARK:# Tables
+//todo---MARK:# Tables
 import "./tables.mjs";
 
 const { StatusCodes, getReasonPhrase } = require("http-status-codes"); // Importar `http-status-codes`
 
-//;todo---MARK:# Global Variables
+//todo---MARK:# Global Variables
 
 // Ahora no necesitas definir los códigos de estado HTTP manualmente, usamos `StatusCodes` de `http-status-codes`.
 
-//;todo---MARK:# Functions
+//todo---MARK:# Functions
 
 //
 //
@@ -29,7 +29,7 @@ const createErrorResponse = (status, message) => ({
   data: null,
 });
 
-//;todo---MARK:# Controladores
+//todo---MARK:# Controladores
 
 //
 //

@@ -1,4 +1,4 @@
-//;todo---MARK:# Tables
+//todo---MARK:# Tables
 import "./tables.mjs"; // Asegúrate de que esto importe correctamente los datos
 
 const express = require("express");
@@ -12,12 +12,12 @@ app.use(express.json()); // Middleware para parsear JSON
 // Importar datos de usuarios (ajusta según sea necesario)
 const { users } = require("./tables.mjs"); // Asegúrate de que `users` está siendo exportado en tables.mjs
 
-//;todo---MARK:# Global Variables
+//todo---MARK:# Global Variables
 
 // Definición de códigos de estado HTTP usando http-status-codes
 // Ya no necesitas definir los códigos de estado manualmente; puedes usar `StatusCodes`.
 
-//;todo---MARK:# Functions
+//todo---MARK:# Functions
 
 //
 //
@@ -33,7 +33,7 @@ const createErrorResponse = (status, message) => ({
   data: null,
 });
 
-//;todo---MARK:# CRUD
+//todo---MARK:# CRUD
 
 //
 //
@@ -160,7 +160,7 @@ app.delete("/users/:id", (req, res) => {
   });
 });
 
-//;todo---MARK:# Server Initialization
+//todo---MARK:# Server Initialization
 
 //
 //

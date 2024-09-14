@@ -1,30 +1,11 @@
 //;todo---MARK:# Tables
 
-export const role = [
-  {
-    id: 1, // PK
-    name: "admin",
-  },
-  {
-    id: 2, // PK
-    name: "cleaning",
-  },
-  {
-    id: 3, // PK
-    name: "delivery",
-  },
-  {
-    id: 4, // PK
-    name: "maintenance",
-  },
-];
-
 export const users = [
   {
     id: 1, // PK
     name: "Admin",
     password: "Admin1.",
-    role_id: 1, // FK que referencia `role.id`
+    role: "admin",
     first_name: "John",
     last_name: "Doe",
     middle_name: "Smith",
@@ -38,7 +19,7 @@ export const users = [
     id: 2, // PK
     name: "Limpieza",
     password: "Limpieza1.",
-    role_id: 2, // FK que referencia `role.id`
+    role: "cleaning",
     first_name: "Jane",
     last_name: "Doe",
     middle_name: "Smith",
@@ -52,7 +33,7 @@ export const users = [
     id: 3, // PK
     name: "Entrega",
     password: "Entrega1.",
-    role_id: 3, // FK que referencia `role.id`
+    role: "delivery",
     first_name: "Michael",
     last_name: "Johnson",
     middle_name: "Brown",
@@ -66,7 +47,7 @@ export const users = [
     id: 4, // PK
     name: "Mantenimiento",
     password: "Mantenimiento1.",
-    role_id: 4, // FK que referencia `role.id`
+    role: "maintenance",
     first_name: "Emily",
     last_name: "Taylor",
     middle_name: "Martinez",
