@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByEmailService = exports.loginUserService = exports.registerUserService = void 0;
+exports.getUserByUsernameService = exports.loginUserService = exports.registerUserService = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const userDataAccess_1 = require("../data_access/userDataAccess");
@@ -32,7 +32,7 @@ const registerUserService = (userData) => __awaiter(void 0, void 0, void 0, func
             }
         }
         // Verifica si el usuario ya existe
-        const existingUser = yield (0, userDataAccess_1.getUserByEmailFromDB)(userData.email);
+        const existingUser = yield (0, userDataAccess_1.getUserByUsernameFromDB)(userData.username);
         if (existingUser) {
             throw new Error('User with this email already exists');
         }
@@ -61,14 +61,14 @@ const registerUserService = (userData) => __awaiter(void 0, void 0, void 0, func
 });
 exports.registerUserService = registerUserService;
 // Servicio para iniciar sesión de un usuario
-const loginUserService = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
+const loginUserService = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Verifica si los parámetros están presentes
-        if (!email || !password) {
+        if (!username || !password) {
             throw new Error('Email and password are required');
         }
         // Obtén el usuario de la base de datos
-        const user = yield (0, userDataAccess_1.getUserByEmailFromDB)(email);
+        const user = yield (0, userDataAccess_1.getUserByUsernameFromDB)(username);
         if (!user) {
             throw new Error('User not found');
         }
@@ -79,7 +79,7 @@ const loginUserService = (email, password) => __awaiter(void 0, void 0, void 0, 
             throw new Error('Invalid credentials');
         }
         // Genera un token JWT
-        const token = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ id: user.id, username: user.username, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
         return { token, user };
     }
     catch (error) {
@@ -100,13 +100,13 @@ const loginUserService = (email, password) => __awaiter(void 0, void 0, void 0, 
     }
 });
 exports.loginUserService = loginUserService;
-// Servicio para obtener un usuario por email
-const getUserByEmailService = (email) => __awaiter(void 0, void 0, void 0, function* () {
+// Servicio para obtener un usuario por username
+const getUserByUsernameService = (username) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!email) {
+        if (!username) {
             throw new Error('Email is required');
         }
-        const user = yield (0, userDataAccess_1.getUserByEmailFromDB)(email);
+        const user = yield (0, userDataAccess_1.getUserByUsernameFromDB)(username);
         return user;
     }
     catch (error) {
@@ -117,4 +117,4 @@ const getUserByEmailService = (email) => __awaiter(void 0, void 0, void 0, funct
         };
     }
 });
-exports.getUserByEmailService = getUserByEmailService;
+exports.getUserByUsernameService = getUserByUsernameService;

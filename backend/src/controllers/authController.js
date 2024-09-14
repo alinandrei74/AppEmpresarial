@@ -48,12 +48,12 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.registerUser = registerUser;
 // Controlador para el inicio de sesión de usuarios
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { username, password } = req.body;
+    if (!username || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
     }
     try {
-        const token = yield (0, authService_1.loginUserService)(email, password);
+        const token = yield (0, authService_1.loginUserService)(username, password);
         if (!token) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }

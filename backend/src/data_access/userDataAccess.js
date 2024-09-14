@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByEmailFromDB = exports.createUserInDB = exports.updateUserInDB = exports.getUserByIdFromDB = void 0;
+exports.getUserByUsernameFromDB = exports.createUserInDB = exports.updateUserInDB = exports.getUserByIdFromDB = void 0;
 const db_1 = require("../config/db");
 // Clase de error personalizada para manejo de datos de usuario
 class UserDataError extends Error {
@@ -80,19 +80,19 @@ const createUserInDB = (userData) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.createUserInDB = createUserInDB;
-// Obtiene un usuario por email
-const getUserByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
+// Obtiene un usuario por username
+const getUserByUsernameFromDB = (username) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!email) {
-            throw new Error('Email is required');
+        if (!username) {
+            throw new Error('Username is required');
         }
         // Consulta para buscar el usuario por email
-        const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE email = $1', [email]);
+        const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
         return result; // Si no lo encuentra, debe devolver null
     }
     catch (error) {
-        console.error('Error fetching user by email:', error);
-        throw new Error('Error fetching user by email');
+        console.error('Error fetching user by username:', error);
+        throw new Error('Error fetching user by username');
     }
 });
-exports.getUserByEmailFromDB = getUserByEmailFromDB;
+exports.getUserByUsernameFromDB = getUserByUsernameFromDB;

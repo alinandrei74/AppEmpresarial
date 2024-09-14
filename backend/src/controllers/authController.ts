@@ -11,7 +11,7 @@ export const registerUser = async (req: Request, res: Response) => {
   const userData = req.body;
   try {
     // Verifica que todos los campos necesarios estén presentes
-    const requiredFields = ['rol', 'username', 'name', 'firstName', 'lastName', 'dni', 'email', 'telephone', 'address', 'cp', 'password'];
+    const requiredFields = ['role_id', 'username', 'name', 'firstName', 'lastName', 'dni', 'email', 'telephone', 'address', 'cp', 'password'];
     for (const field of requiredFields) {
       if (!userData[field]) {
         return res.status(400).json({ message: `Field ${field} is required` });
@@ -37,14 +37,14 @@ export const registerUser = async (req: Request, res: Response) => {
 
 // Controlador para el inicio de sesión de usuarios
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
+  if (!username || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
   }
 
   try {
-    const token = await loginUserService(email, password);
+    const token = await loginUserService(username, password);
 
     if (!token) {
       return res.status(401).json({ message: 'Invalid credentials' });

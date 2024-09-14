@@ -39,19 +39,19 @@ export const getNoteById = async (req: Request, res: Response) => {
 
 // Crear una nueva nota
 export const createNote = async (req: Request, res: Response) => {
-  const { content, userId } = req.body;
+  const { description, user_id } = req.body;
 
   try {
-    // Verificar que el contenido y el userId estén presentes
-    if (!content || !userId) {
-      throw new NoteError('Content and userId are required');
+    // Verificar que el contenido y el user_id estén presentes
+    if (!description || !user_id) {
+      throw new NoteError('description and user_id are required');
     }
 
     const result = await db.one(
-      'INSERT INTO notes (content, user_id) VALUES ($1, $2) RETURNING id',
-      [content, userId]
+      'INSERT INTO notes (description, user_id) VALUES ($1, $2) RETURNING id',
+      [description, user_id]
     );
-    res.status(201).json({ id: result.id, content, userId });
+    res.status(201).json({ id: result.id, description, user_id });
   } catch (error) {
     if (error instanceof NoteError) {
       console.error('Note creation error:', error.message);
@@ -66,16 +66,16 @@ export const createNote = async (req: Request, res: Response) => {
 // Actualizar una nota existente
 export const updateNote = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { content } = req.body;
+  const { description } = req.body;
 
   try {
-    if (!content) {
-      throw new NoteError('Content is required');
+    if (!description) {
+      throw new NoteError('description is required');
     }
 
     const result = await db.result(
-      'UPDATE notes SET content = $1 WHERE id = $2',
-      [content, id]
+      'UPDATE notes SET description = $1 WHERE id = $2',
+      [description, id]
     );
     if (result.rowCount) {
       res.json({ message: 'Note updated' });

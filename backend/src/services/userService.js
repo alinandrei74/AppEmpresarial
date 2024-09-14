@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByEmail = exports.updateUserById = exports.getUserById = void 0;
+exports.getUserByUserName = exports.updateUserById = exports.getUserById = void 0;
 const userDataAccess_1 = require("../data_access/userDataAccess");
 // Obtener usuario por ID
 const getUserById = (userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -21,8 +21,8 @@ const updateUserById = (userId, userData) => __awaiter(void 0, void 0, void 0, f
     return yield (0, userDataAccess_1.updateUserInDB)(userId, userData);
 });
 exports.updateUserById = updateUserById;
-// Obtener usuario por email
-const getUserByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (0, userDataAccess_1.getUserByEmailFromDB)(email);
+// Obtener usuario por username
+const getUserByUserName = (username) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield (0, userDataAccess_1.getUserByUsernameFromDB)(username);
 });
-exports.getUserByEmail = getUserByEmail;
+exports.getUserByUserName = getUserByUserName;

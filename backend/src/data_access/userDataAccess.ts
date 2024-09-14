@@ -9,11 +9,11 @@ class UserDataError extends Error {
 }
 
 // Obtiene un usuario por ID
-export const getUserByIdFromDB = async (userId: string) => {
+export const getUserByIdFromDB = async (user_id: string) => {
   try {
-    if (!userId) throw new UserDataError('User ID is required');
+    if (!user_id) throw new UserDataError('User ID is required');
     
-    const result = await db.oneOrNone('SELECT * FROM users WHERE id = $1', [userId]);
+    const result = await db.oneOrNone('SELECT * FROM users WHERE id = $1', [user_id]);
     return result;
   } catch (error) {
     if (error instanceof UserDataError) {
@@ -27,14 +27,14 @@ export const getUserByIdFromDB = async (userId: string) => {
 };
 
 // Actualiza un usuario en la base de datos
-export const updateUserInDB = async (userId: string, userData: { name?: string; email?: string }) => {
+export const updateUserInDB = async (user_id: string, userData: { name?: string; email?: string }) => {
   try {
-    if (!userId) throw new UserDataError('User ID is required');
+    if (!user_id) throw new UserDataError('User ID is required');
     if (!userData.name && !userData.email) throw new UserDataError('At least one field (name or email) is required to update');
 
     const result = await db.one(
       'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-      [userData.name || null, userData.email || null, userId]
+      [userData.name || null, userData.email || null, user_id]
     );
     return result;
   } catch (error) {
@@ -50,7 +50,7 @@ export const updateUserInDB = async (userId: string, userData: { name?: string; 
 
 // Crea un nuevo usuario
 export const createUserInDB = async (userData: {
-  rol: string;
+  role_id: string;
   username: string;
   name: string;
   firstName: string;
@@ -65,11 +65,11 @@ export const createUserInDB = async (userData: {
   try {
     // Inserción de todos los campos obligatorios en la base de datos
     const result = await db.one(
-      `INSERT INTO users (rol, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
+      `INSERT INTO users (role_id, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`,
       [
-        userData.rol, userData.username, userData.name,
+        userData.role_id, userData.username, userData.name,
         userData.firstName, userData.lastName, userData.dni,
         userData.email, userData.telephone, userData.address,
         userData.cp, userData.password // Aquí se está almacenando el hash de la contraseña
@@ -82,7 +82,23 @@ export const createUserInDB = async (userData: {
   }
 };
 
-// Obtiene un usuario por email
+// Obtiene un usuario por username
+export const getUserByUsernameFromDB = async (username: string) => {
+  try {
+    if (!username) {
+      throw new Error('Username is required');
+    }
+
+    // Consulta para buscar el usuario por email
+    const result = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
+    return result; // Si no lo encuentra, debe devolver null
+  } catch (error) {
+    console.error('Error fetching user by username:', error);
+    throw new Error('Error fetching user by username');
+  }
+};
+
+// Obtiene el usuario por email
 export const getUserByEmailFromDB = async (email: string) => {
   try {
     if (!email) {
@@ -98,3 +114,7 @@ export const getUserByEmailFromDB = async (email: string) => {
   }
 };
 
+// Función para eliminar un usuario de la base de datos
+export const deleteUserFromDB = async (user_id: number) => {
+  return db.none('DELETE FROM users WHERE id = $1', [user_id]);
+};

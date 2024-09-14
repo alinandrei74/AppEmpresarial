@@ -4,8 +4,7 @@ import jwt from 'jsonwebtoken';
 // Definir un tipo para el usuario en la solicitud
 interface UserPayload {
   id: string;
-  email: string;
-  // Otros campos según sea necesario
+  role: string;
 }
 
 declare global {
@@ -34,7 +33,7 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
       return res.status(403).json({ message: 'Invalid token' });
     }
 
-    req.user = user as UserPayload; // Asegúrate de que `user` se ajuste al tipo `UserPayload`
+    req.user = user as UserPayload; 
     next();
   });
 };
