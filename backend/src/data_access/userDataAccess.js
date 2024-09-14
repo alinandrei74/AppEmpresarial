@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserByEmailFromDB = exports.createUserInDB = exports.updateUserInDB = exports.getUserByIdFromDB = void 0;
+exports.deleteUserFromDB = exports.getUserByEmailFromDB = exports.getUserByUsernameFromDB = exports.createUserInDB = exports.updateUserInDB = exports.getUserByIdFromDB = void 0;
 const db_1 = require("../config/db");
 // Clase de error personalizada para manejo de datos de usuario
 class UserDataError extends Error {
@@ -19,43 +19,43 @@ class UserDataError extends Error {
     }
 }
 // Obtiene un usuario por ID
-const getUserByIdFromDB = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserByIdFromDB = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!userId)
+        if (!user_id)
             throw new UserDataError('User ID is required');
-        const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE id = $1', [userId]);
-        return result;
+        const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE id = $1', [user_id]);
+        return result; // Devolver el usuario directamente o null si no lo encuentra
     }
     catch (error) {
         if (error instanceof UserDataError) {
             console.error('User ID error:', error.message);
-            throw error; // Errores específicos
+            throw error;
         }
         else {
             console.error('Error getting user by ID from DB:', error);
-            throw new Error('Error getting user from DB'); // Error genérico
+            throw new Error('Error getting user from DB');
         }
     }
 });
 exports.getUserByIdFromDB = getUserByIdFromDB;
 // Actualiza un usuario en la base de datos
-const updateUserInDB = (userId, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUserInDB = (user_id, userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!userId)
+        if (!user_id)
             throw new UserDataError('User ID is required');
         if (!userData.name && !userData.email)
             throw new UserDataError('At least one field (name or email) is required to update');
-        const result = yield db_1.db.one('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [userData.name || null, userData.email || null, userId]);
-        return result;
+        const result = yield db_1.db.one('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [userData.name || null, userData.email || null, user_id]);
+        return result; // Devolver el usuario actualizado
     }
     catch (error) {
         if (error instanceof UserDataError) {
             console.error('User update error:', error.message);
-            throw error; // Errores específicos
+            throw new UserDataError('Error updating user: ' + error.message);
         }
         else {
             console.error('Error updating user in DB:', error);
-            throw new Error('Error updating user in DB'); // Error genérico
+            throw new Error('Error updating user in DB');
         }
     }
 });
@@ -63,16 +63,15 @@ exports.updateUserInDB = updateUserInDB;
 // Crea un nuevo usuario
 const createUserInDB = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // Inserción de todos los campos obligatorios en la base de datos
-        const result = yield db_1.db.one(`INSERT INTO users (rol, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
+        const result = yield db_1.db.one(`INSERT INTO users (role, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`, [
-            userData.rol, userData.username, userData.name,
+            userData.role, userData.username, userData.name,
             userData.firstName, userData.lastName, userData.dni,
             userData.email, userData.telephone, userData.address,
-            userData.cp, userData.password // Aquí se está almacenando el hash de la contraseña
+            userData.cp, userData.password
         ]);
-        return result;
+        return result; // Devolver el nuevo usuario creado
     }
     catch (error) {
         console.error('Error creating user in DB:', error);
@@ -80,15 +79,29 @@ const createUserInDB = (userData) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.createUserInDB = createUserInDB;
-// Obtiene un usuario por email
+// Obtiene un usuario por username
+const getUserByUsernameFromDB = (username) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!username) {
+            throw new UserDataError('Username is required');
+        }
+        const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE username = $1', [username]);
+        return result; // Devolver el usuario o null si no lo encuentra
+    }
+    catch (error) {
+        console.error('Error fetching user by username:', error);
+        throw new Error('Error fetching user by username');
+    }
+});
+exports.getUserByUsernameFromDB = getUserByUsernameFromDB;
+// Obtiene el usuario por email
 const getUserByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!email) {
-            throw new Error('Email is required');
+            throw new UserDataError('Email is required');
         }
-        // Consulta para buscar el usuario por email
         const result = yield db_1.db.oneOrNone('SELECT * FROM users WHERE email = $1', [email]);
-        return result; // Si no lo encuentra, debe devolver null
+        return result; // Devolver el usuario o null si no lo encuentra
     }
     catch (error) {
         console.error('Error fetching user by email:', error);
@@ -96,3 +109,18 @@ const getUserByEmailFromDB = (email) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.getUserByEmailFromDB = getUserByEmailFromDB;
+// Función para eliminar un usuario de la base de datos
+const deleteUserFromDB = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        if (!user_id) {
+            throw new UserDataError('User ID is required');
+        }
+        yield db_1.db.none('DELETE FROM users WHERE id = $1', [user_id]);
+        return { message: 'User deleted successfully' }; // Devolver mensaje de éxito
+    }
+    catch (error) {
+        console.error('Error deleting user from DB:', error);
+        throw new Error('Error deleting user from DB');
+    }
+});
+exports.deleteUserFromDB = deleteUserFromDB;

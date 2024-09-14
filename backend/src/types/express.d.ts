@@ -1,12 +1,9 @@
-// src/types/express.d.ts
-import 'express';
-
+import "express";
+import { User } from './user'; 
 declare global {
   namespace Express {
     interface Request {
-      user?: any; // Cambia 'any' al tipo de tu usuario si lo conoces
+      user?: User;  
     }
   }
 }
-
-//! Preguntar Moises
