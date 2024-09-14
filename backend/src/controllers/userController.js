@@ -1,4 +1,5 @@
 "use strict";
+//! userController.ts:
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -11,41 +12,51 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserData = void 0;
 const db_1 = require("../config/db");
-//! userController.ts:
-//! Propósito: Manejar operaciones relacionadas con la gestión de usuarios más allá de la autenticación.
-//! Funciones:
-//! getUserData: Obtención de datos de usuario.
-// Clase de error personalizada para el manejo de usuarios
+const http_status_codes_1 = require("http-status-codes");
 class UserError extends Error {
     constructor(message) {
         super(message);
         this.name = 'UserError';
     }
 }
-// Obtener datos del usuario
 const getUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
-        // Verificar que el ID esté presente
         if (!id) {
             throw new UserError('User ID is required');
         }
         const user = yield db_1.db.oneOrNone('SELECT * FROM users WHERE id = $1', [id]);
         if (user) {
-            res.json(user);
+            return res.status(http_status_codes_1.StatusCodes.OK).json({
+                status: http_status_codes_1.StatusCodes.OK,
+                message: 'User data fetched successfully',
+                data: user,
+            });
         }
         else {
-            res.status(404).json({ message: 'User not found' });
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+                status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                message: 'User not found',
+                data: null,
+            });
         }
     }
     catch (error) {
         if (error instanceof UserError) {
             console.error('User data retrieval error:', error.message);
-            res.status(400).json({ message: error.message }); // Errores de validación específicos
+            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                status: http_status_codes_1.StatusCodes.BAD_REQUEST,
+                message: error.message,
+                data: null,
+            });
         }
         else {
             console.error('Error retrieving user data:', error);
-            res.status(500).json({ message: 'Internal server error' });
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                message: 'Internal server error',
+                data: null,
+            });
         }
     }
 });

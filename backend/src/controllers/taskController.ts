@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
+import { StatusCodes } from 'http-status-codes';
 
-// Clase de error personalizada para el manejo de tareas
 class TaskError extends Error {
   constructor(message: string) {
     super(message);
@@ -9,23 +9,28 @@ class TaskError extends Error {
   }
 }
 
-// Obtener todas las tareas
 export const getTasks = async (req: Request, res: Response) => {
   try {
     const tasks = await db.any('SELECT * FROM tasks');
-    res.json(tasks);
+    return res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      message: 'Tasks fetched successfully',
+      data: tasks,
+    });
   } catch (error) {
     console.error('Error fetching tasks:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: 'Internal server error',
+      data: null,
+    });
   }
 };
 
-// Crear nueva tarea
 export const createTask = async (req: Request, res: Response) => {
-  const { description, status, user_id, created_at, title  } = req.body;
+  const { description, status, user_id, created_at, title } = req.body;
 
   try {
-    // Verificar que todos los campos obligatorios estén presentes
     if (!description || !status || !user_id || !created_at || !title) {
       throw new TaskError('Description, status, user_id, created_at, title are required');
     }
@@ -34,50 +39,75 @@ export const createTask = async (req: Request, res: Response) => {
       'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING task_id',
       [description, status, user_id, created_at, title]
     );
-    res.status(201).json({ task_id: result.task_id });
+    return res.status(StatusCodes.CREATED).json({
+      status: StatusCodes.CREATED,
+      message: 'Task created successfully',
+      data: { task_id: result.task_id },
+    });
   } catch (error) {
     if (error instanceof TaskError) {
       console.error('Task creation error:', error.message);
-      res.status(400).json({ message: error.message });
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: StatusCodes.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      });
     } else {
       console.error('Error creating task:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+        data: null,
+      });
     }
   }
 };
 
-// Actualizar tarea
 export const updateTask = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { description, status, user_id, created_at, title } = req.body;
 
   try {
-    // Verificar que el ID y los campos obligatorios estén presentes
     if (!id || !description || !status || !user_id || !created_at || !title) {
       throw new TaskError('ID, description, status, user_id, created_at and title are required');
     }
 
     const result = await db.result(
-      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4 WHERE task_id = $5, title = $6',
-      [description, status, user_id, created_at, id, title]
+      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5 WHERE task_id = $6',
+      [description, status, user_id, created_at, title, id]
     );
     if (result.rowCount) {
-      res.json({ message: 'Task updated' });
+      return res.status(StatusCodes.OK).json({
+        status: StatusCodes.OK,
+        message: 'Task updated successfully',
+        data: null,
+      });
     } else {
-      res.status(404).json({ message: 'Task not found' });
+      return res.status(StatusCodes.NOT_FOUND).json({
+        status: StatusCodes.NOT_FOUND,
+        message: 'Task not found',
+        data: null,
+      });
     }
   } catch (error) {
     if (error instanceof TaskError) {
       console.error('Task update error:', error.message);
-      res.status(400).json({ message: error.message }); 
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: StatusCodes.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      });
     } else {
       console.error('Error updating task:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+        data: null,
+      });
     }
   }
 };
 
-// Eliminar tarea
 export const deleteTask = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -88,17 +118,33 @@ export const deleteTask = async (req: Request, res: Response) => {
 
     const result = await db.result('DELETE FROM tasks WHERE task_id = $1', [id]);
     if (result.rowCount) {
-      res.json({ message: 'Task deleted' });
+      return res.status(StatusCodes.OK).json({
+        status: StatusCodes.OK,
+        message: 'Task deleted successfully',
+        data: null,
+      });
     } else {
-      res.status(404).json({ message: 'Task not found' });
+      return res.status(StatusCodes.NOT_FOUND).json({
+        status: StatusCodes.NOT_FOUND,
+        message: 'Task not found',
+        data: null,
+      });
     }
   } catch (error) {
     if (error instanceof TaskError) {
       console.error('Task deletion error:', error.message);
-      res.status(400).json({ message: error.message }); // Errores de validación específicos
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: StatusCodes.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      });
     } else {
       console.error('Error deleting task:', error);
-      res.status(500).json({ message: 'Internal server error' });
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: 'Internal server error',
+        data: null,
+      });
     }
   }
 };
