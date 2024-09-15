@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Form.css";
-import { Str } from "../../../utilities/js/utilities";
-import {
-  loginUser, //; Importa la función correcta para la autenticación
-  generateToken, //; Importa la función para generar un token de autenticación simulado
-} from "../../../data_base/mockDatabase.mjs"; //; Importa desde el archivo adecuado
+import { Str } from "../../../utilities/js/utilities.mjs"; //; Utilidades de JavaScript para manipular strings
 
 /**
  *1/ Componente de formulario controlado que utiliza las variables de CSS del root.
@@ -72,16 +68,32 @@ const Form = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //; Simulación de login: obtiene usuario y verifica contraseña
-    const userResult = loginUser(formData.username, formData.password);
+    try {
+      //; Llamada a la API para autenticar al usuario con el backend
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
 
-    if (userResult.status === 200) {
-      const token = generateToken(userResult.data.user_id);
-      sessionStorage.setItem("authToken", token);
-      console.log("Datos del usuario autenticado:", userResult.data); //; Mostrar datos del usuario en consola
-      navigate(`/user-profile`); //; Redirige al perfil de usuario si la autenticación es exitosa
-    } else {
-      alert("Usuario o contraseña incorrectos.");
+      const result = await response.json();
+
+      if (response.status === 200) {
+        const { token, user_id } = result.data; //; Extrae el token y el ID de usuario de la respuesta
+        sessionStorage.setItem("authToken", token); //; Almacena el token en el almacenamiento de sesión
+        console.log("Datos del usuario autenticado:", result.data); //; Mostrar datos del usuario en consola
+        navigate(`/user-profile`); //; Redirige al perfil de usuario si la autenticación es exitosa
+      } else {
+        alert("Usuario o contraseña incorrectos.");
+      }
+    } catch (error) {
+      console.error("Error en el inicio de sesión:", error);
+      alert("Error al conectar con el servidor.");
     }
   };
 
