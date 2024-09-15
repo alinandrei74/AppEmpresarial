@@ -63,77 +63,71 @@ const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
-        // Crear función y triggers para actualizar el campo updated_at en users
+        // Crear función y trigger para actualizar el campo updated_at en users
         yield db.none(`
+      CREATE OR REPLACE FUNCTION update_users_updated_at_column()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
       DO $$
       BEGIN
         IF NOT EXISTS (
-          SELECT 1
-          FROM pg_trigger
-          WHERE tgname = 'update_users_updated_at_trigger'
+          SELECT 1 FROM pg_trigger WHERE tgname = 'update_users_updated_at_trigger'
         ) THEN
-          CREATE OR REPLACE FUNCTION update_users_updated_at_column()
-          RETURNS TRIGGER AS $$
-          BEGIN
-            NEW.updated_at = NOW();
-            RETURN NEW;
-          END;
-          $$ language 'plpgsql';
-
           CREATE TRIGGER update_users_updated_at_trigger
           BEFORE UPDATE ON users
           FOR EACH ROW
-          EXECUTE PROCEDURE update_users_updated_at_column();
+          EXECUTE FUNCTION update_users_updated_at_column();
         END IF;
       END;
       $$;
     `);
-        // Crear función y triggers para actualizar el campo updated_at en tasks
+        // Crear función y trigger para actualizar el campo updated_at en tasks
         yield db.none(`
+      CREATE OR REPLACE FUNCTION update_tasks_updated_at_column()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
       DO $$
       BEGIN
         IF NOT EXISTS (
-          SELECT 1
-          FROM pg_trigger
-          WHERE tgname = 'update_tasks_updated_at_trigger'
+          SELECT 1 FROM pg_trigger WHERE tgname = 'update_tasks_updated_at_trigger'
         ) THEN
-          CREATE OR REPLACE FUNCTION update_tasks_updated_at_column()
-          RETURNS TRIGGER AS $$
-          BEGIN
-            NEW.updated_at = NOW();
-            RETURN NEW;
-          END;
-          $$ language 'plpgsql';
-
           CREATE TRIGGER update_tasks_updated_at_trigger
           BEFORE UPDATE ON tasks
           FOR EACH ROW
-          EXECUTE PROCEDURE update_tasks_updated_at_column();
+          EXECUTE FUNCTION update_tasks_updated_at_column();
         END IF;
       END;
       $$;
     `);
-        // Crear función y triggers para actualizar el campo updated_at en notes
+        // Crear función y trigger para actualizar el campo updated_at en notes
         yield db.none(`
+      CREATE OR REPLACE FUNCTION update_notes_updated_at_column()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
       DO $$
       BEGIN
         IF NOT EXISTS (
-          SELECT 1
-          FROM pg_trigger
-          WHERE tgname = 'update_notes_updated_at_trigger'
+          SELECT 1 FROM pg_trigger WHERE tgname = 'update_notes_updated_at_trigger'
         ) THEN
-          CREATE OR REPLACE FUNCTION update_notes_updated_at_column()
-          RETURNS TRIGGER AS $$
-          BEGIN
-            NEW.updated_at = NOW();
-            RETURN NEW;
-          END;
-          $$ language 'plpgsql';
-
           CREATE TRIGGER update_notes_updated_at_trigger
           BEFORE UPDATE ON notes
           FOR EACH ROW
-          EXECUTE PROCEDURE update_notes_updated_at_column();
+          EXECUTE FUNCTION update_notes_updated_at_column();
         END IF;
       END;
       $$;
