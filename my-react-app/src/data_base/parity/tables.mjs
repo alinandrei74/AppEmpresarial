@@ -3,59 +3,67 @@
 export const users = [
   {
     id: 1, // PK
-    name: "Admin",
+    username: "Admin",
     password: "Admin1.",
     role: "admin",
-    first_name: "John",
-    last_name: "Doe",
-    middle_name: "Smith",
+    firstname: "John",
+    lastname: "Smith",
+    name: "John Smith", // Añadido
     email: "example1@example.com",
-    phone_number: "1234567890",
+    telephone: "1234567890",
     dni: "123456789A",
     address: "123 Example St",
-    postal_code: "12345",
+    cp: "12345", // Código postal
+    created_at: "2024-09-01", // Añadido
+    updated_at: "2024-09-13", // Añadido
   },
   {
     id: 2, // PK
-    name: "Limpieza",
+    username: "Limpieza",
     password: "Limpieza1.",
     role: "cleaning",
-    first_name: "Jane",
-    last_name: "Doe",
-    middle_name: "Smith",
+    firstname: "Jane",
+    lastname: "Smith",
+    name: "Jane Smith", // Añadido
     email: "example2@example.com",
-    phone_number: "2345678901",
+    telephone: "2345678901",
     dni: "234567890B",
     address: "456 Test Ave",
-    postal_code: "23456",
+    cp: "23456", // Código postal
+    created_at: "2024-09-02", // Añadido
+    updated_at: "2024-09-13", // Añadido
   },
   {
     id: 3, // PK
-    name: "Entrega",
+    username: "Entrega",
     password: "Entrega1.",
     role: "delivery",
-    first_name: "Michael",
-    last_name: "Johnson",
-    middle_name: "Brown",
+    firstname: "Michael",
+    lastname: "Brown",
+    name: "Michael Brown", // Añadido
     email: "example3@example.com",
-    phone_number: "3456789012",
+    telephone: "3456789012",
     dni: "345678901C",
     address: "789 Sample Rd",
-    postal_code: "34567",
+    cp: "34567", // Código postal
+    created_at: "2024-09-03", // Añadido
+    updated_at: "2024-09-13", // Añadido
   },
   {
     id: 4, // PK
-    name: "Mantenimiento",
+    username: "Mantenimiento",
     password: "Mantenimiento1.",
     role: "maintenance",
-    first_name: "Emily",
-    last_name: "Taylor",
-    middle_name: "Martinez",
+    firstname: "Emily",
+    lastname: "Martinez",
+    name: "Emily Martinez", // Añadido
     email: "example4@example.com",
-    phone_number: "4567890123",
+    telephone: "4567890123",
     dni: "456789012D",
     address: "012 Mockingbird Ln",
-    postal_code: "45678",
+    cp: "45678", // Código postal
+    created_at: "2024-09-04", // Añadido
+    updated_at: "2024-09-13", // Añadido
   },
 ];
 
@@ -94,7 +102,7 @@ export const notes = [
     description: "Revisar todos los sistemas de seguridad en la planta baja.",
     created_at: "2024-09-01",
     updated_at: "2024-09-10",
-    name: "John Smith Doe", // Combinación de first_name, middle_name, y last_name de `users`
+    name: "John Smith", // Combinación de firstname, lastname de `users`
   },
   {
     id: 2, // PK
@@ -103,7 +111,7 @@ export const notes = [
     description: "Realizar limpieza profunda en el segundo piso.",
     created_at: "2024-09-02",
     updated_at: "2024-09-11",
-    name: "Jane Smith Doe", // Combinación de first_name, middle_name, y last_name de `users`
+    name: "Jane Smith", // Combinación de firstname, lastname de `users`
   },
   {
     id: 3, // PK
@@ -112,7 +120,7 @@ export const notes = [
     description: "Entregar paquete urgente en la recepción.",
     created_at: "2024-09-03",
     updated_at: "2024-09-12",
-    name: "Michael Brown Johnson", // Combinación de first_name, middle_name, y last_name de `users`
+    name: "Michael Brown", // Combinación de firstname, lastname de `users`
   },
   {
     id: 4, // PK
@@ -122,6 +130,6 @@ export const notes = [
       "Revisar y reparar equipos de aire acondicionado en el tercer piso.",
     created_at: "2024-09-04",
     updated_at: "2024-09-13",
-    name: "Emily Martinez Taylor", // Combinación de first_name, middle_name, y last_name de `users`
+    name: "Emily Martinez", // Combinación de firstname, lastname de `users`
   },
 ];

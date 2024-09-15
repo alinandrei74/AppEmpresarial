@@ -18,12 +18,18 @@ const UserProfile = () => {
     const token = sessionStorage.getItem("authToken");
     const verificationResult = verifyToken(token);
 
-    if (verificationResult.status === 401 || verificationResult.status === 403) {
+    if (
+      verificationResult.status === 401 ||
+      verificationResult.status === 403
+    ) {
       console.warn(verificationResult.message);
       alert(verificationResult.message);
       navigate("/login");
     } else if (verificationResult.status === 200) {
-      console.log("Todos los datos del usuario autenticado:", verificationResult.data);
+      console.log(
+        "Todos los datos del usuario autenticado:",
+        verificationResult.data
+      );
       setUserData(verificationResult.data);
     } else {
       console.error("Error inesperado al verificar el token.");
@@ -43,9 +49,12 @@ const UserProfile = () => {
 
         <Routes>
           <Route path="tasks" element={<Tasks userData={userData} />} />
-          <Route path="notes" element={<Notes userData={userData} />} />
+          {/* <Route path="notes" element={<Notes userData={userData} />} /> */}
           <Route path="calendar" element={<Calendar userData={userData} />} />
-          <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
+          <Route
+            path="tourist-places"
+            element={<TouristPlaces userData={userData} />}
+          />
         </Routes>
       </div>
     </div>
