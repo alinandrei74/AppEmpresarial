@@ -43,9 +43,22 @@ const updateUserInDB = (user_id, userData) => __awaiter(void 0, void 0, void 0, 
     try {
         if (!user_id)
             throw new UserDataError('User ID is required');
-        if (!userData.name && !userData.email)
-            throw new UserDataError('At least one field (name or email) is required to update');
-        const result = yield db_1.db.one('UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *', [userData.name || null, userData.email || null, user_id]);
+        // Verificar si el nuevo username ya existe (si se envía uno)
+        if (userData.username) {
+            const existingUser = yield db_1.db.oneOrNone('SELECT id FROM users WHERE username = $1 AND id != $2', [userData.username, user_id]);
+            if (existingUser) {
+                throw new UserDataError('Username is already taken');
+            }
+        }
+        // Extraer las claves y valores a actualizar dinámicamente
+        const fields = Object.keys(userData);
+        if (fields.length === 0)
+            throw new UserDataError('At least one field is required to update');
+        // Crear la parte dinámica de la consulta SQL
+        const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+        const values = [...fields.map(field => userData[field]), user_id]; // Añadir el user_id al final
+        // Realizar la actualización
+        const result = yield db_1.db.one(`UPDATE users SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`, values);
         return result; // Devolver el usuario actualizado
     }
     catch (error) {
