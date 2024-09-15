@@ -65,7 +65,7 @@ const loginUserService = (username, password) => __awaiter(void 0, void 0, void 
         if (!isMatch) {
             throw new Error('Invalid credentials');
         }
-        const token = jsonwebtoken_1.default.sign({ id: user.id, username: user.username, role: user.role }, SECRET_KEY, { expiresIn: '1h' });
+        const token = jsonwebtoken_1.default.sign({ user: user }, SECRET_KEY, { expiresIn: '1h' });
         return { token, user };
     }
     catch (error) {
