@@ -73,7 +73,7 @@ export const loginUser = async (req: Request, res: Response) => {
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       message: 'Login successful',
-      data: { token, user_id: user.id, role: user.role },  // Tipos de `user` ahora claros
+      data: { token: token, user: user },  
     });
   } catch (error: any) {
     console.error('Error during login:', error.message || error);
