@@ -84,9 +84,9 @@ const Form = () => {
       const result = await response.json();
 
       if (response.status === 200) {
-        const { token, user_id } = result.data; //; Extrae el token y el ID de usuario de la respuesta
+        const { token, user } = result.data; //; Extrae el token y el ID de usuario de la respuesta
         sessionStorage.setItem("authToken", token); //; Almacena el token en el almacenamiento de sesión
-        console.log("Datos del usuario autenticado:", result.data); //; Mostrar datos del usuario en consola
+        console.log("Datos del usuario autenticado:", user); //; Mostrar datos del usuario en consola
         navigate(`/user-profile`); //; Redirige al perfil de usuario si la autenticación es exitosa
       } else {
         alert("Usuario o contraseña incorrectos.");
