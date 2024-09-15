@@ -74,7 +74,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
             message: 'Login successful',
-            data: { token, user_id: user.id, role: user.role }, // Tipos de `user` ahora claros
+            data: { token: token, user: user },
         });
     }
     catch (error) {

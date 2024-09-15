@@ -29,15 +29,35 @@ export const getUserByIdFromDB = async (user_id: string): Promise<User | null> =
 };
 
 // Actualiza un usuario en la base de datos
-export const updateUserInDB = async (user_id: string, userData: { name?: string; email?: string }) => {
+export const updateUserInDB = async (user_id: string, userData: Partial<User>) => {
   try {
     if (!user_id) throw new UserDataError('User ID is required');
-    if (!userData.name && !userData.email) throw new UserDataError('At least one field (name or email) is required to update');
 
+    // Verificar si el nuevo username ya existe (si se envía uno)
+    if (userData.username) {
+      const existingUser = await db.oneOrNone(
+        'SELECT id FROM users WHERE username = $1 AND id != $2',
+        [userData.username, user_id]
+      );
+      if (existingUser) {
+        throw new UserDataError('Username is already taken');
+      }
+    }
+
+    // Extraer las claves y valores a actualizar dinámicamente
+    const fields = Object.keys(userData);
+    if (fields.length === 0) throw new UserDataError('At least one field is required to update');
+
+    // Crear la parte dinámica de la consulta SQL
+    const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
+    const values = [...fields.map(field => (userData as any)[field]), user_id]; // Añadir el user_id al final
+
+    // Realizar la actualización
     const result = await db.one(
-      'UPDATE users SET name = $1, email = $2 WHERE id = $3 RETURNING *',
-      [userData.name || null, userData.email || null, user_id]
+      `UPDATE users SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`,
+      values
     );
+    
     return result; // Devolver el usuario actualizado
   } catch (error) {
     if (error instanceof UserDataError) {
