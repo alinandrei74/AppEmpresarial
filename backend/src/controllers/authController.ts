@@ -12,7 +12,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
   try {
     const requiredFields: Array<keyof User> = [
-      'role', 'username', 'name', 'firstName', 'lastName', 'dni', 
+      'role', 'username', 'name', 'firstname', 'lastname', 'dni', 
       'email', 'telephone', 'address', 'cp', 'password'
     ];
 

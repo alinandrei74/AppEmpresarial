@@ -63,11 +63,11 @@ exports.updateUserInDB = updateUserInDB;
 // Crea un nuevo usuario
 const createUserInDB = (userData) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield db_1.db.one(`INSERT INTO users (role, username, name, firstName, lastName, dni, email, telephone, address, cp, password)
+        const result = yield db_1.db.one(`INSERT INTO users (role, username, name, firstname, lastname, dni, email, telephone, address, cp, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`, [
             userData.role, userData.username, userData.name,
-            userData.firstName, userData.lastName, userData.dni,
+            userData.firstname, userData.lastname, userData.dni,
             userData.email, userData.telephone, userData.address,
             userData.cp, userData.password
         ]);

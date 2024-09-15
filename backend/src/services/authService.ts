@@ -10,7 +10,7 @@ const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 
 // Define los campos obligatorios
 const requiredFields: (keyof User)[] = [
-  'role', 'username', 'name', 'firstName', 'lastName',
+  'role', 'username', 'name', 'firstname', 'lastname',
   'dni', 'email', 'telephone', 'address', 'cp', 'password'
 ];
 

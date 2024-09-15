@@ -20,7 +20,7 @@ const http_status_codes_1 = require("http-status-codes");
 const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 // Define los campos obligatorios
 const requiredFields = [
-    'role', 'username', 'name', 'firstName', 'lastName',
+    'role', 'username', 'name', 'firstname', 'lastname',
     'dni', 'email', 'telephone', 'address', 'cp', 'password'
 ];
 // Función para lanzar errores, mejorando el tipado

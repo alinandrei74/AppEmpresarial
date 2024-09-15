@@ -21,7 +21,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const userData = req.body; // Extraer los datos del cuerpo de la solicitud
     try {
         const requiredFields = [
-            'role', 'username', 'name', 'firstName', 'lastName', 'dni',
+            'role', 'username', 'name', 'firstname', 'lastname', 'dni',
             'email', 'telephone', 'address', 'cp', 'password'
         ];
         // Verificar que todos los campos requeridos están presentes
