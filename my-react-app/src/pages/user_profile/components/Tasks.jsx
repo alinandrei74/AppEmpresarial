@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./Tasks.css";
 
 const Tasks = ({ userData }) => {
-  const [tasks, setTasks] = useState([]); // Estado de las tareas
-  const [users, setUsers] = useState([]); // Estado de los usuarios obtenidos del backend
-  const [newTaskDescription, setNewTaskDescription] = useState(""); // Descripción de la nueva tarea
-  const [newTaskAssignedTo, setNewTaskAssignedTo] = useState(""); // Usuario asignado a la nueva tarea
+  const [tasks, setTasks] = useState([]); //; Estado de las tareas
+  const [users, setUsers] = useState([]); //; Estado de los usuarios obtenidos del backend
+  const [newTaskDescription, setNewTaskDescription] = useState(""); //; Descripción de la nueva tarea
+  const [newTaskAssignedTo, setNewTaskAssignedTo] = useState(""); //; Usuario asignado a la nueva tarea
 
   useEffect(() => {
     console.log("Componente montado. Cargando tareas y usuarios.");
     loadTasks();
-    loadUsers(); // Cargar usuarios al montar el componente
-  }, []); // Solo se llama una vez cuando el componente se monta
+    loadUsers(); //; Cargar usuarios al montar el componente
+  }, []); //; Solo se llama una vez cuando el componente se monta
 
   const loadTasks = async () => {
     try {
@@ -28,14 +28,14 @@ const Tasks = ({ userData }) => {
       }
 
       const tasksResult = await response.json();
-      console.log("Tareas cargadas desde el servidor:", tasksResult.data); // Debug: Ver las tareas cargadas
-      setTasks(tasksResult.data); // Actualiza el estado de las tareas
+      console.log("Tareas cargadas desde el servidor:", tasksResult.data); //; Debug: Ver las tareas cargadas
+      setTasks(tasksResult.data); //; Actualiza el estado de las tareas
     } catch (error) {
       console.error("Error al cargar tareas:", error.message);
     }
   };
 
-  // Nueva función para cargar los usuarios
+  //; Nueva función para cargar los usuarios
   const loadUsers = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/users/all", {
@@ -51,8 +51,8 @@ const Tasks = ({ userData }) => {
       }
 
       const usersResult = await response.json();
-      console.log("Usuarios cargados desde el servidor:", usersResult.data); // Debug: Ver los usuarios cargados
-      setUsers(usersResult.data); // Actualiza el estado de los usuarios
+      console.log("Usuarios cargados desde el servidor:", usersResult.data); //; Debug: Ver los usuarios cargados
+      setUsers(usersResult.data); //; Actualiza el estado de los usuarios
     } catch (error) {
       console.error("Error al cargar usuarios:", error.message);
     }
@@ -66,7 +66,7 @@ const Tasks = ({ userData }) => {
         description: newTaskDescription,
         status: "pending",
         user_id: newTaskAssignedTo,
-        created_at: new Date().toISOString(), // Fecha de creación
+        created_at: new Date().toISOString(), //; Fecha de creación
       };
       try {
         const response = await fetch("http://localhost:3000/api/tasks", {
@@ -82,7 +82,7 @@ const Tasks = ({ userData }) => {
           setNewTaskDescription("");
           setNewTaskAssignedTo("");
           setTasks((prevTasks) => [...prevTasks, result.data]);
-          console.log("Nueva tarea agregada al estado:", result.data); // Debug: Ver la nueva tarea creada
+          console.log("Nueva tarea agregada al estado:", result.data); //; Debug: Ver la nueva tarea creada
         } else {
           console.error("Error al crear la tarea:", result.message);
         }
@@ -93,10 +93,10 @@ const Tasks = ({ userData }) => {
   };
 
   const handleCompleteTask = async (taskId) => {
-    console.log("Completando tarea con ID:", taskId); // Debug: Ver el ID de la tarea a completar
+    console.log("Completando tarea con ID:", taskId); //; Debug: Ver el ID de la tarea a completar
     const taskToUpdate = tasks.find((task) => task.id === taskId);
     if (taskToUpdate && taskToUpdate.user_id === userData.id) {
-      const updatedTask = { status: "done" }; // Solo actualizamos el campo 'status'
+      const updatedTask = { status: "done" }; //; Solo actualizamos el campo 'status'
       try {
         const response = await fetch(
           `http://localhost:3000/api/tasks/${taskId}`,
@@ -114,7 +114,7 @@ const Tasks = ({ userData }) => {
           setTasks((prevTasks) =>
             prevTasks.map((task) => (task.id === taskId ? result.data : task))
           );
-          console.log("Tarea completada:", result.data); // Debug: Ver la tarea actualizada
+          console.log("Tarea completada:", result.data); //; Debug: Ver la tarea actualizada
         } else {
           console.error("Error al completar la tarea:", result.message);
         }
@@ -125,7 +125,7 @@ const Tasks = ({ userData }) => {
   };
 
   const handleDeleteTask = async (taskId) => {
-    console.log("Intentando eliminar tarea con ID:", taskId); // Debug: Ver el ID de la tarea a eliminar
+    console.log("Intentando eliminar tarea con ID:", taskId); //; Debug: Ver el ID de la tarea a eliminar
     if (userData.role === "admin") {
       try {
         const response = await fetch(
@@ -139,12 +139,12 @@ const Tasks = ({ userData }) => {
           }
         );
         const result = await response.json();
-        console.log("Resultado de eliminación:", result); // Debug: Ver el resultado de la eliminación
+        console.log("Resultado de eliminación:", result); //; Debug: Ver el resultado de la eliminación
         if (response.ok) {
           setTasks((prevTasks) =>
             prevTasks.filter((task) => task.id !== taskId)
           );
-          console.log("Tarea eliminada exitosamente"); // Debug: Confirmar eliminación
+          console.log("Tarea eliminada exitosamente"); //; Debug: Confirmar eliminación
         } else {
           console.error("Error al eliminar la tarea:", result.message);
         }
@@ -155,7 +155,7 @@ const Tasks = ({ userData }) => {
   };
 
   const getUsernameById = (userId) => {
-    const user = users.find((user) => user.id === userId); // Usamos el estado `users` cargado desde el backend
+    const user = users.find((user) => user.id === userId); //; Usamos el estado `users` cargado desde el backend
     return user ? user.username : "Usuario desconocido";
   };
 
