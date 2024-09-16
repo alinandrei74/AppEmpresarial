@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUserData = void 0;
+exports.getAllUsers = exports.getUserData = void 0;
 const db_1 = require("../config/db");
 const http_status_codes_1 = require("http-status-codes");
 class UserError extends Error {
@@ -19,6 +19,7 @@ class UserError extends Error {
         this.name = 'UserError';
     }
 }
+// Función para obtener datos de un usuario específico
 const getUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
     try {
@@ -61,3 +62,32 @@ const getUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getUserData = getUserData;
+// Función para obtener datos de todos los usuarios
+const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield db_1.db.manyOrNone('SELECT * FROM users');
+        if (users && users.length > 0) {
+            return res.status(http_status_codes_1.StatusCodes.OK).json({
+                status: http_status_codes_1.StatusCodes.OK,
+                message: 'All users fetched successfully',
+                data: users,
+            });
+        }
+        else {
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+                status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                message: 'No users found',
+                data: null,
+            });
+        }
+    }
+    catch (error) {
+        console.error('Error retrieving all users:', error);
+        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+            message: 'Internal server error',
+            data: null,
+        });
+    }
+});
+exports.getAllUsers = getAllUsers;
