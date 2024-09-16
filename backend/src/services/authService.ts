@@ -67,12 +67,10 @@ export const loginUserService = async (username: string, password: string): Prom
     }
 
     const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role },
       { user: user },
       SECRET_KEY,
       { expiresIn: '1h' }
     );
-
     return { token, user };
   } catch (error) {
     throw new Error('Login failed');

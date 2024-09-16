@@ -5,7 +5,8 @@ import { authenticateToken } from '../middlewares/authMiddleware'; // Asegúrate
 const router = Router();
 
 // Ruta protegida para obtener datos del usuario
-router.get('/user-profile/:id', authenticateToken, getUserData,getAllUsers);
+router.get('/user-profile/:id', authenticateToken, getUserData);
+router.get('/all',authenticateToken,getAllUsers)
 
 export default router;
 
