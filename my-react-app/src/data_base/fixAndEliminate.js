@@ -70,3 +70,4 @@ export const deleteNote = (noteId) => {
   }
   return false;
 };
+

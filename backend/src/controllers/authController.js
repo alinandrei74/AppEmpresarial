@@ -14,74 +14,111 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.logoutUser = exports.verifyToken = exports.loginUser = exports.registerUser = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const http_status_codes_1 = require("http-status-codes");
 const authService_1 = require("../services/authService");
-// Clave secreta para JWT desde las variables de entorno
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
-// Controlador para el registro de usuarios
+const JWT_SECRET = process.env.JWT_SECRET;
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userData = req.body;
+    const userData = req.body; // Extraer los datos del cuerpo de la solicitud
     try {
-        // Verifica que todos los campos necesarios estén presentes
-        const requiredFields = ['rol', 'username', 'name', 'firstName', 'lastName', 'dni', 'email', 'telephone', 'address', 'cp', 'password'];
+        const requiredFields = [
+            'role', 'username', 'name', 'firstname', 'lastname', 'dni',
+            'email', 'telephone', 'address', 'cp', 'password'
+        ];
+        // Verificar que todos los campos requeridos están presentes
         for (const field of requiredFields) {
             if (!userData[field]) {
-                return res.status(400).json({ message: `Field ${field} is required` });
+                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                    status: http_status_codes_1.StatusCodes.BAD_REQUEST,
+                    message: `Field ${field} is required`,
+                    data: null,
+                });
             }
         }
-        // Llama a `registerUserService` que manejará la verificación de si el usuario existe y la creación
-        const user = yield (0, authService_1.registerUserService)(userData);
-        res.status(201).json({ id: user.id, email: user.email });
+        // Llamar al servicio para registrar al usuario en la base de datos
+        const newUser = yield (0, authService_1.registerUserService)(userData);
+        return res.status(http_status_codes_1.StatusCodes.CREATED).json({
+            status: http_status_codes_1.StatusCodes.CREATED,
+            message: 'User registered successfully',
+            data: newUser,
+        });
     }
     catch (error) {
-        if (error instanceof Error) {
-            if (error.message.includes('Field')) {
-                return res.status(400).json({ message: error.message });
-            }
-            if (error.message.includes('Database')) {
-                return res.status(500).json({ message: 'Database error' });
-            }
-            return res.status(500).json({ message: 'An unexpected error occurred during registration' });
-        }
-        res.status(500).json({ message: 'An unexpected error occurred during registration' });
+        console.error('Error during user registration:', error.message || error);
+        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+            message: error.message || 'An unexpected error occurred during registration',
+            data: null,
+        });
     }
 });
 exports.registerUser = registerUser;
-// Controlador para el inicio de sesión de usuarios
 const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = req.body;
-    if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+            status: http_status_codes_1.StatusCodes.BAD_REQUEST,
+            message: 'Username and password are required',
+            data: null,
+        });
     }
     try {
-        const token = yield (0, authService_1.loginUserService)(email, password);
-        if (!token) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+        const result = yield (0, authService_1.loginUserService)(username, password);
+        if (!result) {
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+                message: 'Invalid credentials',
+                data: null,
+            });
         }
-        res.json({ token });
+        const { token, user } = result;
+        return res.status(http_status_codes_1.StatusCodes.OK).json({
+            status: http_status_codes_1.StatusCodes.OK,
+            message: 'Login successful',
+            data: { token: token, user: user },
+        });
     }
     catch (error) {
-        console.error('Error during login:', error); // Log del error para obtener más detalles
-        res.status(500).json({ message: 'An unexpected error occurred during login' });
+        console.error('Error during login:', error.message || error);
+        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+            message: error.message || 'An unexpected error occurred during login',
+            data: null,
+        });
     }
 });
 exports.loginUser = loginUser;
-// Controlador para verificar el token
 const verifyToken = (req, res) => {
-    var _a;
-    const token = (_a = req.headers.authorization) === null || _a === void 0 ? void 0 : _a.split(' ')[1];
-    if (!token)
-        return res.status(401).json({ message: 'Token not provided' });
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+            status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+            message: 'Token not provided or malformed',
+            data: null,
+        });
+    }
+    const token = authHeader.split(' ')[1];
     jsonwebtoken_1.default.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err)
-            return res.status(401).json({ message: 'Invalid or expired token' });
-        res.status(200).json(decoded);
+        if (err) {
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+                message: 'Invalid or expired token',
+                data: null,
+            });
+        }
+        return res.status(http_status_codes_1.StatusCodes.OK).json({
+            status: http_status_codes_1.StatusCodes.OK,
+            message: 'Token verified successfully',
+            data: decoded,
+        });
     });
 };
 exports.verifyToken = verifyToken;
-// Controlador para cerrar sesión
 const logoutUser = (req, res) => {
-    // La invalidación del token en el cliente generalmente se maneja allí
-    // Aquí simplemente devolvemos una respuesta de éxito
-    res.json({ message: 'Logout successful' });
+    // En este caso, simplemente respondemos con un éxito
+    return res.status(http_status_codes_1.StatusCodes.OK).json({
+        status: http_status_codes_1.StatusCodes.OK,
+        message: 'Logout successful',
+        data: null,
+    });
 };
 exports.logoutUser = logoutUser;

@@ -1,78 +1,125 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { StatusCodes } from 'http-status-codes';
 import { registerUserService, loginUserService } from '../services/authService';
+import { User } from '../types/user';
 
-// Clave secreta para JWT desde las variables de entorno
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
 
-// Controlador para el registro de usuarios
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 export const registerUser = async (req: Request, res: Response) => {
-  const userData = req.body;
+  const userData: User = req.body;  // Extraer los datos del cuerpo de la solicitud
+
   try {
-    // Verifica que todos los campos necesarios estén presentes
-    const requiredFields = ['rol', 'username', 'name', 'firstName', 'lastName', 'dni', 'email', 'telephone', 'address', 'cp', 'password'];
+    const requiredFields: Array<keyof User> = [
+      'role', 'username', 'name', 'firstname', 'lastname', 'dni', 
+      'email', 'telephone', 'address', 'cp', 'password'
+    ];
+
+    // Verificar que todos los campos requeridos están presentes
     for (const field of requiredFields) {
       if (!userData[field]) {
-        return res.status(400).json({ message: `Field ${field} is required` });
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          status: StatusCodes.BAD_REQUEST,
+          message: `Field ${field} is required`,
+          data: null,
+        });
       }
     }
 
-    // Llama a `registerUserService` que manejará la verificación de si el usuario existe y la creación
-    const user = await registerUserService(userData);
-    res.status(201).json({ id: user.id, email: user.email });
-  } catch (error) {
-    if (error instanceof Error) {
-      if (error.message.includes('Field')) {
-        return res.status(400).json({ message: error.message });
-      }
-      if (error.message.includes('Database')) {
-        return res.status(500).json({ message: 'Database error' });
-      }
-      return res.status(500).json({ message: 'An unexpected error occurred during registration' });
-    }
-    res.status(500).json({ message: 'An unexpected error occurred during registration' });
+    // Llamar al servicio para registrar al usuario en la base de datos
+    const newUser = await registerUserService(userData);
+
+    return res.status(StatusCodes.CREATED).json({
+      status: StatusCodes.CREATED,
+      message: 'User registered successfully',
+      data: newUser,
+    });
+
+   
+  } catch (error: any) {
+    console.error('Error during user registration:', error.message || error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || 'An unexpected error occurred during registration',
+      data: null,
+    });
   }
 };
 
-// Controlador para el inicio de sesión de usuarios
 export const loginUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+  if (!username || !password) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      status: StatusCodes.BAD_REQUEST,
+      message: 'Username and password are required',
+      data: null,
+    });
   }
 
   try {
-    const token = await loginUserService(email, password);
-
-    if (!token) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    const result = await loginUserService(username, password);
+    if (!result) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        status: StatusCodes.UNAUTHORIZED,
+        message: 'Invalid credentials',
+        data: null,
+      });
     }
 
-    res.json({ token });
-  } catch (error) {
-    console.error('Error during login:', error); // Log del error para obtener más detalles
-    res.status(500).json({ message: 'An unexpected error occurred during login' });
+    const { token, user }: { token: string; user: User } = result;
+
+    return res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      message: 'Login successful',
+      data: { token: token, user: user },  
+    });
+  } catch (error: any) {
+    console.error('Error during login:', error.message || error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: error.message || 'An unexpected error occurred during login',
+      data: null,
+    });
   }
 };
 
-// Controlador para verificar el token
 export const verifyToken = (req: Request, res: Response) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  const authHeader = req.headers.authorization;
 
-  if (!token) return res.status(401).json({ message: 'Token not provided' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      status: StatusCodes.UNAUTHORIZED,
+      message: 'Token not provided or malformed',
+      data: null,
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
-    if (err) return res.status(401).json({ message: 'Invalid or expired token' });
+    if (err) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        status: StatusCodes.UNAUTHORIZED,
+        message: 'Invalid or expired token',
+        data: null,
+      });
+    }
 
-    res.status(200).json(decoded);
+    return res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      message: 'Token verified successfully',
+      data: decoded,
+    });
   });
 };
 
-// Controlador para cerrar sesión
 export const logoutUser = (req: Request, res: Response) => {
-  // La invalidación del token en el cliente generalmente se maneja allí
-  // Aquí simplemente devolvemos una respuesta de éxito
-  res.json({ message: 'Logout successful' });
+  // En este caso, simplemente respondemos con un éxito
+  return res.status(StatusCodes.OK).json({
+    status: StatusCodes.OK,
+    message: 'Logout successful',
+    data: null,
+  });
 };

@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./Form.css";
-import { createUser } from "../../../data_base/mockDatabase.mjs";
 
+/**
+ * Componente para el formulario de registro de usuarios.
+ * @returns {JSX.Element} El componente del formulario.
+ */
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [responseMessage, setResponseMessage] = useState(""); //; Mensaje de respuesta de la API
@@ -93,35 +96,48 @@ const Form = () => {
     }),
 
     onSubmit: async (values) => {
-      //; Estructura los datos correctamente para enviarlos al backend
-      const response = await createUser({
-        username: values.username,
-        password: values.password,
-        role_name: values.rol.toLowerCase(),
-        personalData: {
-          first_name: values.fullName.split(" ")[0], //; Primer nombre
-          last_name: values.fullName.split(" ").slice(1).join(" "), //; Apellidos restantes
-          middle_name: "", //; No se obtiene del formulario
-        },
-        contactData: {
-          email: values.email,
-          phone_number: values.telephone,
-        },
-        additionalData: {
-          dni: values.dni,
-          address: values.address,
-          postal_code: values.postal_code,
-        },
-        tasks: [], //; Inicialmente vacío
-      });
+      try {
+        //; Separa el nombre completo en `name`, `firstname` y `lastname`
+        const [name, firstname, ...lastnameArray] = values.fullName.split(" ");
+        const lastname = lastnameArray.join(" ");
 
-      if (response.status === 201) {
-        setResponseMessage("Usuario registrado con éxito.");
-        setIsErrorMessage(false); //; Indica que el mensaje es de éxito
-      } else {
-        setResponseMessage(
-          "Error al registrar el usuario: " + response.message
+        //; Estructura los datos para la petición POST al backend
+        const response = await fetch(
+          "http://localhost:3000/api/auth/register",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username: values.username,
+              password: values.password,
+              role: values.rol.toLowerCase(),
+              name, //; Primer nombre
+              firstname, //; Segundo nombre o primer apellido
+              lastname, //; Apellidos restantes
+              email: values.email,
+              telephone: values.telephone,
+              dni: values.dni,
+              address: values.address,
+              cp: values.postal_code, //; Código postal
+              created_at: new Date().toISOString().split("T")[0], //; Fecha actual en formato YYYY-MM-DD
+              updated_at: new Date().toISOString().split("T")[0], //; Fecha actual en formato YYYY-MM-DD
+            }),
+          }
         );
+
+        const data = await response.json();
+
+        if (response.status === 201) {
+          setResponseMessage("Usuario registrado con éxito.");
+          setIsErrorMessage(false); //; Indica que el mensaje es de éxito
+        } else {
+          setResponseMessage("Error al registrar el usuario: " + data.message);
+          setIsErrorMessage(true); //; Indica que el mensaje es de error
+        }
+      } catch (error) {
+        setResponseMessage("Error al registrar el usuario: " + error.message);
         setIsErrorMessage(true); //; Indica que el mensaje es de error
       }
     },
@@ -287,6 +303,7 @@ const Form = () => {
           <div>{formik.errors.telephone}</div>
         ) : null}
       </div>
+
       {/* Campo de Contraseña */}
       <div className="form-group">
         <label htmlFor="password" className="form-label required">
@@ -307,6 +324,7 @@ const Form = () => {
           <div>{formik.errors.password}</div>
         ) : null}
       </div>
+
       <div className="form-group form-checkbox-group">
         <input
           type="checkbox"
