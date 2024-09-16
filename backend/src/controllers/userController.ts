@@ -3,6 +3,7 @@
 //! Propósito: Manejar operaciones relacionadas con la gestión de usuarios más allá de la autenticación.
 //! Funciones:
 //! getUserData: Obtención de datos de usuario.
+//! getAllUsers: Obtención de todos los usuarios.
 
 import { Request, Response } from 'express';
 import { db } from '../config/db';
@@ -15,6 +16,7 @@ class UserError extends Error {
   }
 }
 
+// Función para obtener datos de un usuario específico
 export const getUserData = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -54,5 +56,33 @@ export const getUserData = async (req: Request, res: Response) => {
         data: null,
       });
     }
+  }
+};
+
+// Función para obtener datos de todos los usuarios
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users = await db.manyOrNone('SELECT * FROM users');
+
+    if (users && users.length > 0) {
+      return res.status(StatusCodes.OK).json({
+        status: StatusCodes.OK,
+        message: 'All users fetched successfully',
+        data: users,
+      });
+    } else {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        status: StatusCodes.NOT_FOUND,
+        message: 'No users found',
+        data: null,
+      });
+    }
+  } catch (error) {
+    console.error('Error retrieving all users:', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: 'Internal server error',
+      data: null,
+    });
   }
 };

@@ -6,4 +6,5 @@ const authMiddleware_1 = require("../middlewares/authMiddleware"); // Asegúrate
 const router = (0, express_1.Router)();
 // Ruta protegida para obtener datos del usuario
 router.get('/user-profile/:id', authMiddleware_1.authenticateToken, userController_1.getUserData);
+router.get('/all', authMiddleware_1.authenticateToken, userController_1.getAllUsers);
 exports.default = router;

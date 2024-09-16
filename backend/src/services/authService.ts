@@ -6,8 +6,6 @@ import { User } from '../types/user';
 
 const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 
-
-
 // Define los campos obligatorios
 const requiredFields: (keyof User)[] = [
   'role', 'username', 'name', 'firstname', 'lastname',
@@ -36,7 +34,7 @@ export const registerUserService = async (userData: User) => {
       password: hashedPassword
     });
 
-    
+
     return {
       status: StatusCodes.CREATED,
       message: 'User registered successfully',
@@ -48,7 +46,7 @@ export const registerUserService = async (userData: User) => {
     console.error('Registration error:', errorMessage);
 
     if (error.status) {
-      throw error; 
+      throw error;
     }
 
     throwError(StatusCodes.INTERNAL_SERVER_ERROR, 'An unexpected error occurred during registration');
@@ -69,12 +67,11 @@ export const loginUserService = async (username: string, password: string): Prom
     }
 
     const token = jwt.sign(
-      { user: user },  
+      { user: user },
       SECRET_KEY,
       { expiresIn: '1h' }
     );
-
-    return { token, user };  
+    return { token, user };
   } catch (error) {
     throw new Error('Login failed');
   }
@@ -108,3 +105,4 @@ const getUserService = async (identifier: string, getUserFn: (id: string) => Pro
 // Servicios para obtener usuario por username o email, reutilizando la lógica de `getUserService`
 export const getUserByUsernameService = (username: string) => getUserService(username, getUserByUsernameFromDB, 'username');
 export const getUserByEmailService = (email: string) => getUserService(email, getUserByEmailFromDB, 'email');
+
