@@ -83,7 +83,7 @@
 }
 
 .toggle-mode:hover {
-  background-color: var(--clr-primary-dark);
+  background-color: var(--primary-dark);
 }
 
 .menu-icon {

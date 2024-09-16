@@ -9,7 +9,6 @@ import UserDetails from "./components/UserDetails";
 import Register from "../register/Register";
 import UserManagement from "./UserManagement";
 import "./UserProfile.css";
-import { verifyToken } from "../../data_base/mockDatabase.mjs";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -18,26 +17,51 @@ const UserProfile = () => {
 
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
-    const verificationResult = verifyToken(token);
 
-    if (
-      verificationResult.status === 401 ||
-      verificationResult.status === 403
-    ) {
-      console.warn(verificationResult.message);
-      alert(verificationResult.message);
-      navigate("/login");
-    } else if (verificationResult.status === 200) {
-      console.log(
-        "Todos los datos del usuario autenticado:",
-        verificationResult.data
-      );
-      setUserData(verificationResult.data);
-    } else {
-      console.error("Error inesperado al verificar el token.");
-      navigate("/login");
+    //; Verifica si el token existe, de lo contrario redirige a /login
+    if (!token) {
+      handleInvalidToken("Token no encontrado. Por favor, inicia sesión.");
+      return;
     }
+
+    const verifyToken = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/auth/verify", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          const result = await response.json();
+          const userData = result.data.user;
+
+          setUserData(result.data.user);
+          console.log("Todos los datos del usuario autenticado:", userData);
+        } else {
+          const result = await response.json();
+          handleInvalidToken(result.message);
+        }
+      } catch (error) {
+        console.error("Error al conectar con el servidor:", error);
+        handleInvalidToken(
+          "Error al verificar el token. Por favor, intenta nuevamente."
+        );
+      }
+    };
+
+    verifyToken();
   }, [navigate]);
+
+  /**
+   ** Maneja el token inválido eliminándolo del almacenamiento de sesión y redirigiendo a la página de inicio de sesión.
+   * @param {string} message - El mensaje a mostrar al usuario.
+   */
+  const handleInvalidToken = (message) => {
+    console.warn(message);
+    alert(message);
+    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
+    navigate("/login");
+  };
 
   if (!userData) return null;
 

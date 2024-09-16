@@ -8,6 +8,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { StatusCodes } from 'http-status-codes';
+import { log } from 'console';
 
 class UserError extends Error {
   constructor(message: string) {
@@ -61,9 +62,10 @@ export const getUserData = async (req: Request, res: Response) => {
 
 // Función para obtener datos de todos los usuarios
 export const getAllUsers = async (req: Request, res: Response) => {
+  console.log("RUN getAllUsers") //!#
   try {
     const users = await db.manyOrNone('SELECT * FROM users');
-
+    console.log(users) //!#
     if (users && users.length > 0) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,

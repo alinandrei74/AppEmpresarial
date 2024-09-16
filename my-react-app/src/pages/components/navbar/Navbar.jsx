@@ -33,13 +33,13 @@ export default function Navbar() {
           ☰
         </div>
 
-        <div className={`navbar-logo ${isMenuOpen ? 'menu-item' : ''}`}>
+        <div className={`navbar-logo ${isMenuOpen ? "menu-item" : ""}`}>
           <Link to="/user-profile">
             <h1>Mi perfil</h1>
           </Link>
         </div>
 
-        <div className={`navbar-menu ${isMenuOpen ? 'active' : ''}`}>
+        <div className={`navbar-menu ${isMenuOpen ? "active" : ""}`}>
           {/* Menú vacío por ahora */}
         </div>
 

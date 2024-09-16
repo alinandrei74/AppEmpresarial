@@ -9,11 +9,7 @@ import "./UserDetails.css"; // Importa los estilos CSS
  */
 const UserDetails = ({ userData }) => {
   // Combina los nombres del usuario si están disponibles
-  const fullName = [
-    userData.personalData?.first_name,
-    userData.personalData?.middle_name,
-    userData.personalData?.last_name,
-  ]
+  const fullName = [userData?.name, userData?.firstname, userData?.lastname]
     .filter(Boolean) // Filtra los valores que no sean nulos o indefinidos
     .join(" "); // Une los nombres con un espacio
 
@@ -21,10 +17,10 @@ const UserDetails = ({ userData }) => {
     <div className="user-details-container">
       <div className="user-details-header">
         {/* <h2>Información del Usuario</h2> */}
-        <h2>user_id: '{userData.user_id}'</h2>
-        {userData.role_name && (
-          <div className={`user-role ${userData.role_name.toLowerCase()}`}>
-            {userData.role_name}
+        <h2>id: '{userData.id}'</h2>
+        {userData.role && (
+          <div className={`user-role ${userData.role.toLowerCase()}`}>
+            {userData.role}
           </div>
         )}
       </div>
@@ -40,38 +36,34 @@ const UserDetails = ({ userData }) => {
             <strong>Nombre Completo:</strong> {fullName}
           </div>
         )}
-        {userData.additionalData && userData.additionalData.dni && (
+        {userData.dni && (
           <div className="user-info-item">
-            <strong>DNI:</strong> {userData.additionalData.dni}
+            <strong>DNI:</strong> {userData.dni}
           </div>
         )}
-        {userData.additionalData &&
-          userData.additionalData.address &&
-          userData.additionalData.postal_code && (
-            <div className="user-info-item">
-              <strong>Dirección:</strong> {userData.additionalData.address},{" "}
-              {userData.additionalData.postal_code}
-            </div>
-          )}
+        {userData.address && userData.cp && (
+          <div className="user-info-item">
+            <strong>Dirección:</strong> {userData.address}, {userData.cp}
+          </div>
+        )}
       </div>
-      {userData.contactData &&
-        (userData.contactData.email || userData.contactData.phone_number) && (
-          <div className="user-contact">
-            <h3>Contacto</h3>
-            <ul>
-              {userData.contactData.email && (
-                <li>
-                  <span>Email:</span> {userData.contactData.email}
-                </li>
-              )}
-              {userData.contactData.phone_number && (
-                <li>
-                  <span>Teléfono:</span> {userData.contactData.phone_number}
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+      {(userData.email || userData.telephone) && (
+        <div className="user-contact">
+          <h3>Contacto</h3>
+          <ul>
+            {userData.email && (
+              <li>
+                <span>Email:</span> {userData.email}
+              </li>
+            )}
+            {userData.telephone && (
+              <li>
+                <span>Teléfono:</span> {userData.telephone}
+              </li>
+            )}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
