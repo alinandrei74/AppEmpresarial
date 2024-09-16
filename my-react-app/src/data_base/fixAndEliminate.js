@@ -35,8 +35,8 @@ if (!localStorage.getItem("notes")) {
       content:
         "La habitación 301 necesita mantenimiento en el aire acondicionado.",
       userId: "uuid-4",
-      userName: "Mantenimiento",
-      timestamp: new Date("2024-09-02T14:30:00").getTime(),
+      created_at: "Mantenimiento",
+      updated_at: new Date("2024-09-02T14:30:00").getTime(),
     },
   ];
   saveNotesToStorage(initialNotes);

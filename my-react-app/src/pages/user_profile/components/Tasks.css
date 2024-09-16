@@ -14,7 +14,7 @@
   margin-bottom: 20px !important;
 }
 
-.create-task-form input {
+.create-task-form input, .create-task-form select {
   flex: 1 !important;
   padding: 8px !important;
   border: 1px solid var(--clr-border) !important;
@@ -43,11 +43,11 @@
 }
 
 .task-item.pending {
-  border-left: 4px solid orange !important;
+  border-left: 4px solid #ff6b6b !important; /* Rojo para tareas pendientes */
 }
 
-.task-item.done {
-  border-left: 4px solid green !important;
+.task-item.completed {
+  border-left: 4px solid #4ecdc4 !important; /* Verde para tareas completadas */
 }
 
 .task-item p {

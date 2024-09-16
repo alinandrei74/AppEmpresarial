@@ -300,6 +300,7 @@ const Form = () => {
           value={formik.values.password}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          autoComplete="new-password"
           unselectable="on"
         />
         {formik.touched.password && formik.errors.password ? (
@@ -332,6 +333,7 @@ const Form = () => {
           value={formik.values.confirmPassword}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
+          autoComplete="new-password"
           unselectable="on"
         />
         {formik.touched.confirmPassword && formik.errors.confirmPassword ? (

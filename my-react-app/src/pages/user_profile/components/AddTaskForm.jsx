@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getAllUsers } from "../../../data_base/mockDatabase.mjs";
 
-const AddTaskForm = ({ onAddTask }) => {
+const AddTaskForm = ({ onAddTask, isAdmin }) => {
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [users, setUsers] = useState([]);
@@ -33,6 +33,8 @@ const AddTaskForm = ({ onAddTask }) => {
     }
   };
 
+  if (!isAdmin) return null;
+
   return (
     <form onSubmit={handleSubmit} className="add-task-form">
       <input
@@ -50,7 +52,7 @@ const AddTaskForm = ({ onAddTask }) => {
         <option value="">Seleccionar usuario</option>
         {users.map((user) => (
           <option key={user.user_id} value={user.user_id}>
-            {user.username} ({user.role_name})
+            {`${user.personalData?.first_name || ''} ${user.personalData?.last_name || ''} (${user.role_name})`}
           </option>
         ))}
       </select>

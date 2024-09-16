@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Aside.css";
 
-const Aside = () => {
+const Aside = ({ userData }) => {
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -12,6 +12,14 @@ const Aside = () => {
     { name: "Calendar", path: "calendar" },
     { name: "Tourist Places", path: "tourist-places" },
   ];
+
+  // Añadir opciones solo para administradores
+  if (userData && userData.role_name === "admin") {
+    menuItems.push(
+      { name: "Crear Perfil", path: "create-profile" },
+      { name: "Gestión de Usuarios", path: "user-management" }
+    );
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

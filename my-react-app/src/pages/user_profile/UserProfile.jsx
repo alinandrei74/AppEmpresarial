@@ -6,6 +6,8 @@ import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
 import UserDetails from "./components/UserDetails";
+import Register from "../register/Register";
+import UserManagement from "./UserManagement";
 import "./UserProfile.css";
 import { verifyToken } from "../../data_base/mockDatabase.mjs";
 
@@ -35,7 +37,7 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile-container">
-      <Aside />
+      <Aside userData={userData} />
       <div className="user-profile-content">
         {location.pathname === "/user-profile" && (
           <UserDetails userData={userData} />
@@ -46,6 +48,12 @@ const UserProfile = () => {
           <Route path="notes" element={<Notes userData={userData} />} />
           <Route path="calendar" element={<Calendar userData={userData} />} />
           <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
+          {userData.role_name === "admin" && (
+            <>
+              <Route path="create-profile" element={<Register />} />
+              <Route path="user-management" element={<UserManagement currentUserId={userData.user_id} />} />
+            </>
+          )}
         </Routes>
       </div>
     </div>
