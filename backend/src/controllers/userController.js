@@ -64,10 +64,8 @@ const getUserData = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getUserData = getUserData;
 // Función para obtener datos de todos los usuarios
 const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("RUN getAllUsers"); //!#
     try {
         const users = yield db_1.db.manyOrNone('SELECT * FROM users');
-        console.log(users); //!#
         if (users && users.length > 0) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
