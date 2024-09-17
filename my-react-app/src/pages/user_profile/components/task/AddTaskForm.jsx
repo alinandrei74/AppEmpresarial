@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { getAllUsers } from "../../../data_base/mockDatabase.mjs";
+import { getAllUsers } from "../../../../data_base/mockDatabase.mjs";
 
-const AddTaskForm = ({ onAddTask }) => {
+/**
+ * Formulario para añadir nuevas tareas.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Function} props.onAddTask - Función para añadir una nueva tarea.
+ * @param {Object} props.userData - Datos del usuario autenticado.
+ * @returns {JSX.Element} AddTaskForm
+ */
+const AddTaskForm = ({ onAddTask, userData }) => {
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [users, setUsers] = useState([]);
@@ -10,24 +18,33 @@ const AddTaskForm = ({ onAddTask }) => {
     loadUsers();
   }, []);
 
+  /**
+   * Cargar los usuarios del servidor.
+   */
   const loadUsers = async () => {
     const usersResult = await getAllUsers();
     if (usersResult.status === 200) {
-      setUsers(usersResult.data);
+      setUsers(usersResult.data.filter((user) => user.user_id !== userData.id)); // Excluir al usuario actual
     } else {
       console.error("Error al cargar los usuarios:", usersResult.message);
     }
   };
 
+  /**
+   * Manejar el submit del formulario.
+   * @param {Event} e - Evento de submit del formulario.
+   */
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (description.trim() && assignedTo) {
+    if (title.trim() && description.trim() && assignedTo) {
       onAddTask({
+        title,
         description,
         user_id: assignedTo,
         status: "pending",
         entry_date: new Date().toISOString().split("T")[0],
       });
+      setTitle("");
       setDescription("");
       setAssignedTo("");
     }
@@ -35,6 +52,13 @@ const AddTaskForm = ({ onAddTask }) => {
 
   return (
     <form onSubmit={handleSubmit} className="add-task-form">
+      <input
+        type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        placeholder="Título de la tarea"
+        required
+      />
       <input
         type="text"
         value={description}

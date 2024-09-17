@@ -77,12 +77,14 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!id || !description || !status || !user_id || !created_at || !title) {
             throw new TaskError('ID, description, status, user_id, created_at and title are required');
         }
-        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5 WHERE id = $6', [description, status, user_id, created_at, title, id]);
+        //; Si la tarea se marca como completada, establecemos la fecha actual en `completed_at`
+        const completedAt = status === 'done' ? new Date() : null;
+        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, user_id, created_at, title, completedAt, id]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: 'Task updated successfully',
-                data: null,
+                data: result.rows[0], // Devolver la tarea actualizada
             });
         }
         else {

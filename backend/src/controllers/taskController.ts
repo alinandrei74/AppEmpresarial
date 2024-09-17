@@ -72,15 +72,19 @@ export const updateTask = async (req: Request, res: Response) => {
       throw new TaskError('ID, description, status, user_id, created_at and title are required');
     }
 
+    //; Si la tarea se marca como completada, establecemos la fecha actual en `completed_at`
+    const completedAt = status === 'done' ? new Date() : null;
+
     const result = await db.result(
-      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5 WHERE id = $6',
-      [description, status, user_id, created_at, title, id]
+      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
+      [description, status, user_id, created_at, title, completedAt, id]
     );
+
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: 'Task updated successfully',
-        data: null,
+        data: result.rows[0], // Devolver la tarea actualizada
       });
     } else {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -107,6 +111,7 @@ export const updateTask = async (req: Request, res: Response) => {
     }
   }
 };
+
 
 export const deleteTask = async (req: Request, res: Response) => {
   const { id } = req.params;
