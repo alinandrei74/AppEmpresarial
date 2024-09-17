@@ -1,7 +1,7 @@
 // authRole.ts
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { Role } from './../types/role'; // Adjust path as needed
+import { Role } from '../../types/role'; // Ensure path is correct
 
 // Definir permisos por rol
 const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: string[] }> = {
@@ -14,7 +14,6 @@ const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: s
     tasks: ['read', 'update'],
     users: [], // No tiene acceso
     notes: ['create', 'read', 'update', 'delete'],
-
   },
   cleaning: {
     tasks: ['read', 'update'],

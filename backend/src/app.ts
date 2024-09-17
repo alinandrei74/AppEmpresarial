@@ -21,7 +21,6 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/auth', authRoutes);
 
-
 app.listen(PORT, () => {
   console.log(`Server is running http://localhost:${PORT}`);
 });
