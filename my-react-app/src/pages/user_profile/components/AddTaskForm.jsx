@@ -15,7 +15,7 @@ const AddTaskForm = ({ onAddTask }) => {
     if (usersResult.status === 200) {
       setUsers(usersResult.data);
     } else {
-      console.error('Error al cargar los usuarios:', usersResult.message);
+      console.error("Error al cargar los usuarios:", usersResult.message);
     }
   };
 
@@ -26,7 +26,7 @@ const AddTaskForm = ({ onAddTask }) => {
         description,
         user_id: assignedTo,
         status: "pending",
-        entry_date: new Date().toISOString().split('T')[0]
+        entry_date: new Date().toISOString().split("T")[0],
       });
       setDescription("");
       setAssignedTo("");

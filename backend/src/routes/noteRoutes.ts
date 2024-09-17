@@ -7,20 +7,21 @@ import {
   deleteNote
 } from '../controllers/noteController';
 import { authorizeRole } from '../middlewares/authRole';
+import { authenticateToken } from '../middlewares/authMiddleware'; // Importa el middleware de autenticación
 
 const router = Router();
 
 // Permitir lectura de notas a roles autorizados
-router.get('/', authorizeRole('notes', 'read'), getNotes);
-router.get('/:id', authorizeRole('notes', 'read'), getNoteById);
+router.get('/', authenticateToken, authorizeRole('notes', 'read'), getNotes);
+router.get('/:id', authenticateToken, authorizeRole('notes', 'read'), getNoteById);
 
 // Solo roles con permisos para crear notas
-router.post('/', authorizeRole('notes', 'create'), createNote);
+router.post('/', authenticateToken, authorizeRole('notes', 'create'), createNote);
 
 // Permitir actualización de notas
-router.put('/:id', authorizeRole('notes', 'update'), updateNote);
+router.put('/:id', authenticateToken, authorizeRole('notes', 'update'), updateNote);
 
 // Solo admin puede eliminar notas
-router.delete('/:id', authorizeRole('notes', 'delete'), deleteNote);
+router.delete('/:id', authenticateToken, authorizeRole('notes', 'delete'), deleteNote);
 
 export default router;

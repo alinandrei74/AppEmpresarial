@@ -33,6 +33,7 @@ const createTablesIfNotExists = async () => {
     await db.none(`
       CREATE TABLE IF NOT EXISTS tasks (
         id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
         status VARCHAR(50) NOT NULL,
         user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -135,7 +136,7 @@ const createTablesIfNotExists = async () => {
 createTablesIfNotExists();
 
 
-  
+
 
 // Prueba de conexión (puedes mantener esto durante el desarrollo)
 db.one('SELECT NOW()')
