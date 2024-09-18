@@ -15,11 +15,13 @@ const Tasks = ({ userData }) => {
 
   const loadTasks = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/tasks/tasks", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+      // Cambia la URL a la ruta correcta
+      const token = localStorage.getItem('token'); // O desde donde estés almacenando el token
+    const response = await fetch('http://localhost:3000/api/tasks/tasks', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Incluye el token en el encabezado
+        'Content-Type': 'application/json',
         },
       });
 
@@ -65,7 +67,7 @@ const Tasks = ({ userData }) => {
       const newTask = {
         description: newTaskDescription,
         status: "pending",
-        user_id: newTaskAssignedTo,
+        user_id: newTaskAssignedTo, // Cambié `id` a `user_id` para reflejar la propiedad correcta
         created_at: new Date().toISOString(), //; Fecha de creación
       };
       try {
@@ -95,7 +97,7 @@ const Tasks = ({ userData }) => {
   const handleCompleteTask = async (taskId) => {
     console.log("Completando tarea con ID:", taskId); //; Debug: Ver el ID de la tarea a completar
     const taskToUpdate = tasks.find((task) => task.id === taskId);
-    if (taskToUpdate && taskToUpdate.user_id === userData.id) {
+    if (taskToUpdate && taskToUpdate.id === userData.id) {
       const updatedTask = { status: "done" }; //; Solo actualizamos el campo 'status'
       try {
         const response = await fetch(
@@ -190,7 +192,7 @@ const Tasks = ({ userData }) => {
         {tasks.map((task) => (
           <div key={task.id} className={`task-item ${task.status}`}>
             <p>{task.description}</p>
-            <small>Asignado a: {getUsernameById(task.user_id)}</small>
+            <small>Asignado a: {getUsernameById(task.user_id)}</small>{" "}
             <small>Estado: {task.status}</small>
             {task.status === "pending" && task.user_id === userData.id && (
               <button onClick={() => handleCompleteTask(task.id)}>

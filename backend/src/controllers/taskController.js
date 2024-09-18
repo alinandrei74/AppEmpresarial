@@ -47,7 +47,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'Task created successfully',
-            data: { task_id: result.task_id },
+            data: { id: result.id },
         });
     }
     catch (error) {

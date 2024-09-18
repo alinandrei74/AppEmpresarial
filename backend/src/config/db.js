@@ -47,6 +47,7 @@ const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function
         id SERIAL PRIMARY KEY,
         description TEXT NOT NULL,
         status VARCHAR(50) NOT NULL,
+        title VARCHAR(255) NOT NULL,
         user_id INT REFERENCES users(id) ON DELETE CASCADE,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
