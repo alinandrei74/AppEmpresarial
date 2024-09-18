@@ -42,7 +42,7 @@ export const createTask = async (req: Request, res: Response) => {
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: 'Task created successfully',
-      data: { task_id: result.task_id },
+      data: { id: result.id },
     });
   } catch (error) {
     if (error instanceof TaskError) {

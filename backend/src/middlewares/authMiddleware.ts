@@ -17,8 +17,9 @@ declare global {
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   
+  
   // Comprobar si el header de autorización existe y está en el formato adecuado
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  if (!authHeader || !authHeader.startsWith('Bearer')) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       status: StatusCodes.UNAUTHORIZED,
       message: 'No token provided or invalid token format',

@@ -9,7 +9,7 @@ const http_status_codes_1 = require("http-status-codes");
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     // Comprobar si el header de autorización existe y está en el formato adecuado
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
         return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
             status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
             message: 'No token provided or invalid token format',
