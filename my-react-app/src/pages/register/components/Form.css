@@ -92,19 +92,16 @@
   /* Más espacio después de la descripción */
 }
 
-.responseMessage {
-  margin-top: 20px;
-  font-weight: bold;
+/* Error para campos de entrada */
+.input-error {
+  border-color: var(--clr-error) !important;
 }
 
-/* Nueva clase para mensajes de error */
-.responseMessage-error {
-  color: var(--clr-OnError);
-  /* Color rojo para mensajes de error */
-}
-
-/* Nueva clase para mensajes de éxito */
-.responseMessage-success {
-  color: var(--clr-OnSuccess);
-  /* Color verde para mensajes de éxito */
+/* Mensaje de error */
+.error-message {
+  color: var(--clr-error);
+  font-size: 0.95em !important;
+  font-weight: 700;
+  margin-top: 5px;
+  text-align: center;
 }

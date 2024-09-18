@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { toast } from "react-toastify";
+import { DarkModeContext } from "../../../../contexts/DarkModeContext"; //; Importa el contexto
 import "./Tasks.css";
 
 /**
@@ -14,6 +16,8 @@ const Tasks = ({ userData }) => {
   const [newTaskDescription, setNewTaskDescription] = useState(""); //; Descripción de la nueva tarea
   const [newTaskAssignedTo, setNewTaskAssignedTo] = useState(""); //; Usuario asignado a la nueva tarea
   const [editingTask, setEditingTask] = useState(null); //; Tarea que se está editando
+
+  const { darkMode } = useContext(DarkModeContext); //; Usa el contexto de modo oscuro
 
   useEffect(() => {
     loadTasks();
@@ -47,7 +51,9 @@ const Tasks = ({ userData }) => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          console.error("Error: Acceso prohibido al cargar tareas.");
+          toast.error("No tienes permiso para ver las tareas.", {
+            theme: darkMode ? "dark" : "light",
+          });
           return;
         }
         throw new Error("Error fetching tasks: " + response.statusText);
@@ -66,6 +72,9 @@ const Tasks = ({ userData }) => {
       console.log("Tareas actualizadas en el estado:", filteredTasks); //; Debug: Verificar el estado actualizado
     } catch (error) {
       console.error("Error al cargar tareas:", error.message);
+      toast.error("Error al cargar las tareas.", {
+        theme: darkMode ? "dark" : "light",
+      });
     }
   };
 
@@ -84,9 +93,9 @@ const Tasks = ({ userData }) => {
 
       if (!response.ok) {
         if (response.status === 403) {
-          console.error(
-            "Error: Acceso prohibido al cargar usuarios. Verifique los permisos."
-          );
+          toast.error("No tienes permiso para ver los usuarios.", {
+            theme: darkMode ? "dark" : "light",
+          });
           return;
         }
         throw new Error("Error fetching users: " + response.statusText);
@@ -96,6 +105,9 @@ const Tasks = ({ userData }) => {
       setUsers(usersResult.data);
     } catch (error) {
       console.error("Error al cargar usuarios:", error.message);
+      toast.error("Error al cargar los usuarios.", {
+        theme: darkMode ? "dark" : "light",
+      });
     }
   };
 
@@ -132,11 +144,20 @@ const Tasks = ({ userData }) => {
           setNewTaskDescription("");
           setNewTaskAssignedTo("");
           loadTasks(); //; Recargar tareas para asegurar que los nombres de usuario y el estado sean correctos
+          toast.success("¡Tarea creada con éxito!", {
+            theme: darkMode ? "dark" : "light",
+          });
         } else {
           console.error("Error al crear la tarea:", result.message);
+          toast.error("Error al crear la tarea.", {
+            theme: darkMode ? "dark" : "light",
+          });
         }
       } catch (error) {
         console.error("Error al crear la tarea:", error.message);
+        toast.error("Error al crear la tarea.", {
+          theme: darkMode ? "dark" : "light",
+        });
       }
     }
   };
@@ -172,14 +193,23 @@ const Tasks = ({ userData }) => {
             prevTasks.map((task) => (task.id === taskId ? result.data : task))
           );
           console.log("Tarea completada:", result.data); //; Debug: Ver la tarea actualizada
+          toast.success("¡Tarea completada con éxito!", {
+            theme: darkMode ? "dark" : "light",
+          });
         } else {
           console.error(
             "Error al completar la tarea:",
             result.message || "Tarea no encontrada."
           );
+          toast.error("Error al completar la tarea.", {
+            theme: darkMode ? "dark" : "light",
+          });
         }
       } catch (error) {
         console.error("Error al completar la tarea:", error.message);
+        toast.error("Error al completar la tarea.", {
+          theme: darkMode ? "dark" : "light",
+        });
       }
     }
   };
@@ -189,8 +219,13 @@ const Tasks = ({ userData }) => {
    * @param {number} taskId - ID de la tarea a eliminar.
    */
   const handleDeleteTask = async (taskId) => {
-    handleCancelEdit();
+    //; Agregar una condición para ejecutar handleCancelEdit solo cuando esté en modo edición
+    if (editingTask) {
+      handleCancelEdit();
+    }
+
     console.log("Intentando eliminar tarea con ID:", taskId); //; Debug: Ver el ID de la tarea a eliminar
+
     if (userData.role === "admin") {
       try {
         const response = await fetch(
@@ -210,21 +245,29 @@ const Tasks = ({ userData }) => {
             prevTasks.filter((task) => task.id !== taskId)
           );
           console.log("Tarea eliminada exitosamente"); //; Debug: Confirmar eliminación
+          toast.success("¡Tarea eliminada con éxito!", {
+            theme: darkMode ? "dark" : "light",
+          });
         } else if (response.status === 404) {
           loadTasks(); //; Recargar tareas para reflejar el estado actual
           console.warn(
             `La tarea con ID ${taskId} no se encontró en el servidor. La lista de tareas se ha recargado para reflejar los cambios actuales.`
           );
+          toast.warn("La tarea ya no existe. La lista ha sido actualizada.", {
+            theme: darkMode ? "dark" : "light",
+          });
         }
       } catch (error) {
         console.error("Error al eliminar la tarea:", error.message);
+        toast.error("Error al eliminar la tarea.", {
+          theme: darkMode ? "dark" : "light",
+        });
       }
     }
   };
-
   /**
    * Editar una tarea existente.
-   * @param {number} taskId - ID de la tarea a editar.
+   * @param {Object} task - Tarea a editar.
    */
   const handleEditTask = (task) => {
     setEditingTask(task); //; Establecer la tarea que se va a editar
@@ -271,14 +314,23 @@ const Tasks = ({ userData }) => {
           setNewTaskTitle("");
           setNewTaskDescription("");
           setNewTaskAssignedTo("");
+          toast.success("¡Tarea actualizada con éxito!", {
+            theme: darkMode ? "dark" : "light",
+          });
         } else {
           console.error(
             "Error al actualizar la tarea:",
             result.message || "Tarea no encontrada."
           );
+          toast.error("Error al actualizar la tarea.", {
+            theme: darkMode ? "dark" : "light",
+          });
         }
       } catch (error) {
         console.error("Error al actualizar la tarea:", error.message);
+        toast.error("Error al actualizar la tarea.", {
+          theme: darkMode ? "dark" : "light",
+        });
       }
     }
   };
@@ -291,6 +343,9 @@ const Tasks = ({ userData }) => {
     setNewTaskTitle("");
     setNewTaskDescription("");
     setNewTaskAssignedTo("");
+    toast.info("Edición de la tarea cancelada.", {
+      theme: darkMode ? "dark" : "light",
+    });
   };
 
   /**
@@ -358,13 +413,11 @@ const Tasks = ({ userData }) => {
             <p>{task.description}</p>
             <small>Asignado a: {getUsernameById(task.user_id)}</small>{" "}
             <small>Estado: {task.status}</small>
-            {/* Mostrar botón de completar solo si la tarea pertenece al usuario actual y está pendiente */}
             {task.status === "pending" && task.user_id === userData.id && (
               <button onClick={() => handleCompleteTask(task.id)}>
                 Marcar como completada
               </button>
             )}
-            {/* Mostrar botón de edición y eliminación solo para administradores */}
             {userData.role === "admin" && (
               <>
                 <button onClick={() => handleEditTask(task)}>Editar</button>

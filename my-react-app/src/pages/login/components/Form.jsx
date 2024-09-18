@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify"; //; Importa react-toastify para notificaciones
 import "./Form.css";
 import { Str } from "../../../utilities/js/utilities.mjs"; //; Utilidades de JavaScript para manipular strings
 
@@ -87,13 +88,14 @@ const Form = () => {
         const { token, user } = result.data; //; Extrae el token y el ID de usuario de la respuesta
         sessionStorage.setItem("authToken", token); //; Almacena el token en el almacenamiento de sesión
         console.log("Datos del usuario autenticado:", user); //; Mostrar datos del usuario en consola
+        toast.success("Inicio de sesión exitoso. Redirigiendo...");
         navigate(`/user-profile`); //; Redirige al perfil de usuario si la autenticación es exitosa
       } else {
-        alert("Usuario o contraseña incorrectos.");
+        toast.error("Usuario o contraseña incorrectos.");
       }
     } catch (error) {
       console.error("Error en el inicio de sesión:", error);
-      alert("Error al conectar con el servidor.");
+      toast.error("Error al conectar con el servidor.");
     }
   };
 
