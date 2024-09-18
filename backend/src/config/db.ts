@@ -9,6 +9,22 @@ const db = pgp(process.env.DATABASE_URL as string);
 // Función para crear tablas si no existen
 const createTablesIfNotExists = async () => {
   try {
+    // Crear la tabla work_schedule si no existe
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS work_schedule (
+        id SERIAL PRIMARY KEY,
+        worker_id INT REFERENCES users(id) ON DELETE CASCADE,
+        start_time TIMESTAMP NOT NULL,
+        end_time TIMESTAMP NOT NULL,
+        description TEXT NOT NULL,
+        day_of_week VARCHAR(15) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log('Tabla work_schedule creada o ya existe.');
+
     /**
      * Verifica y ajusta columnas de una tabla para que coincidan con las definiciones esperadas.
      * @param {string} tableName - El nombre de la tabla.
@@ -185,6 +201,30 @@ const createTablesIfNotExists = async () => {
       $$;
     `);
 
+    // Crear función y trigger para actualizar el campo updated_at en work_schedule
+    await db.none(`
+      CREATE OR REPLACE FUNCTION update_work_schedule_updated_at_column()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
+      DO $$
+      BEGIN
+        IF NOT EXISTS (
+          SELECT 1 FROM pg_trigger WHERE tgname = 'update_work_schedule_updated_at_trigger'
+        ) THEN
+          CREATE TRIGGER update_work_schedule_updated_at_trigger
+          BEFORE UPDATE ON work_schedule
+          FOR EACH ROW
+          EXECUTE FUNCTION update_work_schedule_updated_at_column();
+        END IF;
+      END;
+      $$;
+    `);
+
     console.log('Tables and triggers checked/created successfully');
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -196,11 +236,7 @@ const createTablesIfNotExists = async () => {
   }
 };
 
-
 createTablesIfNotExists();
-
-
-
 
 // Prueba de conexión (puedes mantener esto durante el desarrollo)
 db.one('SELECT NOW()')
