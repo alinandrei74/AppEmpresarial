@@ -53,7 +53,7 @@ const AppContent = () => {
       <ToastContainer
         theme={darkMode ? "light" : "dark"}
         position="bottom-right" // Posición abajo a la derecha
-        autoClose={1500} // Cierre automático después de 1.5 segundos
+        autoClose={3000} // Cierre automático después de 1.5 segundos
         hideProgressBar // Ocultar barra de progreso
         newestOnTop={false} // Las notificaciones nuevas se muestran en la parte inferior
         closeButton={false} // Ocultar el botón de cierre ("x")
