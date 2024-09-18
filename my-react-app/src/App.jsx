@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import React, { useContext } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import Navbar from "./pages/components/navbar/Navbar";
-import AppRoutes from "./pages/AppRoutes"; //; Importar el componente de rutas
-import { DarkModeContext } from "./contexts/DarkModeContext"; //; Importar contexto de DarkMode
-import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
-import { resetAllTablesToDefaults } from "./data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
-=======
 import React, { useContext, useState } from "react";
 import { BrowserRouter as Router, useLocation } from "react-router-dom"; // Asegúrate de que el Router está aquí
 import { ToastContainer } from "react-toastify";
@@ -17,17 +6,12 @@ import Navbar from "./pages/components/navbar/Navbar";
 import AppRoutes from "./pages/AppRoutes"; // Importar el componente de rutas
 import { DarkModeContext } from "./contexts/DarkModeContext"; // Importar contexto de DarkMode
 import Aside from "./pages/user_profile/components/Aside"; // Importar el componente Aside para el menú lateral
->>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
  * @component
  * @returns {JSX.Element} App
  */
-<<<<<<< HEAD
-const App = () => {
-  const { darkMode } = useContext(DarkModeContext); //; Usar el contexto de modo oscuro
-=======
 const AppContent = () => {
   const { darkMode } = useContext(DarkModeContext); // Usar el contexto de modo oscuro
   const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado para controlar el menú lateral
@@ -49,7 +33,6 @@ const AppContent = () => {
    * @returns {boolean} true si la ruta actual incluye "/user-profile"
    */
   const isUserProfileRoute = location.pathname.includes("/user-profile");
->>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 
   return (
     <div>
