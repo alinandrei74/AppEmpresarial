@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
 // import Notes from "./components/Notes";
@@ -56,7 +57,7 @@ const UserProfile = () => {
    */
   const handleInvalidToken = (message) => {
     console.warn(message);
-    alert(message);
+    toast.error(message);
     sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
     navigate("/login");
   };

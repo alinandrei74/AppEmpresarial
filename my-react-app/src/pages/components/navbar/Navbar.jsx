@@ -28,16 +28,21 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     navigate("/login");
   };
 
+  // Verificar si estamos en la ruta exacta "/user-profile"
+  const isUserProfileActive = location.pathname === "/user-profile";
+
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        {/* El ícono de menú ahora también controla el Aside */}
         <div className="menu-icon" onClick={toggleMenu}>
           ☰
         </div>
 
         <div className={`navbar-logo ${isMenuOpen ? "menu-item" : ""}`}>
-          <Link to="/user-profile">
+          <Link
+            to="/user-profile"
+            className={isUserProfileActive ? "active-link" : ""}
+          >
             <FaUserCircle className="profile-icon" />
             <h1>Mi perfil</h1>
           </Link>

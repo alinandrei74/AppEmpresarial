@@ -51,6 +51,19 @@
   text-decoration: underline;
 }
 
+
+/* Estilo para cuando "Mi perfil" esté activo */
+.navbar-logo a.active-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  /* Grosor de la subrayado */
+  text-decoration-color: var(--clr-text);
+  /* Color del subrayado */
+  text-underline-offset: 4px;
+  /* Separación del subrayado respecto al texto */
+  color: var(--clr-text) !important;
+}
+
 .navbar-menu {
   display: flex;
   gap: 1rem;
