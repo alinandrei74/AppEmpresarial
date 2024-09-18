@@ -66,37 +66,6 @@ const AppContent = () => {
           </div>
         </main>
       </div>
-<<<<<<< HEAD
-
-      {/* ToastContainer montado en App, con tema dinámico */}
-      {/* <ToastContainer
-        theme={darkMode ? "dark" : "light"}
-        position="bottom-center"
-        autoClose={1500}
-        hideProgressBar={true}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      /> */}
-
-      <ToastContainer
-        theme={darkMode ? "light" : "dark"}
-        position="bottom-right" //; Posición abajo a la derecha
-        autoClose={1500} //; Cierre automático después de 3 segundos
-        hideProgressBar //; Mostrar barra de progreso
-        newestOnTop={false} //; Las notificaciones nuevas se muestran en la parte inferior
-        closeButton={false} //; Ocultar el botón de cierre ("x")
-        closeOnClick={false} //; No cerrar al hacer clic en la notificación
-        rtl={false} //; No usar la dirección de derecha a izquierda
-        pauseOnFocusLoss //; Pausar la notificación al perder el foco
-        draggable //; Habilitar arrastre para eliminar la notificación
-        pauseOnHover //; Pausar al pasar el ratón por encima
-        // icon={false}
-      />
-=======
       {/* ToastContainer montado en App, con tema dinámico */}
       <ToastContainer
         theme={darkMode ? "light" : "dark"}
@@ -119,7 +88,6 @@ const App = () => {
   return (
     <Router>
       <AppContent />
->>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
     </Router>
   );
 };
