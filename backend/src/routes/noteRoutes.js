@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const noteController_1 = require("../controllers/noteController");
 const authRole_1 = require("../middlewares/authRole");
-const authMiddleware_1 = require("../middlewares/authMiddleware");
+const authMiddleware_1 = require("../middlewares/authMiddleware"); // Importa el middleware de autenticación
 const router = (0, express_1.Router)();
 // Permitir lectura de notas a roles autorizados
 router.get('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('notes', 'read'), noteController_1.getNotes);

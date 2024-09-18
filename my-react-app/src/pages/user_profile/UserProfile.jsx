@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Aside from "./components/Aside";
-import Tasks from "./components/Tasks";
+import Tasks from "./components/task/Tasks";
 // import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";

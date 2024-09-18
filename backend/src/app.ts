@@ -5,8 +5,10 @@ import authRoutes from './routes/authRoutes';
 import taskRoutes from './routes/taskRoutes';
 import noteRoutes from './routes/noteRoutes';
 import dotenv from 'dotenv';
+import cron from 'node-cron';
+import { db } from './config/db';
 
-dotenv.config();
+dotenv.config(); //! Asegúrate de cargar las variables de entorno al principio
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,6 +23,27 @@ app.use('/api/tasks', taskRoutes);
 app.use('/api/notes', noteRoutes);
 app.use('/api/auth', authRoutes);
 
+// Inicia el servidor
 app.listen(PORT, () => {
   console.log(`Server is running http://localhost:${PORT}`);
+});
+
+// Programar tarea cron para eliminar tareas completadas cada minuto para pruebas
+cron.schedule('* * * * *', async () => {
+  console.log('Ejecutando tarea cron de eliminación de tareas completadas...'); // Log para confirmar la ejecución
+
+  try {
+    // Eliminar tareas donde `status` es "done" y `completed_at` es más de 24 horas atrás
+    const result = await db.result(
+      `DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 hours'`
+    );
+
+    if (result.rowCount > 0) {
+      console.log(`Eliminadas ${result.rowCount} tareas completadas hace más de 24 horas.`);
+    } else {
+      console.log('No se encontraron tareas para eliminar.');
+    }
+  } catch (error) {
+    console.error('Error eliminando tareas completadas:', error);
+  }
 });

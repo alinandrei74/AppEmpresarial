@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { getUserData, getAllUsers } from '../controllers/userController';
 import { authorizeRole } from '../middlewares/authRole';
-import { authenticateToken } from '../middlewares/authMiddleware';
+import { authenticateToken } from '../middlewares/authMiddleware'; // Importa el middleware de autenticación
 
 const router = Router();
 

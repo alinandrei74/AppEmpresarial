@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify"; //; Importa react-toastify para notificaciones
 import "./Navbar.css";
 import { DarkModeContext } from "../../../contexts/DarkModeContext";
 
@@ -19,6 +20,10 @@ export default function Navbar() {
   const handleLogout = () => {
     sessionStorage.removeItem("authToken");
     setIsLoggedIn(false);
+
+    // Muestra una notificación cuando el usuario cierra sesión
+    toast.success("¡Has cerrado sesión correctamente!");
+
     navigate("/login");
   };
 

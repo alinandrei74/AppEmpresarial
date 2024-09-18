@@ -7,14 +7,13 @@ import {
   deleteNote
 } from '../controllers/noteController';
 import { authorizeRole } from '../middlewares/authRole';
-import { authenticateToken } from '../middlewares/authMiddleware';
+import { authenticateToken } from '../middlewares/authMiddleware'; // Importa el middleware de autenticación
 
 const router = Router();
 
 // Permitir lectura de notas a roles autorizados
 router.get('/', authenticateToken, authorizeRole('notes', 'read'), getNotes);
 router.get('/:id', authenticateToken, authorizeRole('notes', 'read'), getNoteById);
-
 
 // Solo roles con permisos para crear notas
 router.post('/', authenticateToken, authorizeRole('notes', 'create'), createNote);
