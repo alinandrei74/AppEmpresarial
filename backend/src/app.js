@@ -18,6 +18,7 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
 const noteRoutes_1 = __importDefault(require("./routes/noteRoutes"));
+const workScheduleRoutes_1 = __importDefault(require("./routes/workScheduleRoutes")); // Asegúrate de importar las rutas de work schedule
 const dotenv_1 = __importDefault(require("dotenv"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = require("./config/db");
@@ -32,24 +33,25 @@ app.use('/api/users', userRoutes_1.default);
 app.use('/api/tasks', taskRoutes_1.default);
 app.use('/api/notes', noteRoutes_1.default);
 app.use('/api/auth', authRoutes_1.default);
+app.use('/api/work-schedules', workScheduleRoutes_1.default); // Añade las rutas de horarios de trabajo
 // Inicia el servidor
 app.listen(PORT, () => {
     console.log(`Server is running http://localhost:${PORT}`);
 });
-// Programar tarea cron para eliminar tareas completadas cada minuto para pruebas
-node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Ejecutando tarea cron de eliminación de tareas completadas...'); // Log para confirmar la ejecución
+// Programar tarea cron para eliminar horarios de trabajo antiguos cada 5 meses
+node_cron_1.default.schedule('0 0 1 */5 *', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Ejecutando tarea cron para eliminar horarios de trabajo antiguos...'); // Log para confirmar la ejecución
     try {
-        // Eliminar tareas donde `status` es "done" y `completed_at` es más de 24 horas atrás
-        const result = yield db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 hours'`);
+        // Eliminar horarios de trabajo que se crearon hace más de 5 meses
+        const result = yield db_1.db.result(`DELETE FROM work_schedule WHERE created_at < NOW() - INTERVAL '5 months'`);
         if (result.rowCount > 0) {
-            console.log(`Eliminadas ${result.rowCount} tareas completadas hace más de 24 horas.`);
+            console.log(`Eliminados ${result.rowCount} horarios de trabajo antiguos.`);
         }
         else {
-            console.log('No se encontraron tareas para eliminar.');
+            console.log('No se encontraron horarios de trabajo para eliminar.');
         }
     }
     catch (error) {
-        console.error('Error eliminando tareas completadas:', error);
+        console.error('Error eliminando horarios de trabajo antiguos:', error);
     }
 }));
