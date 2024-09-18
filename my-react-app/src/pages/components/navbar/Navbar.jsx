@@ -1,10 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-<<<<<<< HEAD
-import { toast } from "react-toastify"; //; Importa react-toastify para notificaciones
-=======
 import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
->>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 import "./Navbar.css";
 import { DarkModeContext } from "../../../contexts/DarkModeContext";
 import { FaUserCircle } from "react-icons/fa"; // Importa el ícono de perfil
@@ -28,14 +24,7 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
   const handleLogout = () => {
     sessionStorage.removeItem("authToken");
     setIsLoggedIn(false);
-<<<<<<< HEAD
-
-    // Muestra una notificación cuando el usuario cierra sesión
     toast.success("¡Has cerrado sesión correctamente!");
-
-=======
-    toast.success("¡Has cerrado sesión correctamente!");
->>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
     navigate("/login");
   };
 
