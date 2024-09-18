@@ -1,6 +1,9 @@
 /* Mejorar el ancho en pantallas grandes y añadir iconos */
 .aside {
-  width: 250px !important;
+  /* width: 250px !important; */
+  width: 20% !important;
+  min-width: 250px !important;
+  max-width: 300px !important;
   /* Ajuste para pantallas grandes */
   padding: 0 !important;
   height: 100vh !important;
