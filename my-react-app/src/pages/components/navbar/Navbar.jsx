@@ -1,51 +1,46 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify"; //; Importa react-toastify para notificaciones
+import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import "./Navbar.css";
 import { DarkModeContext } from "../../../contexts/DarkModeContext";
+import { FaUserCircle } from "react-icons/fa"; // Importa el ícono de perfil
 
-export default function Navbar() {
+/**
+ * Componente de navegación principal.
+ * @param {Object} props - Recibe el estado del menú del Aside
+ * @returns {JSX.Element} Componente Navbar
+ */
+export default function Navbar({ isMenuOpen, toggleMenu }) {
   const { darkMode, toggleDarkMode } = useContext(DarkModeContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    // Verificar si el usuario está logueado
     const token = sessionStorage.getItem("authToken");
     setIsLoggedIn(!!token);
-  }, [location]); // Añadimos location como dependencia
+  }, [location]);
 
   const handleLogout = () => {
     sessionStorage.removeItem("authToken");
     setIsLoggedIn(false);
-
-    // Muestra una notificación cuando el usuario cierra sesión
     toast.success("¡Has cerrado sesión correctamente!");
-
     navigate("/login");
-  };
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
   };
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
+        {/* El ícono de menú ahora también controla el Aside */}
         <div className="menu-icon" onClick={toggleMenu}>
           ☰
         </div>
 
         <div className={`navbar-logo ${isMenuOpen ? "menu-item" : ""}`}>
           <Link to="/user-profile">
+            <FaUserCircle className="profile-icon" />
             <h1>Mi perfil</h1>
           </Link>
-        </div>
-
-        <div className={`navbar-menu ${isMenuOpen ? "active" : ""}`}>
-          {/* Menú vacío por ahora */}
         </div>
 
         <div className="navbar-actions">

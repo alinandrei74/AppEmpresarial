@@ -5,7 +5,7 @@ import Tasks from "./components/task/Tasks";
 // import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/UserDetails";
+import UserDetails from "./components/profile/UserDetails";
 import "./UserProfile.css";
 
 const UserProfile = () => {

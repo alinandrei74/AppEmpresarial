@@ -1,3 +1,4 @@
+//TODO#code3: cuando se cree una tarea que se envie un email usando el emmail de la empresa de ejemplo y la contraseña de el que envia el emmail y el que lo recibe sera el usuario al que va dirigida la tarea usa las variables de PASS_COMPANY y EMAIL_COMPANY del archivo env
 import React, { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { DarkModeContext } from "../../../../contexts/DarkModeContext"; //; Importa el contexto
