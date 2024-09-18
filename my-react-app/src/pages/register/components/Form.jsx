@@ -28,7 +28,7 @@ const Form = () => {
         .min(3, "El nombre de usuario debe tener mínimo 3 caracteres")
         .max(20, "El nombre de usuario debe tener máximo 20 caracteres")
         .matches(
-          /^(?![-_])[A-Za-z0-9Ñ_-]{1,18}[A-Za-z0-9Ñ](?<![-_])$/,
+          /^(?![-_])[A-Za-z0-9Ññ_-]{1,18}[A-Za-z0-9Ññ](?<![-_])$/,
           "El nombre de usuario puede contener números, mayúsculas, minúsculas, '-' y '_'. No puede empezar ni terminar con '-' o '_'."
         )
         .required("El nombre de usuario es requerido"),

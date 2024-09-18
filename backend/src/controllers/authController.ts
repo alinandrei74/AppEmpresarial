@@ -115,6 +115,7 @@ export const verifyToken = (req: Request, res: Response) => {
   });
 };
 
+// ! TODO: potenciar logoutUser, agregar validación de token vacío y después el statusOk, convertir en post
 export const logoutUser = (req: Request, res: Response) => {
   // En este caso, simplemente respondemos con un éxito
   return res.status(StatusCodes.OK).json({

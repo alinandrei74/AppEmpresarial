@@ -1,29 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Aside.css";
+import {
+  FaTasks,
+  FaStickyNote,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+} from "react-icons/fa"; // Importar iconos
 
-const Aside = () => {
+/**
+ * Componente Aside para la navegación lateral.
+ * @param {Object} props - Recibe el estado del menú del Navbar
+ * @returns {JSX.Element} Componente Aside
+ */
+const Aside = ({ isMenuOpen, toggleMenu }) => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const menuItems = [
-    { name: "Tasks", path: "tasks" },
-    { name: "Notes", path: "notes" },
-    { name: "Calendar", path: "calendar" },
-    { name: "Tourist Places", path: "tourist-places" },
+    { name: "Tasks", path: "/user-profile/tasks", icon: <FaTasks /> },
+    { name: "Notes", path: "/user-profile/notes", icon: <FaStickyNote /> },
+    {
+      name: "Calendar",
+      path: "/user-profile/calendar",
+      icon: <FaCalendarAlt />,
+    },
+    {
+      name: "Tourist Places",
+      path: "/user-profile/tourist-places",
+      icon: <FaMapMarkerAlt />,
+    },
   ];
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
 
   return (
     <>
-      <div className="menu-icon" onClick={toggleMenu}>
-        ☰
-      </div>
-      <aside className={`aside ${isMenuOpen ? 'open' : ''}`}>
-        <div className="logo">Mi Aplicación</div>
+      <aside className={`aside ${isMenuOpen ? "open" : ""}`}>
+        <div className="logo"></div>
         <ul className="aside-items">
           {menuItems.map((item, index) => {
             const isActive = location.pathname.includes(item.path);
@@ -32,9 +43,9 @@ const Aside = () => {
                 <Link
                   to={item.path}
                   className={isActive ? "active-link" : ""}
-                  onClick={() => setIsMenuOpen(false)}
+                  onClick={toggleMenu}
                 >
-                  {item.name}
+                  {item.icon} {item.name}
                 </Link>
               </li>
             );

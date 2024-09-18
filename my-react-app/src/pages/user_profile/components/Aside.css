@@ -1,5 +1,10 @@
+/* Mejorar el ancho en pantallas grandes y añadir iconos */
 .aside {
-  width: 200px !important;
+  /* width: 250px !important; */
+  width: 20% !important;
+  min-width: 250px !important;
+  max-width: 300px !important;
+  /* Ajuste para pantallas grandes */
   padding: 0 !important;
   height: 100vh !important;
   box-sizing: border-box !important;
@@ -20,25 +25,24 @@
 }
 
 .aside-items li:first-child {
-  margin-top: 40px !important;
+  margin-top: 60px !important;
 }
 
 .aside-items li {
   margin-bottom: 1px !important;
   text-align: left !important;
-}
-
-.aside-items li:hover {
-  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .aside-items a {
+  user-select: none;
   display: block !important;
   text-decoration: none !important;
   padding: 10px 15px !important;
   color: var(--clr-OnBackground) !important;
   width: 100% !important;
-  border-radius: 0px !important;
+  border-radius: 0 !important;
 }
 
 .aside-items a:hover {
@@ -50,13 +54,18 @@
   color: var(--clr-OnText) !important;
 }
 
+/* Iconos a la izquierda */
+.aside-items li svg {
+  margin-right: 10px !important;
+}
+
 .menu-icon {
   display: none !important;
-  font-size: 1.5rem !important;
+  font-size: 1.6rem !important;
   cursor: pointer !important;
   position: fixed !important;
   top: 10px !important;
-  left: 10px !important;
+  left: 15px !important;
   z-index: 1000 !important;
 }
 

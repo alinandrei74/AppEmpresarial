@@ -1,3 +1,5 @@
+//TODO#code3: Añadir mas informacion y detalles como un recuento de todas las tareas hechas y en el caso del rol admin que muestre tambien el total de las tareas creadas en base a la base de datos, es importante que se explique en un mensaje que eso es solo en el periodo de 24h y que las tareas hechas en ese periodo se eliminaran en la base de datos en ese periodo
+
 import React from "react";
 import "./UserDetails.css"; // Importa los estilos CSS
 
@@ -17,7 +19,9 @@ const UserDetails = ({ userData }) => {
     <div className="user-details-container">
       <div className="user-details-header">
         {/* <h2>Información del Usuario</h2> */}
-        <h2>id: '{userData.id}'</h2>
+        <h2>
+          {fullName.split(" ")[0]} - {userData.dni}
+        </h2>
         {userData.role && (
           <div className={`user-role ${userData.role.toLowerCase()}`}>
             {userData.role}

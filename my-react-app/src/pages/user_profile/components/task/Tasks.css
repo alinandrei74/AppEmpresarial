@@ -12,29 +12,47 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+<<<<<<< HEAD
   /* Espacio entre los elementos del formulario */
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
   margin-bottom: 20px;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+<<<<<<< HEAD
+=======
+  background-color: var(--clr-primary);
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 h2 {
   color: var(--clr-OnText);
+<<<<<<< HEAD
+=======
+  padding-bottom: 15px;
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .create-task-form input,
 .create-task-form select,
 .create-task-form button {
   width: 100%;
+<<<<<<< HEAD
   /* Asegurar que todos los inputs y el botón tengan el mismo ancho */
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
   padding: 10px;
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
+<<<<<<< HEAD
   /* Para que el padding no afecte el tamaño */
   margin: 0;
   /* Quitar márgenes innecesarios */
+=======
+  margin: 0;
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .create-task-form button {
@@ -43,14 +61,20 @@ h2 {
   border: none;
   cursor: pointer;
   transition: background-color 0.1s ease;
+<<<<<<< HEAD
   /* Transición casi instantánea */
 
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
   color: white;
 }
 
 .create-task-form button:hover {
   background-color: var(--clr-secondary);
+<<<<<<< HEAD
   /* Color de hover para los botones */
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .tasks-list {
@@ -59,13 +83,20 @@ h2 {
 }
 
 .task-item {
+<<<<<<< HEAD
   /* background-color: var(--clr-surface); */
   /* border: 1px solid var(--clr-border); */
+=======
+  background-color: var(--clr-primary);
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
   border-radius: 8px;
   padding: 15px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   transition: transform 0.1s, background-color 0.1s;
+<<<<<<< HEAD
   /* Transición rápida */
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .task-item:hover {
@@ -73,17 +104,26 @@ h2 {
 }
 
 .task-item.pending {
+<<<<<<< HEAD
   border-left: 4px solid orange;
 }
 
 .task-item.done {
   border-left: 4px solid green;
+=======
+  border-left: 10px solid orange;
+}
+
+.task-item.done {
+  border-left: 10px solid green;
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .task-item p {
   margin: 0 0 10px 0;
   font-weight: bold;
   font-size: 18px;
+<<<<<<< HEAD
   /* Aumentar el tamaño del texto del título */
   color: var(--clr-OnText);
   word-break: break-word;
@@ -99,14 +139,73 @@ small {
   word-break: break-word;
 }
 
+=======
+  color: var(--clr-text);
+  word-break: break-word;
+}
+
+/* Estilo para el small minimalista y centrado */
+small {
+  width: auto;
+  /* Ajuste automático al contenido */
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--clr-text) !important;
+  background-color: var(--clr-background);
+  word-break: break-word;
+  display: inline-block;
+  margin-inline: 35%;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Aplicar al small dentro de task-item, asegurando su alineación */
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 .task-item small {
   display: block;
   margin-bottom: 5px;
   font-size: 13px;
+<<<<<<< HEAD
   /* Tamaño más pequeño para los detalles */
   color: var(--clr-OnSurfaceVariant);
 }
 
+=======
+  color: var(--clr-OnSurfaceVariant);
+}
+
+
+.user-details-task {
+  display: flex;
+  align-items: center;
+  /* Alinear verticalmente todos los elementos al centro */
+  gap: 10px;
+  font-size: 1.5em;
+  color: var(--clr-OnBackground);
+  margin: 0;
+}
+
+.user-details-task h2 {
+  margin: 0;
+  font-size: 1em;
+  color: inherit;
+}
+
+.user-details-task .user-role {
+  padding: 5px 15px;
+  border-radius: 5px;
+  font-size: 0.6em;
+  display: inline-block;
+
+  /* Desplaza el .user-role hacia la derecha */
+  margin-left: auto;
+  margin-bottom: auto;
+}
+
+
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 .task-item button {
   margin-top: 10px;
   padding: 8px 12px;
@@ -114,24 +213,46 @@ small {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.1s ease;
+<<<<<<< HEAD
   /* Transición casi instantánea */
 }
 
 .task-item button:hover {
   /* background-color: var(--clr-secondary-hover); */
   /* Agrega un color de hover para los botones */
+=======
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .task-item button+button {
   margin-left: 10px;
 }
 
+<<<<<<< HEAD
 /* Estilo específico para el botón de eliminación en rojo */
 .task-item button:last-of-type {
+=======
+.complete-task-button {
+  background-color: var(--secondary-default);
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.complete-task-button:hover {
+  background-color: var(--clr-secondary);
+}
+
+.delete-task-button {
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
   background-color: var(--clr-error);
   color: white;
 }
 
+<<<<<<< HEAD
 .task-item button:last-of-type:hover {
   background-color: darkred !important;
   /* Hover más oscuro para el botón de eliminación */
@@ -145,12 +266,43 @@ small {
   /* Mayor peso de fuente para el título */
   color: var(--clr-primary);
   /* Color primario para destacar */
+=======
+.delete-task-button:hover {
+  background-color: darkred !important;
+}
+
+.task-item .task-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--clr-primary);
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }
 
 .task-item .task-description {
   font-size: 16px;
+<<<<<<< HEAD
   /* Tamaño de fuente intermedio para la descripción */
   color: var(--clr-OnSurface);
   /* Color diferente para la descripción */
   margin-bottom: 10px;
+=======
+  color: var(--clr-OnSurface);
+  margin-bottom: 10px;
+}
+
+
+/* Animación de enfoque suave para el campo de título */
+input[type="text"] {
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  /* Animación suave tanto para box-shadow como para el borde */
+}
+
+input[type="text"]:focus {
+  outline: none;
+  /* Elimina el borde por defecto del navegador */
+  box-shadow: 0 0 8px var(--secondary-default);
+  /* Efecto de sombra alrededor del campo */
+  border-color: var(--secondary-default);
+  /* Cambia el color del borde */
+>>>>>>> 4f7d37df6a05805632dd058eebc0374e3392c09e
 }

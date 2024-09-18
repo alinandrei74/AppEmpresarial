@@ -60,6 +60,7 @@ const createTablesIfNotExists = async () => {
       }
     };
 
+    
     // Definiciones de columnas esperadas para la tabla `users`
     const usersColumns: Record<string, string> = {
       id: 'SERIAL PRIMARY KEY',
@@ -108,6 +109,9 @@ const createTablesIfNotExists = async () => {
 
     // Verificar y ajustar columnas para la tabla `notes`
     await checkAndAlterTableColumns('notes', notesColumns);
+
+    //! ToDo: Verificar que se puedan actualizar columnas con los triggers
+    
 
     // Crear función y trigger para actualizar el campo updated_at en users
     await db.none(`
