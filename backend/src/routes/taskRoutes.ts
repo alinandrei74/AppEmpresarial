@@ -1,19 +1,20 @@
-import express from 'express';
+import { Router } from 'express';
 import { getTasks, createTask, updateTask, deleteTask } from '../controllers/taskController';
 import { authorizeRole } from '../middlewares/authRole';
+import { authenticateToken } from '../middlewares/authMiddleware'; // Asegúrate de importar el middleware correcto
 
-const router = express.Router();
+const router = Router();
 
 // Permite que cualquier usuario autenticado pueda ver las tareas
-router.get('/tasks', getTasks);
+router.get('/', authenticateToken, authorizeRole('tasks', 'read'), getTasks);
 
 // Solo admin puede crear tareas
-router.post('/tasks', authorizeRole(['admin']), createTask);
+router.post('/', authenticateToken, authorizeRole('tasks', 'create'), createTask);
 
 // Permite que cualquier usuario autenticado pueda actualizar tareas
-router.put('/tasks/:id', updateTask);
+router.put('/:id', authenticateToken, authorizeRole('tasks', 'update'), updateTask);
 
 // Solo admin puede eliminar tareas
-router.delete('/tasks/:id', authorizeRole(['admin']), deleteTask);
+router.delete('/:id', authenticateToken, authorizeRole('tasks', 'delete'), deleteTask);
 
 export default router;

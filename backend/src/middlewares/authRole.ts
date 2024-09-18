@@ -1,51 +1,69 @@
-///crear un codigo para que segun el user se tenga acceso o no a las distintas paginas:
-//tareas:
-//admin=>todo: todos los cruds de tareas
-//mantenimiento=>maintenance: tareas role mantenimiento: verlas y actualizarlas
-//limpieza=>cleaning: tareas role mantenimiento: verlas y actualizarlas
-//reparto=>delivery: tareas role mantenimiento: verlas y actualizarlas
-//notas:
-//todos a todo: todos los cruds para todos los roles
-//users:
-//admin=>crea usuarios:acceso a todos los cruds de register
-//maintenance-cleaning-delivery: no access _ status no access
-//login:todos acceso a crud crear
+// authRole.ts
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
+import { Role } from './../types/role'; // Adjust path as needed
 
-const JWT_SECRET = process.env.JWT_SECRET || 'secret-key';
+// Definir permisos por rol
+const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: string[] }> = {
+  admin: {
+    tasks: ['create', 'read', 'update', 'delete'],
+    users: ['create', 'read', 'update', 'delete'],
+    notes: ['create', 'read', 'update', 'delete'],
+  },
+  maintenance: {
+    tasks: ['read', 'update'],
+    users: [], // No tiene acceso
+    notes: ['create', 'read', 'update', 'delete'],
+  },
+  cleaning: {
+    tasks: ['read', 'update'],
+    users: [], // No tiene acceso
+    notes: ['create', 'read', 'update', 'delete'],
+  },
+  delivery: {
+    tasks: ['read', 'update'],
+    users: [], // No tiene acceso
+    notes: ['create', 'read', 'update', 'delete'],
+  },
+};
 
-export const authorizeRole = (roles: string[]) => {
+// Middleware para autorizar según el rol del usuario
+export const authorizeRole = (entity: 'tasks' | 'users' | 'notes', action: 'create' | 'read' | 'update' | 'delete' | 'send') => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization?.split(' ')[1];
+    // console.log(`[authorizeRole] Start: entity=${entity}, action=${action}`); // Debug: Start of the function
 
-    if (!token) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({
-        status: StatusCodes.UNAUTHORIZED,
-        message: 'Token no proporcionado',
-        data: null,
-      });
+    const user = req.user; // Asumiendo que el rol del usuario está en req.user
+    // console.log(`[authorizeRole] User from request:`, user); // Debug: Check user from request
+
+    if (!user || !user.role) {
+      console.error('[authorizeRole] User not authenticated or role not present');
+      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'User not authenticated' });
     }
 
-    jwt.verify(token, JWT_SECRET, (err, decoded: any) => {
-      if (err) {
-        return res.status(StatusCodes.UNAUTHORIZED).json({
-          status: StatusCodes.UNAUTHORIZED,
-          message: 'Token inválido o expirado',
-          data: null,
-        });
-      }
+    const { role } = user;
+    // console.log(`[authorizeRole] User role: ${role}`); // Debug: Display user role
 
-      if (!decoded || !roles.includes(decoded.role)) {
-        return res.status(StatusCodes.FORBIDDEN).json({
-          status: StatusCodes.FORBIDDEN,
-          message: 'No tienes permiso para acceder a esta ruta',
-          data: null,
-        });
-      }
+    // Verificar si el rol es válido
+    if (!isValidRole(role)) {
+      console.error(`[authorizeRole] Invalid role: ${role}`);
+      return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid role' });
+    }
 
-      next();
-    });
+    // Verificar si el rol tiene permiso para la acción solicitada en la entidad
+    if (rolePermissions[role] && rolePermissions[role][entity]?.includes(action)) {
+      // console.log(`[authorizeRole] Role "${role}" has permission for action "${action}" on "${entity}"`); // Debug: Permission granted
+      next(); // El rol tiene acceso, continuar con la siguiente función
+    } else {
+      console.error(`[authorizeRole] Access denied for role "${role}" on action "${action}" for entity "${entity}"`);
+      res.status(StatusCodes.FORBIDDEN).json({ message: 'Access denied' });
+    }
   };
 };
+
+// Función para verificar si el rol es válido
+function isValidRole(role: string): role is Role {
+  const validRoles = ['admin', 'maintenance', 'cleaning', 'delivery'];
+  const isValid = validRoles.includes(role);
+  // console.log(`[isValidRole] Checking if role "${role}" is valid: ${isValid}`); // Debug: Check if role is valid
+  return isValid;
+}

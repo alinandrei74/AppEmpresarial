@@ -28,10 +28,12 @@ const DarkModeProvider = ({ children }) => {
   const initialDarkMode = JSON.parse(localStorage.getItem("darkMode")) || false;
   const [darkMode, setDarkMode] = useState(initialDarkMode);
 
+  // Actualiza el modo oscuro en el DOM y en localStorage cada vez que cambia el estado.
   useEffect(() => {
     updateDarkMode(darkMode);
   }, [darkMode]);
 
+  // Función para alternar el modo oscuro.
   const toggleDarkMode = useCallback(() => {
     setDarkMode((prevMode) => !prevMode);
   }, []);

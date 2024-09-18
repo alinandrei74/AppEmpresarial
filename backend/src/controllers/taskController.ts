@@ -32,17 +32,17 @@ export const createTask = async (req: Request, res: Response) => {
 
   try {
     if (!description || !status || !user_id || !created_at || !title) {
-      throw new TaskError('Description, status, user_id, created_at, title are required');
+      throw new TaskError('description, status, user_id, created_at, title are required');
     }
 
     const result = await db.one(
-      'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING task_id',
+      'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
       [description, status, user_id, created_at, title]
     );
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: 'Task created successfully',
-      data: { task_id: result.task_id },
+      data: { id: result.id },
     });
   } catch (error) {
     if (error instanceof TaskError) {
@@ -72,15 +72,19 @@ export const updateTask = async (req: Request, res: Response) => {
       throw new TaskError('ID, description, status, user_id, created_at and title are required');
     }
 
+    //; Si la tarea se marca como completada, establecemos la fecha actual en `completed_at`
+    const completedAt = status === 'done' ? new Date() : null;
+
     const result = await db.result(
-      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5 WHERE task_id = $6',
-      [description, status, user_id, created_at, title, id]
+      'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
+      [description, status, user_id, created_at, title, completedAt, id]
     );
+
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: 'Task updated successfully',
-        data: null,
+        data: result.rows[0], // Devolver la tarea actualizada
       });
     } else {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -108,6 +112,7 @@ export const updateTask = async (req: Request, res: Response) => {
   }
 };
 
+
 export const deleteTask = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -116,7 +121,7 @@ export const deleteTask = async (req: Request, res: Response) => {
       throw new TaskError('ID is required');
     }
 
-    const result = await db.result('DELETE FROM tasks WHERE task_id = $1', [id]);
+    const result = await db.result('DELETE FROM tasks WHERE id = $1', [id]);
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,

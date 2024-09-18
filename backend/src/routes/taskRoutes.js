@@ -1,18 +1,16 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const taskController_1 = require("../controllers/taskController");
 const authRole_1 = require("../middlewares/authRole");
-const router = express_1.default.Router();
+const authMiddleware_1 = require("../middlewares/authMiddleware"); // Asegúrate de importar el middleware correcto
+const router = (0, express_1.Router)();
 // Permite que cualquier usuario autenticado pueda ver las tareas
-router.get('/tasks', taskController_1.getTasks);
+router.get('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'read'), taskController_1.getTasks);
 // Solo admin puede crear tareas
-router.post('/tasks', (0, authRole_1.authorizeRole)(['admin']), taskController_1.createTask);
+router.post('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'create'), taskController_1.createTask);
 // Permite que cualquier usuario autenticado pueda actualizar tareas
-router.put('/tasks/:id', taskController_1.updateTask);
+router.put('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'update'), taskController_1.updateTask);
 // Solo admin puede eliminar tareas
-router.delete('/tasks/:id', (0, authRole_1.authorizeRole)(['admin']), taskController_1.deleteTask);
+router.delete('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'delete'), taskController_1.deleteTask);
 exports.default = router;
