@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Aside from "./components/Aside";
 import Tasks from "./components/Tasks";
-// import Notes from "./components/Notes";
+import Notes from "./components/Notes";
 import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
 import UserDetails from "./components/UserDetails";
@@ -18,7 +18,6 @@ const UserProfile = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
 
-    //; Verifica si el token existe, de lo contrario redirige a /login
     if (!token) {
       handleInvalidToken("Token no encontrado. Por favor, inicia sesión.");
       return;
@@ -34,8 +33,7 @@ const UserProfile = () => {
         if (response.ok) {
           const result = await response.json();
           const userData = result.data.user;
-
-          setUserData(result.data.user);
+          setUserData(userData);
           console.log("Todos los datos del usuario autenticado:", userData);
         } else {
           const result = await response.json();
@@ -52,14 +50,10 @@ const UserProfile = () => {
     verifyToken();
   }, [navigate]);
 
-  /**
-   ** Maneja el token inválido eliminándolo del almacenamiento de sesión y redirigiendo a la página de inicio de sesión.
-   * @param {string} message - El mensaje a mostrar al usuario.
-   */
   const handleInvalidToken = (message) => {
     console.warn(message);
     alert(message);
-    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
+    sessionStorage.removeItem("authToken");
     navigate("/login");
   };
 
@@ -75,13 +69,13 @@ const UserProfile = () => {
 
         <Routes>
           <Route path="tasks" element={<Tasks userData={userData} />} />
-          {/* <Route path="notes" element={<Notes userData={userData} />} /> */}
+          <Route path="notes" element={<Notes userData={userData} />} />
           <Route path="calendar" element={<Calendar userData={userData} />} />
           <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
-          {userData.role_name === "admin" && (
+          {userData.role === 'admin' && (
             <>
               <Route path="create-profile" element={<Register />} />
-              <Route path="user-management" element={<UserManagement currentUserId={userData.user_id} />} />
+              <Route path="user-management" element={<UserManagement currentUserId={userData.id} />} />
             </>
           )}
         </Routes>

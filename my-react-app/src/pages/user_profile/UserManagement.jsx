@@ -1,57 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { getAllUsers, deleteUser, getAllTasks } from '../../data_base/mockDatabase.mjs';
 import './UserManagement.css';
 
 const UserManagement = ({ currentUserId }) => {
   const [users, setUsers] = useState([]);
-  const [tasks, setTasks] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [roleFilter, setRoleFilter] = useState('all');
-  const [hasPendingTasksFilter, setHasPendingTasksFilter] = useState(false);
   const [sortOrder, setSortOrder] = useState('desc');
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadUsers();
-    loadTasks();
   }, []);
 
   useEffect(() => {
     filterAndSortUsers();
-  }, [users, roleFilter, hasPendingTasksFilter, sortOrder, searchTerm]);
+  }, [users, roleFilter, sortOrder, searchTerm]);
 
   const loadUsers = async () => {
-    const result = await getAllUsers();
-    if (result.status === 200) {
-      setUsers(result.data);
-    } else {
-      console.error('Error al cargar usuarios:', result.message);
-    }
-  };
-
-  const loadTasks = async () => {
-    const result = await getAllTasks();
-    if (result.status === 200) {
-      setTasks(result.data);
-    } else {
-      console.error('Error al cargar tareas:', result.message);
+    try {
+      const token = sessionStorage.getItem('authToken');
+      const response = await fetch('http://localhost:3000/api/users/all', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (response.ok) {
+        const result = await response.json();
+        setUsers(result.data);
+      } else {
+        console.error('Error al cargar usuarios:', await response.text());
+      }
+    } catch (error) {
+      console.error('Error al cargar usuarios:', error);
     }
   };
 
   const filterAndSortUsers = () => {
     let filtered = users.filter(user => {
-      const matchesRole = roleFilter === 'all' || user.role_name === roleFilter;
-      const matchesPendingTasks = !hasPendingTasksFilter || 
-        tasks.some(task => task.user_id === user.user_id && task.status === 'pending');
+      const matchesRole = roleFilter === 'all' || user.role === roleFilter;
       const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (user.personalData?.first_name + ' ' + user.personalData?.last_name).toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesRole && matchesPendingTasks && matchesSearch;
+        (user.name + ' ' + user.firstname + ' ' + user.lastname).toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesRole && matchesSearch;
     });
 
     filtered.sort((a, b) => {
       return sortOrder === 'desc' 
-        ? new Date(b.createdAt) - new Date(a.createdAt)
-        : new Date(a.createdAt) - new Date(b.createdAt);
+        ? new Date(b.created_at) - new Date(a.created_at)
+        : new Date(a.created_at) - new Date(b.created_at);
     });
 
     setFilteredUsers(filtered);
@@ -59,11 +54,21 @@ const UserManagement = ({ currentUserId }) => {
 
   const handleDeleteUser = async (userId) => {
     if (window.confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-      const result = await deleteUser(userId);
-      if (result.status === 200) {
-        setUsers(prevUsers => prevUsers.filter(user => user.user_id !== userId));
-      } else {
-        console.error('Error al eliminar usuario:', result.message);
+      try {
+        const token = sessionStorage.getItem('authToken');
+        const response = await fetch(`http://localhost:3000/api/users/${userId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          setUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+        } else {
+          console.error('Error al eliminar usuario:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error al eliminar usuario:', error);
       }
     }
   };
@@ -87,14 +92,6 @@ const UserManagement = ({ currentUserId }) => {
           <option value="delivery">Entrega</option>
           <option value="maintenance">Mantenimiento</option>
         </select>
-        <label>
-          <input
-            type="checkbox"
-            checked={hasPendingTasksFilter}
-            onChange={(e) => setHasPendingTasksFilter(e.target.checked)}
-          />
-          Con tareas pendientes
-        </label>
         <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
           <option value="desc">Más nuevo primero</option>
           <option value="asc">Más antiguo primero</option>
@@ -111,22 +108,22 @@ const UserManagement = ({ currentUserId }) => {
           <tr>
             <th>Usuario</th>
             <th>Rol</th>
-            <th>Tareas Pendientes</th>
+            <th>Email</th>
             <th>Fecha de Creación</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {filteredUsers.map(user => (
-            <tr key={user.user_id}>
-              <td>{`${user.personalData?.first_name || ''} ${user.personalData?.last_name || ''} ${user.username}`}</td>
-              <td>{user.role_name}</td>
-              <td>{tasks.filter(task => task.user_id === user.user_id && task.status === 'pending').length}</td>
-              <td>{formatDate(user.createdAt)}</td>
+            <tr key={user.id}>
+              <td>{`${user.name} ${user.firstname} ${user.lastname} (${user.username})`}</td>
+              <td>{user.role}</td>
+              <td>{user.email}</td>
+              <td>{formatDate(user.created_at)}</td>
               <td>
                 <button 
-                  onClick={() => handleDeleteUser(user.user_id)}
-                  disabled={user.user_id === currentUserId}
+                  onClick={() => handleDeleteUser(user.id)}
+                  disabled={user.id === currentUserId}
                 >
                   Eliminar
                 </button>

@@ -3,32 +3,30 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./Form.css";
 
-/**
- * Componente para el formulario de registro de usuarios.
- * @returns {JSX.Element} El componente del formulario.
- */
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [responseMessage, setResponseMessage] = useState(""); //; Mensaje de respuesta de la API
-  const [isErrorMessage, setIsErrorMessage] = useState(false); //; Nueva variable de estado para manejar el estilo del mensaje
+  const [responseMessage, setResponseMessage] = useState("");
+  const [isErrorMessage, setIsErrorMessage] = useState(false);
 
   const formik = useFormik({
     initialValues: {
-      rol: "",
+      role: "",
       username: "",
-      fullName: "",
+      name: "",
+      firstname: "",
+      lastname: "",
       dni: "",
-      address: "",
-      postal_code: "",
       email: "",
       telephone: "",
+      address: "",
+      cp: "",
       password: "",
       confirmPassword: "",
     },
     validationSchema: Yup.object({
-      rol: Yup.string()
-        .oneOf(["Admin", "Cleaning", "Delivery", "Maintenance"], "Rol inválido")
-        .required(""),
+      role: Yup.string()
+        .oneOf(["admin", "cleaning", "delivery", "maintenance"], "Rol inválido")
+        .required("El rol es requerido"),
       username: Yup.string()
         .min(3, "El nombre de usuario debe tener mínimo 3 caracteres")
         .max(20, "El nombre de usuario debe tener máximo 20 caracteres")
@@ -36,43 +34,48 @@ const Form = () => {
           /^(?![-_])[A-Za-z0-9Ñ_-]{1,18}[A-Za-z0-9Ñ](?<![-_])$/,
           "El nombre de usuario puede contener números, mayúsculas, minúsculas, '-' y '_'. No puede empezar ni terminar con '-' o '_'."
         )
-        .required(""),
-      fullName: Yup.string()
+        .required("El nombre de usuario es requerido"),
+      name: Yup.string()
         .matches(
           /^[A-Za-zÀ-ÿ\s]+$/,
-          "El nombre completo solo puede contener letras y espacios"
+          "El nombre solo puede contener letras y espacios"
         )
-        .required(""),
+        .required("El nombre es requerido"),
+      firstname: Yup.string()
+        .matches(
+          /^[A-Za-zÀ-ÿ\s]+$/,
+          "El primer apellido solo puede contener letras y espacios"
+        )
+        .required("El primer apellido es requerido"),
+      lastname: Yup.string()
+        .matches(
+          /^[A-Za-zÀ-ÿ\s]+$/,
+          "El segundo apellido solo puede contener letras y espacios"
+        )
+        .required("El segundo apellido es requerido"),
       dni: Yup.string()
         .matches(
           /^[A-Za-z0-9]+$/,
           "El DNI o NIE sólo puede contener números y letras"
         )
-        .required(""),
-      address: Yup.string()
-        .matches(
-          /^[A-Za-zÀ-ÿ\d\s,]+$/,
-          "Dirección sólo admite letras, números, ',' y espacios"
-        )
-        .required(""),
-      postal_code: Yup.string()
-        .matches(
-          /^\d{4,10}$/,
-          "El código postal debe ser un número entre 4 y 10 dígitos."
-        )
-        .required(""),
+        .required("El DNI o NIE es requerido"),
       email: Yup.string()
-        .matches(
-          /^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i,
-          "Formato de email inválido"
-        )
-        .required(""),
+        .email("Formato de email inválido")
+        .required("El email es requerido"),
       telephone: Yup.string()
         .matches(
           /^\d{9,15}$/,
           "El teléfono solo puede contener entre 9 y 15 números"
         )
-        .required(""),
+        .required("El teléfono es requerido"),
+      address: Yup.string()
+        .required("La dirección es requerida"),
+      cp: Yup.string()
+        .matches(
+          /^\d{4,10}$/,
+          "El código postal debe ser un número entre 4 y 10 dígitos."
+        )
+        .required("El código postal es requerido"),
       password: Yup.string()
         .min(8, "La contraseña debe tener mínimo 8 caracteres")
         .max(30, "La contraseña debe tener máximo 30 caracteres")
@@ -89,19 +92,14 @@ const Form = () => {
           /[@$!%*?&.#]/,
           "La contraseña debe contener al menos un símbolo especial"
         )
-        .required(""),
+        .required("La contraseña es requerida"),
       confirmPassword: Yup.string()
         .oneOf([Yup.ref("password"), null], "Las contraseñas no coinciden")
-        .required(""),
+        .required("Confirmar la contraseña es requerido"),
     }),
 
     onSubmit: async (values) => {
       try {
-        //; Separa el nombre completo en `name`, `firstname` y `lastname`
-        const [name, firstname, ...lastnameArray] = values.fullName.split(" ");
-        const lastname = lastnameArray.join(" ");
-
-        //; Estructura los datos para la petición POST al backend
         const response = await fetch(
           "http://localhost:3000/api/auth/register",
           {
@@ -110,19 +108,17 @@ const Form = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              role: values.role,
               username: values.username,
-              password: values.password,
-              role: values.rol.toLowerCase(),
-              name, //; Primer nombre
-              firstname, //; Segundo nombre o primer apellido
-              lastname, //; Apellidos restantes
+              name: values.name,
+              firstname: values.firstname,
+              lastname: values.lastname,
+              dni: values.dni,
               email: values.email,
               telephone: values.telephone,
-              dni: values.dni,
               address: values.address,
-              cp: values.postal_code, //; Código postal
-              created_at: new Date().toISOString().split("T")[0], //; Fecha actual en formato YYYY-MM-DD
-              updated_at: new Date().toISOString().split("T")[0], //; Fecha actual en formato YYYY-MM-DD
+              cp: values.cp,
+              password: values.password,
             }),
           }
         );
@@ -131,14 +127,14 @@ const Form = () => {
 
         if (response.status === 201) {
           setResponseMessage("Usuario registrado con éxito.");
-          setIsErrorMessage(false); //; Indica que el mensaje es de éxito
+          setIsErrorMessage(false);
         } else {
           setResponseMessage("Error al registrar el usuario: " + data.message);
-          setIsErrorMessage(true); //; Indica que el mensaje es de error
+          setIsErrorMessage(true);
         }
       } catch (error) {
         setResponseMessage("Error al registrar el usuario: " + error.message);
-        setIsErrorMessage(true); //; Indica que el mensaje es de error
+        setIsErrorMessage(true);
       }
     },
   });
@@ -154,27 +150,26 @@ const Form = () => {
         Por favor, complete el formulario para registrarse.
       </div>
 
-      {/* Campo para seleccionar el rol */}
       <div className="form-group">
-        <label htmlFor="rol" className="form-label required">
+        <label htmlFor="role" className="form-label required">
           Rol
         </label>
         <select
-          id="rol"
-          name="rol"
+          id="role"
+          name="role"
           className="form-input"
-          value={formik.values.rol}
+          value={formik.values.role}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         >
           <option value="" label="Seleccione un rol" />
-          <option value="Admin" label="Administrador" />
-          <option value="Cleaning" label="Limpieza" />
-          <option value="Delivery" label="Entrega" />
-          <option value="Maintenance" label="Mantenimiento" />
+          <option value="admin" label="Administrador" />
+          <option value="cleaning" label="Limpieza" />
+          <option value="delivery" label="Entrega" />
+          <option value="maintenance" label="Mantenimiento" />
         </select>
-        {formik.touched.rol && formik.errors.rol ? (
-          <div>{formik.errors.rol}</div>
+        {formik.touched.role && formik.errors.role ? (
+          <div>{formik.errors.role}</div>
         ) : null}
       </div>
 
@@ -197,20 +192,56 @@ const Form = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="fullName" className="form-label required">
-          Nombre Completo
+        <label htmlFor="name" className="form-label required">
+          Nombre
         </label>
         <input
           type="text"
-          id="fullName"
-          name="fullName"
+          id="name"
+          name="name"
           className="form-input"
-          value={formik.values.fullName}
+          value={formik.values.name}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        {formik.touched.fullName && formik.errors.fullName ? (
-          <div>{formik.errors.fullName}</div>
+        {formik.touched.name && formik.errors.name ? (
+          <div>{formik.errors.name}</div>
+        ) : null}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="firstname" className="form-label required">
+          Primer Apellido
+        </label>
+        <input
+          type="text"
+          id="firstname"
+          name="firstname"
+          className="form-input"
+          value={formik.values.firstname}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.firstname && formik.errors.firstname ? (
+          <div>{formik.errors.firstname}</div>
+        ) : null}
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="lastname" className="form-label required">
+          Segundo Apellido
+        </label>
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          className="form-input"
+          value={formik.values.lastname}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.lastname && formik.errors.lastname ? (
+          <div>{formik.errors.lastname}</div>
         ) : null}
       </div>
 
@@ -251,20 +282,20 @@ const Form = () => {
       </div>
 
       <div className="form-group">
-        <label htmlFor="postal_code" className="form-label required">
+        <label htmlFor="cp" className="form-label required">
           Código Postal
         </label>
         <input
           type="text"
-          id="postal_code"
-          name="postal_code"
+          id="cp"
+          name="cp"
           className="form-input"
-          value={formik.values.postal_code}
+          value={formik.values.cp}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         />
-        {formik.touched.postal_code && formik.errors.postal_code ? (
-          <div>{formik.errors.postal_code}</div>
+        {formik.touched.cp && formik.errors.cp ? (
+          <div>{formik.errors.cp}</div>
         ) : null}
       </div>
 
@@ -304,7 +335,6 @@ const Form = () => {
         ) : null}
       </div>
 
-      {/* Campo de Contraseña */}
       <div className="form-group">
         <label htmlFor="password" className="form-label required">
           Contraseña
@@ -318,7 +348,6 @@ const Form = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           autoComplete="new-password"
-          unselectable="on"
         />
         {formik.touched.password && formik.errors.password ? (
           <div>{formik.errors.password}</div>
@@ -338,13 +367,12 @@ const Form = () => {
         </label>
       </div>
 
-      {/* Confirmar Contraseña */}
       <div className="form-group">
         <label htmlFor="confirmPassword" className="form-label required">
           Confirmar Contraseña
         </label>
         <input
-          type="password" //; Fijo en "password" para evitar mostrar la confirmación
+          type="password"
           id="confirmPassword"
           name="confirmPassword"
           className="form-input"
@@ -352,14 +380,12 @@ const Form = () => {
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
           autoComplete="new-password"
-          unselectable="on"
         />
         {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
           <div>{formik.errors.confirmPassword}</div>
         ) : null}
       </div>
 
-      {/* Botón de Enviar */}
       <button
         type="submit"
         className={`form-button ${
@@ -369,7 +395,6 @@ const Form = () => {
         Registrar
       </button>
 
-      {/* Mensaje de Respuesta */}
       {responseMessage && (
         <div
           className={`responseMessage ${

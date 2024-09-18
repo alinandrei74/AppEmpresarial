@@ -1,53 +1,49 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import "./Aside.css";
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import './Aside.css';
 
 const Aside = ({ userData }) => {
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const menuItems = [
-    { name: "Tasks", path: "tasks" },
-    { name: "Notes", path: "notes" },
-    { name: "Calendar", path: "calendar" },
-    { name: "Tourist Places", path: "tourist-places" },
-  ];
+  const isActive = (path) => {
+    return location.pathname.includes(path) ? 'active-link' : '';
+  };
 
-  // Añadir opciones solo para administradores
-  if (userData && userData.role_name === "admin") {
-    menuItems.push(
-      { name: "Crear Perfil", path: "create-profile" },
-      { name: "Gestión de Usuarios", path: "user-management" }
-    );
-  }
-
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+  const toggleAside = () => {
+    setIsOpen(!isOpen);
   };
 
   return (
     <>
-      <div className="menu-icon" onClick={toggleMenu}>
-        ☰
-      </div>
-      <aside className={`aside ${isMenuOpen ? 'open' : ''}`}>
-        <div className="logo">Mi Aplicación</div>
-        <ul className="aside-items">
-          {menuItems.map((item, index) => {
-            const isActive = location.pathname.includes(item.path);
-            return (
-              <li key={index}>
-                <Link
-                  to={item.path}
-                  className={isActive ? "active-link" : ""}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      <div className="menu-icon" onClick={toggleAside}>☰</div>
+      <aside className={`aside ${isOpen ? 'open' : ''}`}>
+        <nav>
+          <ul className="aside-items">
+            <li>
+              <Link to="/user-profile/tasks" className={isActive('/user-profile/tasks')}>Tasks</Link>
+            </li>
+            <li>
+              <Link to="/user-profile/notes" className={isActive('/user-profile/notes')}>Notes</Link>
+            </li>
+            <li>
+              <Link to="/user-profile/calendar" className={isActive('/user-profile/calendar')}>Calendar</Link>
+            </li>
+            <li>
+              <Link to="/user-profile/tourist-places" className={isActive('/user-profile/tourist-places')}>Tourist Places</Link>
+            </li>
+            {userData.role === 'admin' && (
+              <>
+                <li>
+                  <Link to="/user-profile/create-profile" className={isActive('/user-profile/create-profile')}>Create Profile</Link>
+                </li>
+                <li>
+                  <Link to="/user-profile/user-management" className={isActive('/user-profile/user-management')}>User Management</Link>
+                </li>
+              </>
+            )}
+          </ul>
+        </nav>
       </aside>
     </>
   );

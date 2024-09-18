@@ -1,68 +1,113 @@
 .user-management {
-    padding: 20px;
-  }
-  
-  .user-management h2 {
-    margin-bottom: 20px;
-  }
-  
+  padding: 20px;
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+}
+
+.user-management h2 {
+  margin-bottom: 20px;
+  color: var(--clr-primary);
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filters select,
+.filters input[type="text"] {
+  padding: 8px;
+  border: 1px solid var(--clr-border);
+  border-radius: 4px;
+  background-color: var(--clr-background);
+  color: var(--clr-text);
+}
+
+.filters label {
+  display: flex;
+  align-items: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid var(--clr-border);
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--clr-secondary);
+  color: var(--clr-OnSecondary);
+}
+
+tr:nth-child(even) {
+  background-color: var(--clr-surface);
+}
+
+button {
+  padding: 8px 12px;
+  background-color: var(--clr-error);
+  color: var(--clr-OnError);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button:disabled {
+  background-color: var(--disabled);
+  color: var(--clr-OnBackground);
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
   .filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+    flex-direction: column;
   }
   
-  .filters select,
-  .filters input[type="text"] {
-    padding: 5px;
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+  
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  
+  tr {
     border: 1px solid var(--clr-border);
-    border-radius: 4px;
+    margin-bottom: 10px;
   }
   
-  .filters label {
-    display: flex;
-    align-items: center;
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  th, td {
-    border: 1px solid var(--clr-border);
-    padding: 10px;
-    text-align: left;
-  }
-  
-  th {
-    background-color: var(--clr-secondary);
-    color: var(--clr-OnSecondary);
-  }
-  
-  tr:nth-child(even) {
-    background-color: var(--clr-surface);
-  }
-  
-  button {
-    padding: 5px 10px;
-    background-color: var(--clr-error);
-    color: white;
+  td {
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    position: relative;
+    padding-left: 50%;
   }
   
-  button:hover {
-    opacity: 0.8;
+  td:before {
+    content: attr(data-label);
+    position: absolute;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    font-weight: bold;
   }
-  
-  button:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-  }
-  
-  button:disabled:hover {
-    opacity: 1;
-  }
+}
