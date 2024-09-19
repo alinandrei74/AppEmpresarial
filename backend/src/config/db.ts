@@ -6,24 +6,7 @@ dotenv.config();
 const pgp = pgPromise();
 const db = pgp(process.env.DATABASE_URL as string);
 
-// Función para crear tablas si no existen
-const createTablesIfNotExists = async () => {
-  try {
-    // Crear la tabla work_schedule si no existe
-    await db.none(`
-      CREATE TABLE IF NOT EXISTS work_schedule (
-        id SERIAL PRIMARY KEY,
-        worker_id INT REFERENCES users(id) ON DELETE CASCADE,
-        start_time TIMESTAMP NOT NULL,
-        end_time TIMESTAMP NOT NULL,
-        description TEXT NOT NULL,
-        day_of_week VARCHAR(15) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-    `);
 
-    console.log('Tabla work_schedule creada o ya existe.');
 
     /**
      * Verifica y ajusta columnas de una tabla para que coincidan con las definiciones esperadas.
@@ -76,6 +59,24 @@ const createTablesIfNotExists = async () => {
       }
     };
 
+    // Función para crear tablas si no existen
+const createTablesIfNotExists = async () => {
+  try {
+    // Crear la tabla work_schedule si no existe
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS work_schedule (
+        id SERIAL PRIMARY KEY,
+        user_id INT REFERENCES users(id) ON DELETE CASCADE,
+        start_time TIMESTAMP NOT NULL,
+        end_time TIMESTAMP NOT NULL,
+        description TEXT NOT NULL,
+        day_of_week VARCHAR(15) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    console.log('Tabla work_schedule creada o ya existe.');
     
     // Definiciones de columnas esperadas para la tabla `users`
     const usersColumns: Record<string, string> = {

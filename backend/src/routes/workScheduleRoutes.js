@@ -5,9 +5,9 @@ const workScheduleController_1 = require("../controllers/workScheduleController"
 const authRole_1 = require("../middlewares/authRole");
 const authMiddleware_1 = require("../middlewares/authMiddleware");
 const router = (0, express_1.Router)();
-router.get('/', authMiddleware_1.authenticateToken, workScheduleController_1.getAllWorkSchedules);
-router.get('/:id', authMiddleware_1.authenticateToken, workScheduleController_1.getWorkScheduleById);
-router.post('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('schedules', 'create'), workScheduleController_1.createWorkSchedule);
-router.put('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('schedules', 'update'), workScheduleController_1.updateWorkSchedule);
-router.delete('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('schedules', 'delete'), workScheduleController_1.deleteWorkSchedule);
+router.get('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('work_schedules', 'read'), workScheduleController_1.getAllWorkSchedules);
+router.get('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('work_schedules', 'read'), workScheduleController_1.getWorkScheduleById);
+router.post('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('work_schedules', 'create'), workScheduleController_1.createWorkSchedule);
+router.put('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('work_schedules', 'update'), workScheduleController_1.updateWorkSchedule);
+router.delete('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('work_schedules', 'delete'), workScheduleController_1.deleteWorkSchedule);
 exports.default = router;

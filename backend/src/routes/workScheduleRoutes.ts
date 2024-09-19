@@ -11,10 +11,10 @@ import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-router.get('/', authenticateToken, getAllWorkSchedules);
-router.get('/:id', authenticateToken, getWorkScheduleById);
-router.post('/', authenticateToken, authorizeRole('schedules', 'create'), createWorkSchedule);
-router.put('/:id', authenticateToken, authorizeRole('schedules', 'update'), updateWorkSchedule);
-router.delete('/:id', authenticateToken, authorizeRole('schedules', 'delete'), deleteWorkSchedule);
+router.get('/', authenticateToken, authorizeRole('work_schedules', 'read'), getAllWorkSchedules);
+router.get('/:id', authenticateToken, authorizeRole('work_schedules', 'read'), getWorkScheduleById);
+router.post('/', authenticateToken, authorizeRole('work_schedules', 'create'), createWorkSchedule);
+router.put('/:id', authenticateToken, authorizeRole('work_schedules', 'update'), updateWorkSchedule);
+router.delete('/:id', authenticateToken, authorizeRole('work_schedules', 'delete'), deleteWorkSchedule);
 
 export default router;

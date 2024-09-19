@@ -20,10 +20,10 @@ class WorkScheduleError extends Error {
 }
 // Método para obtener todos los horarios de trabajo
 const getAllWorkSchedules = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req.user; // Asegúrate de que req.user sea de tipo User
+    const user = req.user;
     try {
         if (user.role === 'admin') {
-            const work_schedules = yield db_1.db.many("SELECT * FROM work_schedule");
+            const work_schedules = yield db_1.db.any("SELECT * FROM work_schedule");
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: "Horarios de trabajo recuperados exitosamente",
@@ -31,7 +31,7 @@ const getAllWorkSchedules = (req, res) => __awaiter(void 0, void 0, void 0, func
             });
         }
         else {
-            const work_schedules = yield db_1.db.many("SELECT * FROM work_schedule WHERE worker_id=$1", [user.id]);
+            const work_schedules = yield db_1.db.any("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: "Horarios de trabajo recuperados exitosamente",
@@ -49,17 +49,18 @@ const getAllWorkSchedules = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getAllWorkSchedules = getAllWorkSchedules;
-// Método para obtener el horario de trabajo por ID
+// Método para obtener un horario de trabajo por ID (clave primaria) y user_id
 const getWorkScheduleById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const user = req.user; // Asegúrate de que req.user sea de tipo User
+    const { id } = req.params; // ID del horario (clave primaria)
+    const user = req.user;
     try {
         if (!id) {
             throw new WorkScheduleError("ID es requerido");
         }
         const work_schedule = yield db_1.db.oneOrNone("SELECT * FROM work_schedule WHERE id=$1", [id]);
         if (work_schedule) {
-            if (user.role === 'admin' || work_schedule.worker_id === user.id) {
+            // Verifica que el usuario tenga permisos para ver el horario
+            if (user.role === 'admin' || work_schedule.user_id === user.id) {
                 return res.status(http_status_codes_1.StatusCodes.OK).json({
                     status: http_status_codes_1.StatusCodes.OK,
                     message: `Horario de trabajo con ID ${id} recuperado exitosamente`,
@@ -104,24 +105,26 @@ const getWorkScheduleById = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.getWorkScheduleById = getWorkScheduleById;
 // Método POST para crear una nueva entrada en el horario de trabajo
 const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { worker_id, start_time, end_time, description, day_of_week } = req.body;
-    const user = req.user; // Asegúrate de que req.user sea de tipo User
+    const { user_id, start_time, end_time, description, day_of_week } = req.body;
+    const user = req.user;
     try {
-        if (!worker_id || !start_time || !end_time || !description || !day_of_week) {
+        if (!user_id || !start_time || !end_time || !description || !day_of_week) {
             throw new WorkScheduleError("Todos los campos son requeridos.");
         }
         // Validar que start_time sea menor que end_time
         if (new Date(start_time) >= new Date(end_time)) {
             throw new WorkScheduleError("La hora de inicio debe ser anterior a la hora de finalización.");
         }
-        if (user.role !== 'admin' && user.id !== worker_id) {
+        // Verifica que el usuario tenga permiso para crear un horario
+        if (user.role !== 'admin' && user.id !== user_id) {
             throw new WorkScheduleError("No tienes permiso para crear horarios para otros usuarios.");
         }
-        const result = yield db_1.db.one("INSERT INTO work_schedule (worker_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING *", [worker_id, start_time, end_time, description, day_of_week]);
+        // Insertar y devolver el ID generado automáticamente (clave primaria)
+        const result = yield db_1.db.one("INSERT INTO work_schedule (user_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id", [user_id, start_time, end_time, description, day_of_week]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: "Horario de trabajo creado exitosamente",
-            data: result,
+            data: result, // Devolver el ID generado
         });
     }
     catch (error) {
@@ -134,12 +137,11 @@ const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
         else if (error && typeof error === "object" && "code" in error) {
-            // Manejar error de clave foránea (ej. si worker_id no existe)
             if (error.code === "23503") {
-                console.error("Error al crear el horario: trabajador no existe");
+                console.error("Error al crear el horario: usuario no existe");
                 return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
                     status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                    message: "El trabajador especificado no existe.",
+                    message: "El usuario especificado no existe.",
                 });
             }
             console.error("Error inesperado:", error);
@@ -160,35 +162,35 @@ const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.createWorkSchedule = createWorkSchedule;
-// Método para actualizar un horario de trabajo por ID
+// Método para actualizar un horario de trabajo por ID (clave primaria) y user_id
 const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { worker_id, start_time, end_time, description, day_of_week } = req.body;
-    const user = req.user; // Asegúrate de que req.user sea de tipo User
+    const { id } = req.params; // ID del horario (clave primaria)
+    const { user_id, start_time, end_time, description, day_of_week } = req.body;
+    const user = req.user;
     try {
-        if (!id || !worker_id || !start_time || !end_time || !description || !day_of_week) {
+        if (!id || !user_id || !start_time || !end_time || !description || !day_of_week) {
             throw new WorkScheduleError("Todos los campos son requeridos.");
         }
         // Validar que start_time sea menor que end_time
         if (new Date(start_time) >= new Date(end_time)) {
             throw new WorkScheduleError("La hora de inicio debe ser anterior a la hora de finalización.");
         }
-        // Solo admin puede actualizar horarios
-        if (user.role !== 'admin') {
-            throw new WorkScheduleError("No tienes permiso para actualizar horarios.");
+        // Verifica que el usuario tenga permiso para actualizar el horario
+        if (user.role !== 'admin' && user.id !== user_id) {
+            throw new WorkScheduleError("No tienes permiso para actualizar este horario.");
         }
-        const result = yield db_1.db.result("UPDATE work_schedule SET worker_id = $1, start_time = $2, end_time = $3, description = $4, day_of_week = $5 WHERE id = $6 RETURNING *", [worker_id, start_time, end_time, description, day_of_week, id]);
+        const result = yield db_1.db.result("UPDATE work_schedule SET user_id = $1, start_time = $2, end_time = $3, description = $4, day_of_week = $5 WHERE id = $6 RETURNING *", [user_id, start_time, end_time, description, day_of_week, id]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: "Horario de trabajo actualizado exitosamente",
-                data: result.rows[0], // Devolver el horario actualizado
+                data: result.rows[0], // Devuelve la fila actualizada
             });
         }
         else {
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
                 status: http_status_codes_1.StatusCodes.NOT_FOUND,
-                message: "Horario de trabajo no encontrado",
+                message: "Horario de trabajo no encontrado o no tienes permiso para actualizarlo",
                 data: null,
             });
         }
@@ -203,12 +205,11 @@ const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
         else if (error && typeof error === "object" && "code" in error) {
-            // Manejar error de clave foránea (ej. si worker_id no existe)
             if (error.code === "23503") {
-                console.error("Error al actualizar el horario: trabajador no existe");
+                console.error("Error al actualizar el horario: usuario no existe");
                 return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
                     status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                    message: "El trabajador especificado no existe.",
+                    message: "El usuario especificado no existe.",
                 });
             }
             console.error("Error inesperado:", error);
@@ -229,19 +230,16 @@ const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
     }
 });
 exports.updateWorkSchedule = updateWorkSchedule;
-// Método para eliminar un horario de trabajo por ID
+// Método para eliminar un horario de trabajo por ID (clave primaria) y user_id
 const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const user = req.user; // Asegúrate de que req.user sea de tipo User
+    const { id } = req.params; // ID del horario (clave primaria)
+    const user = req.user;
     try {
         if (!id) {
             throw new WorkScheduleError("ID es requerido");
         }
-        // Solo admin puede eliminar horarios
-        if (user.role !== 'admin') {
-            throw new WorkScheduleError("No tienes permiso para eliminar horarios.");
-        }
-        const result = yield db_1.db.result("DELETE FROM work_schedule WHERE id = $1", [id]);
+        // Solo los admins o el mismo usuario pueden eliminar el horario
+        const result = yield db_1.db.result("DELETE FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
@@ -252,7 +250,7 @@ const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
         else {
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
                 status: http_status_codes_1.StatusCodes.NOT_FOUND,
-                message: "Horario de trabajo no encontrado",
+                message: "Horario de trabajo no encontrado o no tienes permiso para eliminarlo",
                 data: null,
             });
         }
@@ -266,27 +264,11 @@ const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
                 data: null,
             });
         }
-        else if (error && typeof error === "object" && "code" in error) {
-            // Manejar error de clave foránea si es necesario
-            if (error.code === "23503") {
-                console.error("Error al eliminar el horario: clave foránea");
-                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                    status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                    message: "El horario de trabajo está asociado a otras entidades y no puede ser eliminado.",
-                });
-            }
-            console.error("Error inesperado:", error);
-            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-                message: "Error interno del servidor",
-                data: null,
-            });
-        }
         else {
             console.error("Error desconocido:", error);
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
                 status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-                message: "Error desconocido",
+                message: "Error interno del servidor",
                 data: null,
             });
         }

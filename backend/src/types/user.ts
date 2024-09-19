@@ -1,6 +1,6 @@
 // user.ts
 export interface User {
-  id: string;
+  id: number;
   role: 'admin' | 'maintenance' | 'cleaning' | 'delivery'; // Ejemplo de roles permitidos
   username: string;
   name: string;

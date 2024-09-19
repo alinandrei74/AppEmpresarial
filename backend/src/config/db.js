@@ -26,7 +26,7 @@ const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function
         yield db.none(`
       CREATE TABLE IF NOT EXISTS work_schedule (
         id SERIAL PRIMARY KEY,
-        worker_id INT REFERENCES users(id) ON DELETE CASCADE,
+        user_id INT REFERENCES users(id) ON DELETE CASCADE,
         start_time TIMESTAMP NOT NULL,
         end_time TIMESTAMP NOT NULL,
         description TEXT NOT NULL,
@@ -127,6 +127,7 @@ const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function
         };
         // Verificar y ajustar columnas para la tabla `notes`
         yield checkAndAlterTableColumns('notes', notesColumns);
+        //! ToDo: Verificar que se puedan actualizar columnas con los triggers
         // Crear función y trigger para actualizar el campo updated_at en users
         yield db.none(`
       CREATE OR REPLACE FUNCTION update_users_updated_at_column()

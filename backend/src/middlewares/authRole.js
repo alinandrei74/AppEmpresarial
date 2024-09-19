@@ -8,25 +8,25 @@ const rolePermissions = {
         tasks: ['create', 'read', 'update', 'delete'],
         users: ['create', 'read', 'update', 'delete'],
         notes: ['create', 'read', 'update', 'delete'],
-        schedules: ['create', 'read'], // Admin puede leer todos los horarios, pero crear solo los suyos
+        work_schedules: ['create', 'read'], // Admin puede leer todos los horarios, pero crear solo los suyos
     },
     maintenance: {
         tasks: ['read', 'update'],
         users: [], // No tiene acceso
         notes: ['create', 'read', 'update', 'delete'],
-        schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
     },
     cleaning: {
         tasks: ['read', 'update'],
         users: [], // No tiene acceso
         notes: ['create', 'read', 'update', 'delete'],
-        schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
     },
     delivery: {
         tasks: ['read', 'update'],
         users: [], // No tiene acceso
         notes: ['create', 'read', 'update', 'delete'],
-        schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
     },
 };
 // Middleware para autorizar según el rol del usuario
@@ -45,7 +45,7 @@ const authorizeRole = (entity, action) => {
         // Verificar si el rol tiene permiso para la acción solicitada en la entidad
         if (rolePermissions[role] && ((_a = rolePermissions[role][entity]) === null || _a === void 0 ? void 0 : _a.includes(action))) {
             // Restricción para creación de horarios: El admin solo puede crear su propio horario
-            if (entity === 'schedules') {
+            if (entity === 'work_schedules') {
                 const scheduleUserId = req.params.workerId || req.body.workerId; // Asumiendo que el ID del usuario para el horario está en params o body
                 // Validación para creación de horarios
                 if (action === 'create') {

@@ -43,7 +43,12 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!description || !status || !user_id || !created_at || !title) {
             throw new TaskError('description, status, user_id, created_at, title are required');
         }
-        const result = yield db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, user_id, created_at, title]);
+        // Asegúrate de que user_id sea un número
+        const parsedUserId = parseInt(user_id, 10);
+        if (isNaN(parsedUserId)) {
+            throw new TaskError('user_id must be a valid number');
+        }
+        const result = yield db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, parsedUserId, created_at, title]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'Task created successfully',
@@ -77,9 +82,14 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!id || !description || !status || !user_id || !created_at || !title) {
             throw new TaskError('ID, description, status, user_id, created_at and title are required');
         }
-        //; Si la tarea se marca como completada, establecemos la fecha actual en `completed_at`
+        // Asegurarse de que id y user_id sean números
+        const parsedId = parseInt(id, 10);
+        const parsedUserId = parseInt(user_id, 10);
+        if (isNaN(parsedId) || isNaN(parsedUserId)) {
+            throw new TaskError('ID and user_id must be valid numbers');
+        }
         const completedAt = status === 'done' ? new Date() : null;
-        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, user_id, created_at, title, completedAt, id]);
+        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, parsedUserId, created_at, title, completedAt, parsedId]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
@@ -121,7 +131,12 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (!id) {
             throw new TaskError('ID is required');
         }
-        const result = yield db_1.db.result('DELETE FROM tasks WHERE id = $1', [id]);
+        // Asegurarse de que id sea un número
+        const parsedId = parseInt(id, 10);
+        if (isNaN(parsedId)) {
+            throw new TaskError('ID must be a valid number');
+        }
+        const result = yield db_1.db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
