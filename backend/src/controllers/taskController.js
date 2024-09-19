@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteTask = exports.updateTask = exports.createTask = exports.getTasks = void 0;
+exports.deleteTask = exports.updateTask = exports.createTask = exports.getCompletedTasksByUserId = exports.getTasks = void 0;
 const db_1 = require("../config/db");
 const http_status_codes_1 = require("http-status-codes");
 class TaskError extends Error {
@@ -37,6 +37,42 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getTasks = getTasks;
+/**
+ *! Necesitaba `getCompletedTasksByUserId` o `getTasksById` pero no estaba y no hay tiempo.
+ * Obtiene todas las tareas completadas por un usuario específico.
+ * @param {Request} req - La solicitud de Express.
+ * @param {Response} res - La respuesta de Express.
+ * @returns {Promise<Response>} - La respuesta con el estado y los datos de las tareas.
+ */
+const getCompletedTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req.params;
+    try {
+        if (!userId) {
+            throw new TaskError('User ID is required');
+        }
+        // Asegurarse de que userId sea un número
+        const parsedUserId = parseInt(userId, 10);
+        if (isNaN(parsedUserId)) {
+            throw new TaskError('User ID must be a valid number');
+        }
+        // Obtener todas las tareas completadas por el usuario
+        const tasks = yield db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parsedUserId, 'done']);
+        return res.status(http_status_codes_1.StatusCodes.OK).json({
+            status: http_status_codes_1.StatusCodes.OK,
+            message: 'Completed tasks fetched successfully',
+            data: tasks,
+        });
+    }
+    catch (error) {
+        console.error('Error fetching completed tasks:', error);
+        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+            message: 'Internal server error',
+            data: null,
+        });
+    }
+});
+exports.getCompletedTasksByUserId = getCompletedTasksByUserId;
 const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { description, status, user_id, created_at, title } = req.body;
     try {

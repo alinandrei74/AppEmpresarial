@@ -10,7 +10,7 @@ class TaskError extends Error {
 }
 
 export const getTasks = async (req: Request, res: Response) => {
-  
+
   try {
     const tasks = await db.any('SELECT * FROM tasks');
     return res.status(StatusCodes.OK).json({
@@ -27,6 +27,50 @@ export const getTasks = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+/**
+ *! Necesitaba `getCompletedTasksByUserId` o `getTasksById` pero no estaba y no hay tiempo.
+ * Obtiene todas las tareas completadas por un usuario específico.
+ * @param {Request} req - La solicitud de Express.
+ * @param {Response} res - La respuesta de Express.
+ * @returns {Promise<Response>} - La respuesta con el estado y los datos de las tareas.
+ */
+export const getCompletedTasksByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    if (!userId) {
+      throw new TaskError('User ID is required');
+    }
+
+    // Asegurarse de que userId sea un número
+    const parsedUserId = parseInt(userId, 10);
+    if (isNaN(parsedUserId)) {
+      throw new TaskError('User ID must be a valid number');
+    }
+
+    // Obtener todas las tareas completadas por el usuario
+    const tasks = await db.any(
+      'SELECT * FROM tasks WHERE user_id = $1 AND status = $2',
+      [parsedUserId, 'done']
+    );
+
+    return res.status(StatusCodes.OK).json({
+      status: StatusCodes.OK,
+      message: 'Completed tasks fetched successfully',
+      data: tasks,
+    });
+  } catch (error) {
+    console.error('Error fetching completed tasks:', error);
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      status: StatusCodes.INTERNAL_SERVER_ERROR,
+      message: 'Internal server error',
+      data: null,
+    });
+  }
+};
+
 
 export const createTask = async (req: Request, res: Response) => {
   const { description, status, user_id, created_at, title } = req.body;
