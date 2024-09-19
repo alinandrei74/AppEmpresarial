@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
-// import Notes from "./components/Notes";
-import Calendar from "./components/calendar/Calendar";
+import Notes from "./components/Notes";
+import Calendar from "./components/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/profile/UserDetails";
+import UserDetails from "./components/UserDetails";
+import UserManagement from "./UserManagement";
+import FloatingButton from "./components/FloatingButton";
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -51,9 +52,22 @@ const UserProfile = () => {
 
   const handleInvalidToken = (message) => {
     console.warn(message);
-    toast.error(message);
-    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
+    alert(message);
+    sessionStorage.removeItem("authToken");
     navigate("/login");
+  };
+
+  const handleCreateUser = () => {
+    const width = 800;
+    const height = 600;
+    const left = (window.screen.width - width) / 2;
+    const top = (window.screen.height - height) / 2;
+
+    window.open(
+      '/register',
+      'CreateUserWindow',
+      `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=yes`
+    );
   };
 
   if (!userData) return null;
@@ -72,13 +86,13 @@ const UserProfile = () => {
           <Route path="calendar" element={<Calendar userData={userData} />} />
           <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
           {userData.role === 'admin' && (
-            <>
-              <Route path="create-profile" element={<Register />} />
-              <Route path="user-management" element={<UserManagement currentUserId={userData.id} />} />
-            </>
+            <Route path="user-management" element={<UserManagement currentUserId={userData.id} />} />
           )}
         </Routes>
       </div>
+      {userData.role === 'admin' && (
+        <FloatingButton onClick={handleCreateUser} />
+      )}
     </div>
   );
 };
