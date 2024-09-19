@@ -36,12 +36,12 @@ app.use('/api/auth', authRoutes_1.default);
 app.listen(PORT, () => {
     console.log(`Server is running http://localhost:${PORT}`);
 });
-// Programar tarea cron para eliminar tareas completadas cada minuto para pruebas
-node_cron_1.default.schedule('* * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Ejecutando tarea cron de eliminación de tareas completadas...'); // Log para confirmar la ejecución
+// Programar tarea cron para eliminar tareas completadas cada hora
+node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Ejecutando tarea cron de eliminación de tareas completadas cada hora...'); // Log para confirmar la ejecución
     try {
         // Eliminar tareas donde `status` es "done" y `completed_at` es más de 24 horas atrás
-        const result = yield db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 hours'`);
+        const result = yield db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`);
         if (result.rowCount > 0) {
             console.log(`Eliminadas ${result.rowCount} tareas completadas hace más de 24 horas.`);
         }

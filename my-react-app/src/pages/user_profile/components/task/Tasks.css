@@ -8,6 +8,10 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.tasks-container h2 {
+  color: var(--clr-OnText);
+}
+
 .create-task-form {
   display: flex;
   flex-direction: column;
@@ -19,12 +23,17 @@
   background-color: var(--clr-primary);
 }
 
-h2 {
-  color: var(--clr-OnText);
-  padding-bottom: 15px;
+
+.filter-button {
+  margin-bottom: 10px;
+  padding: 8px 15px;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+
 .create-task-form input,
+.create-task-form textarea,
 .create-task-form select,
 .create-task-form button {
   width: 100%;
@@ -38,15 +47,10 @@ h2 {
 .create-task-form button {
   padding: 10px 16px;
   color: var(--clr-OnPrimary);
-  border: none;
-  cursor: pointer;
   transition: background-color 0.1s ease;
   color: white;
 }
 
-.create-task-form button:hover {
-  background-color: var(--clr-secondary);
-}
 
 .tasks-list {
   display: grid;
@@ -66,20 +70,29 @@ h2 {
 }
 
 .task-item.pending {
-  border-left: 10px solid orange;
+  border-left: 10px solid rgb(255, 230, 0);
 }
 
 .task-item.done {
-  border-left: 10px solid green;
+  border-left: 10px solid rgb(19, 167, 0);
 }
 
 .task-item p {
+  color: var(--clr-text) !important;
+}
+
+.task-item .task-title {
   margin: 0 0 10px 0;
   font-weight: bold;
   font-size: 18px;
-  color: var(--clr-text);
+}
+
+.task-item .task-description {
+  margin: 0;
+  font-size: 12px;
   word-break: break-word;
 }
+
 
 /* Estilo para el small minimalista y centrado */
 small {
@@ -113,11 +126,15 @@ small {
   /* Alinear verticalmente todos los elementos al centro */
   gap: 10px;
   font-size: 1.5em;
-  color: var(--clr-OnBackground);
   margin: 0;
 }
 
 .user-details-task h2 {
+
+  /* color: var(--clr-OnText); */
+  color: var(--clr-OnPrimary) !important;
+  padding-bottom: 15px;
+
   margin: 0;
   font-size: 1em;
   color: inherit;

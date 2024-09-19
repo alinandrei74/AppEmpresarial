@@ -71,19 +71,32 @@ th {
 .user-role.admin {
     background-color: var(--clr-admin) !important;
     color: var(--clr-text) !important;
+    /* color: cornsilk !important; */
+
 }
 
 .user-role.cleaning {
     background-color: var(--clr-cleaning) !important;
     color: var(--clr-text) !important;
+    /* color: cornsilk !important; */
+
 }
 
 .user-role.delivery {
     background-color: var(--clr-delivery) !important;
     color: var(--clr-text) !important;
+    /* color: cornsilk !important; */
 }
 
 .user-role.maintenance {
     background-color: var(--clr-maintenance) !important;
     color: var(--clr-text) !important;
+    /* color: cornsilk !important; */
+}
+
+
+/*todo---MARK: Other */
+
+.Toastify__toast {
+    user-select: none;
 }

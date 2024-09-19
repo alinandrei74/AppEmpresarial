@@ -28,14 +28,14 @@ app.listen(PORT, () => {
   console.log(`Server is running http://localhost:${PORT}`);
 });
 
-// Programar tarea cron para eliminar tareas completadas cada minuto para pruebas
-cron.schedule('* * * * *', async () => {
-  console.log('Ejecutando tarea cron de eliminación de tareas completadas...'); // Log para confirmar la ejecución
+// Programar tarea cron para eliminar tareas completadas cada hora
+cron.schedule('0 * * * *', async () => {
+  console.log('Ejecutando tarea cron de eliminación de tareas completadas cada hora...'); // Log para confirmar la ejecución
 
   try {
     // Eliminar tareas donde `status` es "done" y `completed_at` es más de 24 horas atrás
     const result = await db.result(
-      `DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 hours'`
+      `DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`
     );
 
     if (result.rowCount > 0) {

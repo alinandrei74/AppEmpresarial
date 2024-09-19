@@ -1,6 +1,9 @@
-//TODO#code3: que las tareas se cargen progresivamente segun la pagina la barra de la pagina va deslizandose acia abajo.
-//TODO#code3: Cuando se cree una tarea que se envie un email usando el emmail de la empresa de ejemplo y la contraseña de el que envia el emmail y el que lo recibe sera el usuario al que va dirigida la tarea usa las variables de PASS_COMPANY y EMAIL_COMPANY del archivo env
-//TODO#code3: Mejorar el tamaño y del titulo y descripcion de las targetas de las tareas, limitar el texto del titulo y de la descripcion por ejemplo titulo a 30 caracteres y descripcion a 200. Tambien que no se muestre el nombre del usuario si no eres administrador en tus tareas y se te mueste mejor la descripcion y el titulo con mas espacio ya que el nombre no estaria
+//TODO#code3: Implementar carga progresiva de tareas mientras el usuario se desplaza hacia abajo en la página.
+//! (NO LO CONSIGO 😭) La barra de desplazamiento debe activar la carga de más tareas cuando llegue al final, asegurando un rendimiento óptimo.
+
+//TODO#code3: Al crear una nueva tarea, enviar una notificación por correo electrónico al usuario asignado.
+//; El correo será enviado usando las credenciales de la empresa (PASS_COMPANY y EMAIL_COMPANY) configuradas en el archivo .env.
+//; El destinatario será el correo electrónico del usuario asignado a la tarea.
 
 import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
@@ -17,14 +20,26 @@ const Tasks = ({ userData }) => {
   const [users, setUsers] = useState([]); //; Estado de los usuarios obtenidos del backend
   const [newTaskTitle, setNewTaskTitle] = useState(""); //; Título de la nueva tarea
   const newTaskTitleRef = useRef(null); //; Crear una referencia para el input de título
-
   const [newTaskDescription, setNewTaskDescription] = useState(""); //; Descripción de la nueva tarea
   const [newTaskAssignedTo, setNewTaskAssignedTo] = useState(""); //; Usuario asignado a la nueva tarea
   const [editingTask, setEditingTask] = useState(null); //; Tarea que se está editando
+  const [sortOrder, setSortOrder] = useState(
+    localStorage.getItem("sortOrderTask") === "asc" ||
+      localStorage.getItem("sortOrderTask") === "desc"
+      ? localStorage.getItem("sortOrderTask")
+      : "asc"
+  );
+
+  //; Cargar filtro desde el localStorage al montar
   useEffect(() => {
-    loadTasks();
+    const storedSortOrder = localStorage.getItem("sortOrderTask");
+    if (storedSortOrder) {
+      setSortOrder(storedSortOrder);
+    }
+    loadTasks(); //; Cargar las tareas al montar el componente
+
     if (userData.role === "admin") {
-      loadUsers(); //; Cargar usuarios para todos los roles, no solo para administradores
+      loadUsers(); //; Cargar usuarios si es administrador
     }
 
     const interval = setInterval(() => {
@@ -34,6 +49,40 @@ const Tasks = ({ userData }) => {
 
     return () => clearInterval(interval);
   }, []);
+
+  //; Guardar el filtro en localStorage cuando se cambie
+  useEffect(() => {
+    localStorage.setItem("sortOrderTask", sortOrder); //; Guardar el orden en localStorage
+    updateTaskView(tasks); //; Actualizar la vista de las tareas cuando se cambie el orden
+  }, [sortOrder]);
+
+  //; Función para alternar el orden de las tareas
+  const toggleSortOrder = () => {
+    const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
+    setSortOrder(newSortOrder);
+    updateTaskView(tasks, newSortOrder); //; Actualizar la vista al cambiar el orden
+  };
+
+  //; Función para ordenar y filtrar las tareas, y actualizar la vista
+  const updateTaskView = (rawTasks, currentSortOrder = sortOrder) => {
+    const sortedTasks = [...rawTasks].sort((a, b) =>
+      currentSortOrder === "asc"
+        ? new Date(a.updated_at) - new Date(b.updated_at)
+        : new Date(b.updated_at) - new Date(a.updated_at)
+    );
+
+    //; Filtrar tareas: el administrador ve todas, los usuarios solo las asignadas a ellos
+    const filteredTasks =
+      userData.role === "admin"
+        ? sortedTasks
+        : sortedTasks.filter((task) => task.user_id === userData.id);
+
+    setTasks(filteredTasks); //; Actualizar el estado de las tareas
+    // filteredTasks.forEach((e) => {
+    //   console.log(`${e.title}, ${e.updated_at}\n`);
+    // });
+    // console.log(`\n`);
+  };
 
   /**
    * Cargar las tareas del servidor.
@@ -53,14 +102,9 @@ const Tasks = ({ userData }) => {
       }
 
       const tasksResult = await response.json();
+      const tasksData = tasksResult.data;
 
-      //; Filtrar tareas: el administrador ve todas, los usuarios solo las asignadas a ellos
-      const filteredTasks =
-        userData.role === "admin"
-          ? tasksResult.data
-          : tasksResult.data.filter((task) => task.user_id === userData.id);
-
-      setTasks(filteredTasks); //; Actualizar el estado de las tareas
+      updateTaskView(tasksData, sortOrder); //; Actualizar la vista con las tareas cargadas
     } catch (error) {
       console.error("Error al cargar tareas:", error.message);
     }
@@ -91,7 +135,7 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Crear una nueva tarea.
+   ** Crear una nueva tarea.
    * @param {Event} e - Evento de submit del formulario.
    */
   const handleCreateTask = async (e) => {
@@ -104,6 +148,7 @@ const Tasks = ({ userData }) => {
         status: "pending",
         user_id: newTaskAssignedTo,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
       try {
@@ -118,7 +163,7 @@ const Tasks = ({ userData }) => {
 
         const result = await response.json();
         if (response.status === 201) {
-          setTasks((prevTasks) => [...prevTasks, result.data]);
+          // updateTaskView([...tasks, result.data]); //; Añadir la nueva tarea y actualizar la vista
           setNewTaskTitle("");
           setNewTaskDescription("");
           setNewTaskAssignedTo("");
@@ -135,7 +180,7 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Marcar una tarea como completada.
+   ** Marcar una tarea como completada.
    * @param {number} taskId - ID de la tarea a completar.
    */
   const handleCompleteTask = async (taskId) => {
@@ -160,9 +205,10 @@ const Tasks = ({ userData }) => {
         );
         const result = await response.json();
         if (response.ok && result.data) {
-          setTasks((prevTasks) =>
-            prevTasks.map((task) => (task.id === taskId ? result.data : task))
+          const updatedTasks = tasks.map((task) =>
+            task.id === taskId ? result.data : task
           );
+          updateTaskView(updatedTasks); //; Actualizar la vista con la tarea completada
           toast.success("¡Tarea completada con éxito!");
         } else {
           throw new Error(result.message || "Error al completar la tarea.");
@@ -175,7 +221,7 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Eliminar una tarea.
+   ** Eliminar una tarea.
    * @param {number} taskId - ID de la tarea a eliminar.
    */
   const handleDeleteTask = async (taskId) => {
@@ -211,7 +257,7 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Editar una tarea existente.
+   ** Editar una tarea existente.
    * @param {Object} task - Tarea a editar.
    */
   const handleEditTask = (task) => {
@@ -232,7 +278,8 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Guardar los cambios en la tarea editada.
+   ** Editar una tarea existente.
+   * @param {Object} task - Tarea a editar.
    */
   const handleSaveEdit = async (e) => {
     e.preventDefault();
@@ -243,6 +290,7 @@ const Tasks = ({ userData }) => {
         title: newTaskTitle,
         description: newTaskDescription,
         user_id: newTaskAssignedTo,
+        updated_at: new Date().toISOString(),
       };
 
       try {
@@ -260,12 +308,11 @@ const Tasks = ({ userData }) => {
 
         const result = await response.json();
         if (response.ok && result.data) {
-          setTasks((prevTasks) =>
-            prevTasks.map((task) =>
-              task.id === editingTask.id ? result.data : task
-            )
+          const updatedTasks = tasks.map((task) =>
+            task.id === editingTask.id ? result.data : task
           );
-          setEditingTask(null); //; Limpiar el modo de edición
+          updateTaskView(updatedTasks); //; Actualizar la vista con la tarea editada
+          setEditingTask(null);
           setNewTaskTitle("");
           setNewTaskDescription("");
           setNewTaskAssignedTo("");
@@ -281,7 +328,7 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Cancelar la edición de una tarea.
+   ** Cancelar la edición de una tarea.
    */
   const handleCancelEdit = () => {
     setEditingTask(null);
@@ -315,6 +362,7 @@ const Tasks = ({ userData }) => {
   return (
     <div className="tasks-container">
       <h2>Tareas</h2>
+
       {userData.role === "admin" && (
         <form
           onSubmit={editingTask ? handleSaveEdit : handleCreateTask}
@@ -324,16 +372,20 @@ const Tasks = ({ userData }) => {
             ref={newTaskTitleRef} //; Asignar la referencia al input
             type="text"
             value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value)}
-            placeholder="Título de la tarea"
+            onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 30))} //; Limitar el título a 30 caracteres
+            placeholder="Título de la tarea (máximo 30 caracteres)"
+            maxLength={30} //; Limitar el input del título
             required
           />
-          <input
-            type="text"
+          <textarea
             value={newTaskDescription}
-            onChange={(e) => setNewTaskDescription(e.target.value)}
-            placeholder="Descripción de la tarea"
+            onChange={(e) =>
+              setNewTaskDescription(e.target.value.slice(0, 200))
+            } //; Limitar la descripción a 200 caracteres
+            placeholder="Descripción de la tarea (máximo 200 caracteres)"
+            maxLength={200} //; Limitar el input de la descripción
             required
+            style={{ height: "75px", resize: "none" }} //; Mayor altura y deshabilitar el redimensionamiento
           />
           <select
             value={newTaskAssignedTo}
@@ -359,6 +411,11 @@ const Tasks = ({ userData }) => {
           )}
         </form>
       )}
+
+      <button className="filter-button" onClick={toggleSortOrder}>
+        Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
+      </button>
+
       <div className="tasks-list">
         {tasks.map((task) => {
           const { fullName, username, role } = getUsernameById(task.user_id); //; Obtener el nombre y el rol del usuario
@@ -367,20 +424,21 @@ const Tasks = ({ userData }) => {
             <div key={task.id} className={`task-item ${task.status}`}>
               {/* Añadir la clase correspondiente al rol del usuario */}
 
-              <div className="user-details-task">
-                {/* <h2>Información del Usuario</h2> */}
-                <h2>
-                  {fullName.split(" ")[0]} {fullName.split(" ")[1]}
-                </h2>
-                {userData.role && (
-                  <div className={`user-role ${role}`}>{role}</div>
-                )}
-              </div>
+              {userData.role === "admin" && (
+                <div className="user-details-task">
+                  <h2>
+                    {fullName.split(" ")[0]} {fullName.split(" ")[1]}
+                  </h2>
+                  {userData.role && (
+                    <div className={`user-role ${role}`}>{role}</div>
+                  )}
+                </div>
+              )}
 
-              <p>
+              <p className="task-title">
                 <strong>{task.title}</strong>
               </p>
-              <p>{task.description}</p>
+              <p className="task-description">{task.description}</p>
 
               {/* <small>Estado: {task.status}</small> */}
 
