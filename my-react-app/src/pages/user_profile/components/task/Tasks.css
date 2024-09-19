@@ -10,6 +10,7 @@
 
 .tasks-container h2 {
   color: var(--clr-OnText);
+  margin-bottom: 10px;
 }
 
 .create-task-form {

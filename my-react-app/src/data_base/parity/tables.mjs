@@ -68,27 +68,33 @@ export const users = [
 export const tasks = [
   {
     id: 1, // PK
+    title: "Limpieza del piso 1",
     description: "Revisar limpieza del piso 1",
     status: "pending",
     user_id: 2, // FK que referencia `users.id`
     created_at: "2024-08-25",
     updated_at: "2024-09-25",
+    completed_at: null,
   },
   {
     id: 2, // PK
+    title: "Reparación de tuberías",
     description: "Reparación de tuberías en el apartamento 2B",
     status: "done",
     user_id: 4, // FK que referencia `users.id`
     created_at: "2024-08-26",
     updated_at: "2024-09-26",
+    completed_at: "2024-09-26",
   },
   {
     id: 3, // PK
+    title: "Entrega de correo",
     description: "Entrega de correo a la recepción",
     status: "canceled",
     user_id: 3, // FK que referencia `users.id`
     created_at: "2024-08-27",
     updated_at: "2024-09-27",
+    completed_at: null,
   },
 ];
 
@@ -100,7 +106,6 @@ export const notes = [
     description: "Revisar todos los sistemas de seguridad en la planta baja.",
     created_at: "2024-09-01",
     updated_at: "2024-09-10",
-    name: "John Smith", // Combinación de name y firstname de `users`
   },
   {
     id: 2, // PK
@@ -109,7 +114,6 @@ export const notes = [
     description: "Realizar limpieza profunda en el segundo piso.",
     created_at: "2024-09-02",
     updated_at: "2024-09-11",
-    name: "Jane Smith", // Combinación de name y firstname de `users`
   },
   {
     id: 3, // PK
@@ -118,7 +122,6 @@ export const notes = [
     description: "Entregar paquete urgente en la recepción.",
     created_at: "2024-09-03",
     updated_at: "2024-09-12",
-    name: "Michael Brown", // Combinación de name y firstname de `users`
   },
   {
     id: 4, // PK
@@ -128,7 +131,6 @@ export const notes = [
       "Revisar y reparar equipos de aire acondicionado en el tercer piso.",
     created_at: "2024-09-04",
     updated_at: "2024-09-13",
-    name: "Emily Martinez", // Combinación de name y firstname de `users`
   },
 ];
 

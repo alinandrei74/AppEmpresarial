@@ -1,7 +1,7 @@
 /* TODO#code3: Areglar el CSS paara que se parezca a el de Task */
 
 .user-details-container {
-    background-color: var(--clr-background);
+    background-color: var(--clr-primary);
     /* background-color: var(--clr-OnSecondary); */
     /* background-color: rgb(148, 153, 157); */
     border: 5px solid var(--clr-secondary);
@@ -34,8 +34,6 @@
 }
 
 .user-details-header .user-role {
-    background-color: var(--clr-secondary);
-    color: var(--clr-OnSecondary);
     padding: 5px 15px;
     border-radius: 5px;
     font-size: 1em;

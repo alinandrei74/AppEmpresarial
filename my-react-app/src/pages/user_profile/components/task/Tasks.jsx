@@ -67,8 +67,8 @@ const Tasks = ({ userData }) => {
   const updateTaskView = (rawTasks, currentSortOrder = sortOrder) => {
     const sortedTasks = [...rawTasks].sort((a, b) =>
       currentSortOrder === "asc"
-        ? new Date(a.updated_at) - new Date(b.updated_at)
-        : new Date(b.updated_at) - new Date(a.updated_at)
+        ? new Date(a.created_at) - new Date(b.created_at)
+        : new Date(b.created_at) - new Date(a.created_at)
     );
 
     //; Filtrar tareas: el administrador ve todas, los usuarios solo las asignadas a ellos
@@ -78,10 +78,11 @@ const Tasks = ({ userData }) => {
         : sortedTasks.filter((task) => task.user_id === userData.id);
 
     setTasks(filteredTasks); //; Actualizar el estado de las tareas
-    // filteredTasks.forEach((e) => {
-    //   console.log(`${e.title}, ${e.updated_at}\n`);
-    // });
-    // console.log(`\n`);
+    filteredTasks.forEach((e) => {
+      console.log(`${e.title}, ${e.created_at}\n`);
+    });
+    console.log(filteredTasks);
+    console.log(`\n`);
   };
 
   /**
@@ -104,7 +105,14 @@ const Tasks = ({ userData }) => {
       const tasksResult = await response.json();
       const tasksData = tasksResult.data;
 
-      updateTaskView(tasksData, sortOrder); //; Actualizar la vista con las tareas cargadas
+      // Ordenar las tareas por `created_at` de forma predeterminada antes de actualizar la vista
+      const sortedTasks = [...tasksData].sort((a, b) =>
+        sortOrder === "asc"
+          ? new Date(a.created_at) - new Date(b.created_at)
+          : new Date(b.created_at) - new Date(a.created_at)
+      );
+
+      updateTaskView(sortedTasks); // Actualizar la vista con las tareas ordenadas por `created_at`
     } catch (error) {
       console.error("Error al cargar tareas:", error.message);
     }
@@ -308,10 +316,10 @@ const Tasks = ({ userData }) => {
 
         const result = await response.json();
         if (response.ok && result.data) {
-          const updatedTasks = tasks.map((task) =>
-            task.id === editingTask.id ? result.data : task
-          );
-          updateTaskView(updatedTasks); //; Actualizar la vista con la tarea editada
+          // const updatedTasks = tasks.map((task) =>
+          //   task.id === editingTask.id ? result.data : task
+          // );
+          // updateTaskView(updatedTasks); //; Actualizar la vista con la tarea editada
           setEditingTask(null);
           setNewTaskTitle("");
           setNewTaskDescription("");
