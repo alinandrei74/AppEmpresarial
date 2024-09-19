@@ -131,3 +131,36 @@ export const notes = [
     name: "Emily Martinez", // Combinación de name y firstname de `users`
   },
 ];
+
+export const work_schedule = [
+  {
+    id: 1, // PK
+    user_id: 2, // FK que referencia `users.id`
+    start_time: "2024-09-05T09:00:00",
+    end_time: "2024-09-05T17:00:00",
+    description: "Limpieza general del edificio",
+    day_of_week: "Lunes",
+    created_at: "2024-09-01",
+    updated_at: "2024-09-10",
+  },
+  {
+    id: 2, // PK
+    user_id: 3, // FK que referencia `users.id`
+    start_time: "2024-09-06T09:00:00",
+    end_time: "2024-09-06T17:00:00",
+    description: "Entrega de paquetes en recepción",
+    day_of_week: "Martes",
+    created_at: "2024-09-01",
+    updated_at: "2024-09-10",
+  },
+  {
+    id: 3, // PK
+    user_id: 4, // FK que referencia `users.id`
+    start_time: "2024-09-07T09:00:00",
+    end_time: "2024-09-07T17:00:00",
+    description: "Mantenimiento de aire acondicionado",
+    day_of_week: "Miércoles",
+    created_at: "2024-09-01",
+    updated_at: "2024-09-10",
+  },
+];

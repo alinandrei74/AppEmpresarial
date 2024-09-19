@@ -4,7 +4,7 @@ import { toast } from "react-toastify"; // Importa react-toastify para notificac
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
 // import Notes from "./components/Notes";
-import Calendar from "./components/Calendar";
+import Calendar from "./components/calendar/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
 import UserDetails from "./components/profile/UserDetails";
 import "./UserProfile.css";
