@@ -9,16 +9,14 @@ const Form = () => {
 
   const formik = useFormik({
     initialValues: {
-      role: "",
+      rol: "",
       username: "",
-      name: "",
-      firstname: "",
-      lastname: "",
+      fullName: "",
       dni: "",
+      address: "",
+      postal_code: "",
       email: "",
       telephone: "",
-      address: "",
-      cp: "",
       password: "",
       confirmPassword: "",
     },
@@ -30,14 +28,14 @@ const Form = () => {
         .min(3, "El nombre de usuario debe tener mínimo 3 caracteres")
         .max(20, "El nombre de usuario debe tener máximo 20 caracteres")
         .matches(
-          /^(?![-_])[A-Za-z0-9Ñ_-]{1,18}[A-Za-z0-9Ñ](?<![-_])$/,
+          /^(?![-_])[A-Za-z0-9Ññ_-]{1,18}[A-Za-z0-9Ññ](?<![-_])$/,
           "El nombre de usuario puede contener números, mayúsculas, minúsculas, '-' y '_'. No puede empezar ni terminar con '-' o '_'."
         )
         .required("El nombre de usuario es requerido"),
       fullName: Yup.string()
         .matches(
           /^[A-Za-zÀ-ÿ\s]+$/,
-          "El segundo apellido solo puede contener letras y espacios"
+          "El nombre completo solo puede contener letras y espacios"
         )
         .required("El nombre completo es requerido"),
       dni: Yup.string()
@@ -105,7 +103,6 @@ const Form = () => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              role: values.role,
               username: values.username,
               password: values.password,
               role: values.rol.toLowerCase(),
@@ -114,6 +111,7 @@ const Form = () => {
               lastname,
               email: values.email,
               telephone: values.telephone,
+              dni: values.dni,
               address: values.address,
               cp: values.postal_code,
               created_at: new Date().toISOString().split("T")[0],
@@ -146,6 +144,7 @@ const Form = () => {
         Por favor, complete el formulario para registrarse.
       </div>
 
+      {/* Campo para seleccionar el rol */}
       <div className="form-group">
         <label
           htmlFor="rol"
@@ -166,10 +165,10 @@ const Form = () => {
           onBlur={formik.handleBlur}
         >
           <option value="" label="Seleccione un rol" />
-          <option value="admin" label="Administrador" />
-          <option value="cleaning" label="Limpieza" />
-          <option value="delivery" label="Entrega" />
-          <option value="maintenance" label="Mantenimiento" />
+          <option value="Admin" label="Administrador" />
+          <option value="Cleaning" label="Limpieza" />
+          <option value="Delivery" label="Entrega" />
+          <option value="Maintenance" label="Mantenimiento" />
         </select>
         {formik.touched.rol && formik.errors.rol ? (
           <div className="error-message">{formik.errors.rol}</div>
@@ -281,7 +280,7 @@ const Form = () => {
 
       {/* Campo de Código Postal */}
       <div className="form-group">
-        <label htmlFor="cp" className="form-label required">
+        <label htmlFor="postal_code" className="form-label required">
           Código Postal
         </label>
         <input
@@ -346,6 +345,7 @@ const Form = () => {
         ) : null}
       </div>
 
+      {/* Campo de Contraseña */}
       <div className="form-group">
         <label htmlFor="password" className="form-label required">
           Contraseña
@@ -405,6 +405,7 @@ const Form = () => {
         ) : null}
       </div>
 
+      {/* Botón de Enviar */}
       <button
         type="submit"
         className={`form-button ${
