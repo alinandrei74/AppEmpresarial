@@ -1,5 +1,4 @@
-/* Estilos para nuestro navbar actualizado */
-
+/* Ajustar el ancho máximo del contenedor */
 .navbar {
   position: fixed;
   top: 0;
@@ -15,12 +14,25 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 2rem;
-  max-width: 1200px;
+  /* max-width: 1400px; */
+  /* Aumentado para mayor ancho */
   margin: 0 auto;
 }
 
 .navbar-logo {
+  user-select: none;
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  transition: margin 0.3s ease-in-out;
+  /* Transición añadida */
+}
+
+@media screen and (max-width: 768px) {
+  .navbar-logo {
+    margin-left: 50px;
+    /* Separar del .menu-icon en pantallas pequeñas */
+  }
 }
 
 .navbar-logo h1 {
@@ -31,10 +43,25 @@
 .navbar-logo a {
   text-decoration: none;
   color: inherit;
+  display: flex;
+  align-items: center;
 }
 
 .navbar-logo a:hover {
   text-decoration: underline;
+}
+
+
+/* Estilo para cuando "Mi perfil" esté activo */
+.navbar-logo a.active-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  /* Grosor de la subrayado */
+  text-decoration-color: var(--clr-text);
+  /* Color del subrayado */
+  text-underline-offset: 4px;
+  /* Separación del subrayado respecto al texto */
+  color: var(--clr-text) !important;
 }
 
 .navbar-menu {
@@ -44,22 +71,26 @@
   flex: 1;
 }
 
-/* Esta parte controla la posición de los elementos a la derecha, incluyendo el botón de cierre de sesión */
 .navbar-actions {
   display: flex;
   gap: 1rem;
-  /* Espacio entre los elementos */
   align-items: center;
   justify-content: flex-end;
-  /* Alinea los elementos a la derecha */
   flex: 0 0 auto;
+}
+
+/* Icono de perfil */
+.profile-icon {
+  font-size: 1.8rem;
+  /* Tamaño del ícono */
+  margin-right: 0.5rem;
+  /* Espacio entre el ícono y el texto */
 }
 
 .logout-button {
   padding: 0.5rem 1rem;
   border-radius: 8px;
   background-color: var(--clr-error);
-  /* Color rojo */
   color: white;
   border: none;
   cursor: pointer;
@@ -68,9 +99,7 @@
 }
 
 .logout-button:hover {
-  /* background-color: #e60000;  */
   background-color: var(--clr-OnError);
-  /* Un rojo más oscuro para el hover */
 }
 
 .toggle-mode {
@@ -110,7 +139,6 @@
     text-align: center;
   }
 
-  /* En pantallas pequeñas, esto controla la posición de los elementos de la derecha */
   .navbar-actions {
     order: 3;
   }
@@ -128,14 +156,12 @@
     display: flex;
   }
 
-  /* En pantallas pequeñas, esto hace que el botón de cierre de sesión ocupe todo el ancho */
   .logout-button {
     width: 100%;
     text-align: center;
   }
 }
 
-/* Ajustes para pantallas más pequeñas */
 @media screen and (max-width: 480px) {
   .navbar-logo h1 {
     font-size: 1.2rem;

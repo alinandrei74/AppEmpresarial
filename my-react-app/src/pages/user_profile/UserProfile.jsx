@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
-import Notes from "./components/Notes";
-import Calendar from "./components/Calendar";
+// import Notes from "./components/Notes";
+import Calendar from "./components/calendar/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/UserDetails";
-import Register from "../register/Register";
-import UserManagement from "./UserManagement";
+import UserDetails from "./components/profile/UserDetails";
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -52,8 +51,8 @@ const UserProfile = () => {
 
   const handleInvalidToken = (message) => {
     console.warn(message);
-    alert(message);
-    sessionStorage.removeItem("authToken");
+    toast.error(message);
+    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
     navigate("/login");
   };
 

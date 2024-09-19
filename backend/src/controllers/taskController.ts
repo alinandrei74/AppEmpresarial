@@ -10,6 +10,7 @@ class TaskError extends Error {
 }
 
 export const getTasks = async (req: Request, res: Response) => {
+  
   try {
     const tasks = await db.any('SELECT * FROM tasks');
     return res.status(StatusCodes.OK).json({
@@ -35,9 +36,15 @@ export const createTask = async (req: Request, res: Response) => {
       throw new TaskError('description, status, user_id, created_at, title are required');
     }
 
+    // Asegúrate de que user_id sea un número
+    const parsedUserId = parseInt(user_id, 10);
+    if (isNaN(parsedUserId)) {
+      throw new TaskError('user_id must be a valid number');
+    }
+
     const result = await db.one(
       'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-      [description, status, user_id, created_at, title]
+      [description, status, parsedUserId, created_at, title]
     );
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
@@ -63,6 +70,7 @@ export const createTask = async (req: Request, res: Response) => {
   }
 };
 
+
 export const updateTask = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { description, status, user_id, created_at, title } = req.body;
@@ -72,12 +80,18 @@ export const updateTask = async (req: Request, res: Response) => {
       throw new TaskError('ID, description, status, user_id, created_at and title are required');
     }
 
-    //; Si la tarea se marca como completada, establecemos la fecha actual en `completed_at`
+    // Asegurarse de que id y user_id sean números
+    const parsedId = parseInt(id, 10);
+    const parsedUserId = parseInt(user_id, 10);
+    if (isNaN(parsedId) || isNaN(parsedUserId)) {
+      throw new TaskError('ID and user_id must be valid numbers');
+    }
+
     const completedAt = status === 'done' ? new Date() : null;
 
     const result = await db.result(
       'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
-      [description, status, user_id, created_at, title, completedAt, id]
+      [description, status, parsedUserId, created_at, title, completedAt, parsedId]
     );
 
     if (result.rowCount) {
@@ -113,6 +127,7 @@ export const updateTask = async (req: Request, res: Response) => {
 };
 
 
+
 export const deleteTask = async (req: Request, res: Response) => {
   const { id } = req.params;
 
@@ -121,7 +136,13 @@ export const deleteTask = async (req: Request, res: Response) => {
       throw new TaskError('ID is required');
     }
 
-    const result = await db.result('DELETE FROM tasks WHERE id = $1', [id]);
+    // Asegurarse de que id sea un número
+    const parsedId = parseInt(id, 10);
+    if (isNaN(parsedId)) {
+      throw new TaskError('ID must be a valid number');
+    }
+
+    const result = await db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
@@ -153,3 +174,4 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
   }
 };
+
