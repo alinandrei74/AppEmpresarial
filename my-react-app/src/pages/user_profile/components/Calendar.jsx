@@ -48,7 +48,10 @@ const Calendar = ({ userData }) => {
         setHistory(savedHistory);
 
         // Llamada al backend para cargar los horarios
-        loadSchedules();
+        const fetchData = async () => {
+            await loadSchedules();
+        };
+        fetchData();
     }, []);
 
     // Función para actualizar los campos de los horarios
@@ -104,13 +107,16 @@ const Calendar = ({ userData }) => {
                 description: schedule.description,
             }));
 
+            // Solo envía el primer horario (ajusta si quieres enviar múltiples horarios)
+            console.log('Datos que se enviarán:', formattedSchedules[0]); // Verifica lo que estás enviando
+
             const response = await fetch('http://localhost:3000/api/work-schedules', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify(formattedSchedules),
+                body: JSON.stringify(formattedSchedules[0]), // Envía solo el primer horario
             });
 
             if (!response.ok) {

@@ -19,6 +19,54 @@ dotenv_1.default.config();
 const pgp = (0, pg_promise_1.default)();
 const db = pgp(process.env.DATABASE_URL);
 exports.db = db;
+/**
+ * Verifica y ajusta columnas de una tabla para que coincidan con las definiciones esperadas.
+ * @param {string} tableName - El nombre de la tabla.
+ * @param {Record<string, string>} expectedColumns - Las definiciones de columnas esperadas.
+ */
+const checkAndAlterTableColumns = (tableName, expectedColumns) => __awaiter(void 0, void 0, void 0, function* () {
+    // Obtener las columnas existentes de la tabla
+    const existingColumns = yield db.any(`
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name = $1
+      `, [tableName]);
+    const existingColumnNames = existingColumns.map(col => col.column_name.toLowerCase()); // Convertir a minúsculas
+    // Crear columnas que faltan
+    for (const [columnName, columnDefinition] of Object.entries(expectedColumns)) {
+        if (!existingColumnNames.includes(columnName.toLowerCase())) {
+            try {
+                yield db.none(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`);
+                console.log(`Columna '${columnName}' añadida a la tabla '${tableName}'.`);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    console.error(`Error añadiendo la columna '${columnName}' a la tabla '${tableName}':`, error.message);
+                }
+                else {
+                    console.error(`Error desconocido añadiendo la columna '${columnName}' a la tabla '${tableName}'.`);
+                }
+            }
+        }
+    }
+    // Eliminar columnas que no están en el esquema esperado
+    for (const { column_name } of existingColumns) {
+        if (!Object.keys(expectedColumns).map(col => col.toLowerCase()).includes(column_name.toLowerCase())) {
+            try {
+                yield db.none(`ALTER TABLE ${tableName} DROP COLUMN ${column_name}`);
+                console.log(`Columna '${column_name}' eliminada de la tabla '${tableName}'.`);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    console.error(`Error eliminando la columna '${column_name}' de la tabla '${tableName}':`, error.message);
+                }
+                else {
+                    console.error(`Error desconocido eliminando la columna '${column_name}' de la tabla '${tableName}'.`);
+                }
+            }
+        }
+    }
+});
 // Función para crear tablas si no existen
 const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -36,54 +84,6 @@ const createTablesIfNotExists = () => __awaiter(void 0, void 0, void 0, function
       );
     `);
         console.log('Tabla work_schedule creada o ya existe.');
-        /**
-         * Verifica y ajusta columnas de una tabla para que coincidan con las definiciones esperadas.
-         * @param {string} tableName - El nombre de la tabla.
-         * @param {Record<string, string>} expectedColumns - Las definiciones de columnas esperadas.
-         */
-        const checkAndAlterTableColumns = (tableName, expectedColumns) => __awaiter(void 0, void 0, void 0, function* () {
-            // Obtener las columnas existentes de la tabla
-            const existingColumns = yield db.any(`
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_name = $1
-      `, [tableName]);
-            const existingColumnNames = existingColumns.map(col => col.column_name.toLowerCase()); // Convertir a minúsculas
-            // Crear columnas que faltan
-            for (const [columnName, columnDefinition] of Object.entries(expectedColumns)) {
-                if (!existingColumnNames.includes(columnName.toLowerCase())) {
-                    try {
-                        yield db.none(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`);
-                        console.log(`Columna '${columnName}' añadida a la tabla '${tableName}'.`);
-                    }
-                    catch (error) {
-                        if (error instanceof Error) {
-                            console.error(`Error añadiendo la columna '${columnName}' a la tabla '${tableName}':`, error.message);
-                        }
-                        else {
-                            console.error(`Error desconocido añadiendo la columna '${columnName}' a la tabla '${tableName}'.`);
-                        }
-                    }
-                }
-            }
-            // Eliminar columnas que no están en el esquema esperado
-            for (const { column_name } of existingColumns) {
-                if (!Object.keys(expectedColumns).map(col => col.toLowerCase()).includes(column_name.toLowerCase())) {
-                    try {
-                        yield db.none(`ALTER TABLE ${tableName} DROP COLUMN ${column_name}`);
-                        console.log(`Columna '${column_name}' eliminada de la tabla '${tableName}'.`);
-                    }
-                    catch (error) {
-                        if (error instanceof Error) {
-                            console.error(`Error eliminando la columna '${column_name}' de la tabla '${tableName}':`, error.message);
-                        }
-                        else {
-                            console.error(`Error desconocido eliminando la columna '${column_name}' de la tabla '${tableName}'.`);
-                        }
-                    }
-                }
-            }
-        });
         // Definiciones de columnas esperadas para la tabla `users`
         const usersColumns = {
             id: 'SERIAL PRIMARY KEY',
