@@ -111,30 +111,6 @@ const Tasks = ({ userData }) => {
   };
 
   /**
-   * Cargar los usuarios del servidor.
-   */
-  const loadUsers = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/users/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Error fetching users: " + response.statusText);
-      }
-
-      const usersResult = await response.json();
-      setUsers(usersResult.data);
-    } catch (error) {
-      console.error("Error al cargar usuarios:", error.message);
-    }
-  };
-
-  /**
    ** Crear una nueva tarea.
    * @param {Event} e - Evento de submit del formulario.
    */
@@ -272,7 +248,7 @@ const Tasks = ({ userData }) => {
     //; Usar un pequeño retraso para enfocar en el input de título después del scroll
     setTimeout(() => {
       if (newTaskTitleRef.current) {
-        newTaskTitleRef.current.focus(); //; Enfocar en el input de t├¡tulo
+        newTaskTitleRef.current.focus(); //; Enfocar en el input de título
       }
     }, 300); //; 300 ms para permitir que el scroll suave termine
   };
@@ -335,6 +311,30 @@ const Tasks = ({ userData }) => {
     setNewTaskTitle("");
     setNewTaskDescription("");
     setNewTaskAssignedTo("");
+  };
+
+  /**
+   * Cargar los usuarios del servidor.
+   */
+  const loadUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error fetching users: " + response.statusText);
+      }
+
+      const usersResult = await response.json();
+      setUsers(usersResult.data);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error.message);
+    }
   };
 
   /**
