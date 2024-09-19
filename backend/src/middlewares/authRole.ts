@@ -8,7 +8,7 @@ const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: s
     tasks: ['create', 'read', 'update', 'delete'],
     users: ['create', 'read', 'update', 'delete'],
     notes: ['create', 'read', 'update', 'delete'],
-    work_schedules: ['create', 'read'], // Admin puede leer todos los horarios, pero crear solo los suyos
+    work_schedules: ['create', 'read', 'update', 'delete'], 
   },
   maintenance: {
     tasks: ['read', 'update'],
