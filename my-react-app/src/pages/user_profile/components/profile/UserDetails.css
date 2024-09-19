@@ -118,3 +118,60 @@
         font-size: 0.9em;
     }
 }
+
+
+/* Estilo para la nueva sección de tareas */
+.user-tasks {
+    background-color: var(--clr-OnPrimary);
+    /* Fondo minimalista */
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    color: var(--clr-OnText);
+    /* Contraste de texto */
+}
+
+.user-tasks h3 {
+    font-size: 1.5em;
+    color: var(--clr-primary);
+    /* Texto destacado */
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--clr-primary);
+    /* Línea separadora minimalista */
+    padding-bottom: 5px;
+}
+
+.user-tasks p {
+    font-size: 1em;
+    margin: 5px 0;
+    color: var(--clr-OnText);
+    /* Texto sencillo */
+}
+
+.user-tasks p span {
+    font-weight: bold;
+    color: var(--clr-secondary);
+    /* Texto resaltado */
+}
+
+.user-tasks .admin-note {
+    font-size: 0.9em;
+    margin-top: 10px;
+    color: var(--clr-secondary);
+    /* Texto informativo */
+}
+
+@media screen and (max-width: 768px) {
+    .user-tasks {
+        padding: 10px;
+    }
+
+    .user-tasks h3 {
+        font-size: 1.3em;
+    }
+
+    .user-tasks p {
+        font-size: 0.9em;
+    }
+}
