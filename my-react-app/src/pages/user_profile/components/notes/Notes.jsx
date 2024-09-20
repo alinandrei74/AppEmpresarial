@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddNoteForm from "./AddNoteForm";
+import { toast } from "react-toastify";
 import "./Notes.css";
 
 const Notes = ({ userData }) => {
@@ -25,6 +26,7 @@ const Notes = ({ userData }) => {
   const toggleSortOrder = () => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
+    toast.info(`Orden cambiado a: ${newSortOrder === "asc" ? "Antiguo" : "Reciente"}`);
   };
 
   const updateNoteView = (rawNotes) => {
@@ -52,8 +54,10 @@ const Notes = ({ userData }) => {
 
       const notesResult = await response.json();
       updateNoteView(notesResult.data);
+      toast.success("Notas cargadas con éxito");
     } catch (error) {
       console.error("Error al cargar notas:", error.message);
+      toast.error("Error al cargar las notas");
     }
   };
 
@@ -76,8 +80,10 @@ const Notes = ({ userData }) => {
       const data = await response.json();
       setNotes((prevNotes) => [...prevNotes, data.data]);
       loadNotes();
+      toast.success("Nota añadida con éxito");
     } catch (error) {
       console.error("Error adding note:", error.message);
+      toast.error("Error al añadir la nota");
     }
   };
 
@@ -97,8 +103,10 @@ const Notes = ({ userData }) => {
         }
 
         setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
+        toast.success("Nota eliminada con éxito");
       } catch (error) {
         console.error("Error deleting note:", error);
+        toast.error("Error al eliminar la nota");
       }
     }
   };
