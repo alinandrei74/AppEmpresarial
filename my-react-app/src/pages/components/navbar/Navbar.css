@@ -36,6 +36,7 @@
 .navbar-logo h1 {
   margin: 0;
   font-size: 1.5rem;
+  color: white;
 }
 
 .navbar-logo a {
@@ -47,6 +48,7 @@
 
 .navbar-logo a:hover {
   text-decoration: underline;
+  color: white;
 }
 
 
@@ -74,7 +76,7 @@
   text-decoration: underline;
   text-decoration-thickness: 2px;
   /* Grosor de la subrayado */
-  text-decoration-color: var(--clr-text);
+  text-decoration-color: white;
   /* Color del subrayado */
   text-underline-offset: 4px;
   /* Separación del subrayado respecto al texto */
@@ -102,6 +104,7 @@
   /* Tamaño del ícono */
   margin-right: 0.5rem;
   /* Espacio entre el ícono y el texto */
+  color: white;
 }
 
 .logout-button {
