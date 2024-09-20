@@ -56,21 +56,25 @@ export const getNoteById = async (req: Request, res: Response) => {
 };
 
 export const createNote = async (req: Request, res: Response) => {
-  const { description, user_id } = req.body;
+  const { title, description, user_id } = req.body;
 
   try {
-    if (!description || !user_id) {
-      throw new NoteError('description and user_id are required');
+    // Validar que todos los campos requeridos están presentes
+    if (!title || !description || !user_id) {
+      throw new NoteError('title, description, and user_id are required');
     }
 
+    // Modificar la consulta para insertar también el título
     const result = await db.one(
-      'INSERT INTO notes (description, user_id) VALUES ($1, $2) RETURNING id',
-      [description, user_id]
+      'INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id',
+      [title, description, user_id]
     );
+
+    // Retornar la respuesta con los datos insertados
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: 'Note created successfully',
-      data: { id: result.id, description, user_id },
+      data: { id: result.id, title, description, user_id },
     });
   } catch (error) {
     if (error instanceof NoteError) {

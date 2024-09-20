@@ -67,16 +67,19 @@ const getNoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getNoteById = getNoteById;
 const createNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { description, user_id } = req.body;
+    const { title, description, user_id } = req.body;
     try {
-        if (!description || !user_id) {
-            throw new NoteError('description and user_id are required');
+        // Validar que todos los campos requeridos están presentes
+        if (!title || !description || !user_id) {
+            throw new NoteError('title, description, and user_id are required');
         }
-        const result = yield db_1.db.one('INSERT INTO notes (description, user_id) VALUES ($1, $2) RETURNING id', [description, user_id]);
+        // Modificar la consulta para insertar también el título
+        const result = yield db_1.db.one('INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id', [title, description, user_id]);
+        // Retornar la respuesta con los datos insertados
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'Note created successfully',
-            data: { id: result.id, description, user_id },
+            data: { id: result.id, title, description, user_id },
         });
     }
     catch (error) {

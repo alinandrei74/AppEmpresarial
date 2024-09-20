@@ -76,7 +76,6 @@ const ensureDatabaseSchema = () => __awaiter(void 0, void 0, void 0, function* (
         user_id INT REFERENCES users(id) ON DELETE CASCADE,
         title VARCHAR(255) NOT NULL,
         description TEXT NOT NULL,
-        name VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );

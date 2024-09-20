@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
-// import Notes from "./components/Notes";
+import Notes from "./components/notes/Notes";
 import Calendar from "./components/calendar/Calendar";
 import Apartments from "./components/apartments/Apartments";
 import UserDetails from "./components/profile/UserDetails";
@@ -74,7 +74,7 @@ const UserProfile = () => {
 
         <Routes>
           <Route path="tasks" element={<Tasks userData={userData} />} />
-          {/* <Route path="notes" element={<Notes userData={userData} />} /> */}
+          <Route path="notes" element={<Notes userData={userData} />} />
           <Route path="calendar" element={<Calendar userData={userData} />} />
           <Route
             path="apartments"
