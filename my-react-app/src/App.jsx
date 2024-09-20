@@ -52,7 +52,7 @@ const AppContent = () => {
       {/* ToastContainer montado en App, con tema dinámico */}
       <ToastContainer
         theme={darkMode ? "light" : "dark"}
-        position="bottom-right" // Posición abajo a la derecha
+        position="bottom-left" // Posición abajo a la derecha
         autoClose={3000} // Cierre automático después de 1.5 segundos
         hideProgressBar // Ocultar barra de progreso
         newestOnTop={false} // Las notificaciones nuevas se muestran en la parte inferior

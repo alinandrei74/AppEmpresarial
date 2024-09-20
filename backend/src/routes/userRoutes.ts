@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserData, getAllUsers } from '../controllers/userController';
+import { getUserData, getAllUsers, deleteUser } from '../controllers/userController';
 import { authorizeRole } from '../middlewares/authRole';
 import { authenticateToken } from '../middlewares/authMiddleware'; // Importa el middleware de autenticación
 
@@ -10,5 +10,8 @@ router.get('/user-profile/:id', authenticateToken, authorizeRole('users', 'read'
 
 // Solo admin puede listar todos los usuarios
 router.get('/all', authenticateToken, authorizeRole('users', 'read'), getAllUsers);
+
+// Solo admin puede eliminar usuarios
+router.delete('/:id', authenticateToken, authorizeRole('users', 'delete'), deleteUser);
 
 export default router;

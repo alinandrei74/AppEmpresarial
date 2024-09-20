@@ -86,3 +86,48 @@ export const getAllUsers = async (req: Request, res: Response) => {
     });
   }
 };
+
+
+// Función para eliminar un usuario
+export const deleteUser = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    if (!id) {
+      throw new UserError('User ID is required');
+    }
+
+    // Elimina al usuario de la base de datos
+    const result = await db.result('DELETE FROM users WHERE id = $1', [id]);
+
+    if (result.rowCount > 0) {
+      return res.status(StatusCodes.OK).json({
+        status: StatusCodes.OK,
+        message: `Usuario con ID ${id} eliminado correctamente`,
+        data: null,
+      });
+    } else {
+      return res.status(StatusCodes.NOT_FOUND).json({
+        status: StatusCodes.NOT_FOUND,
+        message: 'Usuario no encontrado',
+        data: null,
+      });
+    }
+  } catch (error) {
+    if (error instanceof UserError) {
+      console.error('Error al eliminar usuario:', error.message);
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        status: StatusCodes.BAD_REQUEST,
+        message: error.message,
+        data: null,
+      });
+    } else {
+      console.error('Error interno al eliminar usuario:', error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: 'Error interno del servidor',
+        data: null,
+      });
+    }
+  }
+};

@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
+import UserDetails from "./components/profile/UserDetails";
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
 import Notes from "./components/notes/Notes";
 import Calendar from "./components/calendar/Calendar";
 import Apartments from "./components/apartments/Apartments";
-import UserDetails from "./components/profile/UserDetails";
+import UserManagement from "./components/user_management/UserManagement";
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -17,7 +18,7 @@ const UserProfile = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
 
-    //; Verifica si el token existe, de lo contrario redirige a /login
+    // Verifica si el token existe, de lo contrario redirige a /login
     if (!token) {
       handleInvalidToken("Token no encontrado. Por favor, inicia sesión.");
       return;
@@ -58,7 +59,7 @@ const UserProfile = () => {
   const handleInvalidToken = (message) => {
     console.warn(message);
     toast.error(message);
-    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
+    sessionStorage.removeItem("authToken"); // Elimina el token del almacenamiento de sesión
     navigate("/login");
   };
 
@@ -66,10 +67,20 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile-container">
-      <Aside />
+      <Aside userData={userData} />
       <div className="user-profile-content">
         {location.pathname === "/user-profile" && (
           <UserDetails userData={userData} />
+        )}
+
+        {/* Verifica si el usuario es admin y renderiza UserManagement */}
+        {userData.role === "admin" && (
+          <Routes>
+            <Route
+              path="user-management"
+              element={<UserManagement userData={userData} />}
+            />
+          </Routes>
         )}
 
         <Routes>

@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsers = exports.getUserData = void 0;
+exports.deleteUser = exports.getAllUsers = exports.getUserData = void 0;
 const db_1 = require("../config/db");
 const http_status_codes_1 = require("http-status-codes");
 class UserError extends Error {
@@ -91,3 +91,47 @@ const getAllUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getAllUsers = getAllUsers;
+// Función para eliminar un usuario
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        if (!id) {
+            throw new UserError('User ID is required');
+        }
+        // Elimina al usuario de la base de datos
+        const result = yield db_1.db.result('DELETE FROM users WHERE id = $1', [id]);
+        if (result.rowCount > 0) {
+            return res.status(http_status_codes_1.StatusCodes.OK).json({
+                status: http_status_codes_1.StatusCodes.OK,
+                message: `Usuario con ID ${id} eliminado correctamente`,
+                data: null,
+            });
+        }
+        else {
+            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+                status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                message: 'Usuario no encontrado',
+                data: null,
+            });
+        }
+    }
+    catch (error) {
+        if (error instanceof UserError) {
+            console.error('Error al eliminar usuario:', error.message);
+            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
+                status: http_status_codes_1.StatusCodes.BAD_REQUEST,
+                message: error.message,
+                data: null,
+            });
+        }
+        else {
+            console.error('Error interno al eliminar usuario:', error);
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                message: 'Error interno del servidor',
+                data: null,
+            });
+        }
+    }
+});
+exports.deleteUser = deleteUser;

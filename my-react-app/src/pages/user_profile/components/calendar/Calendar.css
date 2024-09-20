@@ -13,13 +13,19 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
 }
-#start-time-0{
+
+#start-time-0 {
     width: 90%;
 }
-#end-time-0{
+
+#end-time-0 {
     width: 90%;
 }
-#comment-0{width: 95%;}
+
+#comment-0 {
+    width: 95%;
+}
+
 /* Título del formulario */
 .schedule-container h2 {
     text-align: center;
@@ -27,12 +33,14 @@
     font-size: 28px;
     color: var(--clr-text);
 }
-#historial-de-horarios{
+
+#historial-de-horarios {
     margin-top: 2.5vw;
     margin-bottom: 0.5vw;
     font-size: x-large;
     box-shadow: inset;
 }
+
 /* Contenedor de cada entrada de horario */
 .schedule-input {
     display: flex;

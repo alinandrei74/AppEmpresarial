@@ -6,16 +6,18 @@ import {
   FaStickyNote,
   FaCalendarAlt,
   FaMapMarkerAlt,
+  FaUsersCog, // Icono para UserManagement
 } from "react-icons/fa"; // Importar iconos
 
 /**
  * Componente Aside para la navegación lateral.
- * @param {Object} props - Recibe el estado del menú del Navbar
+ * @param {Object} props - Recibe el estado del menú del Navbar y los datos del usuario
  * @returns {JSX.Element} Componente Aside
  */
-const Aside = ({ isMenuOpen, toggleMenu }) => {
+const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
   const location = useLocation();
 
+  // Definir los items del menú
   const menuItems = [
     { name: "Tareas", path: "/user-profile/tasks", icon: <FaTasks /> },
     { name: "Notas", path: "/user-profile/notes", icon: <FaStickyNote /> },
@@ -30,6 +32,15 @@ const Aside = ({ isMenuOpen, toggleMenu }) => {
       icon: <FaMapMarkerAlt />,
     },
   ];
+
+  // Si el usuario es admin, añadimos la opción de "Gestión de usuarios"
+  if (userData?.role === "admin") {
+    menuItems.push({
+      name: "Gestión de usuarios",
+      path: "/user-profile/user-management",
+      icon: <FaUsersCog />,
+    });
+  }
 
   return (
     <>

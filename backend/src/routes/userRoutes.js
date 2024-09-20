@@ -9,4 +9,6 @@ const router = (0, express_1.Router)();
 router.get('/user-profile/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('users', 'read'), userController_1.getUserData);
 // Solo admin puede listar todos los usuarios
 router.get('/all', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('users', 'read'), userController_1.getAllUsers);
+// Solo admin puede eliminar usuarios
+router.delete('/:id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('users', 'delete'), userController_1.deleteUser);
 exports.default = router;
