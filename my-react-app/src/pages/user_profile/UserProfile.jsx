@@ -5,7 +5,7 @@ import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
 // import Notes from "./components/Notes";
 import Calendar from "./components/calendar/Calendar";
-import TouristPlaces from "./components/TouristPlaces";
+import Apartments from "./components/apartments/Apartments";
 import UserDetails from "./components/profile/UserDetails";
 import "./UserProfile.css";
 
@@ -77,8 +77,8 @@ const UserProfile = () => {
           {/* <Route path="notes" element={<Notes userData={userData} />} /> */}
           <Route path="calendar" element={<Calendar userData={userData} />} />
           <Route
-            path="tourist-places"
-            element={<TouristPlaces userData={userData} />}
+            path="apartments"
+            element={<Apartments userData={userData} />}
           />
         </Routes>
       </div>

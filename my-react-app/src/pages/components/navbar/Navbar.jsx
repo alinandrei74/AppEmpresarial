@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
+import { toast } from "react-toastify";
 import "./Navbar.css";
 import { DarkModeContext } from "../../../contexts/DarkModeContext";
-import { FaUserCircle } from "react-icons/fa"; // Importa el ícono de perfil
+import { FaUserCircle } from "react-icons/fa";
 
 /**
  * Componente de navegación principal.
@@ -28,7 +28,6 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     navigate("/login");
   };
 
-  // Verificar si estamos en la ruta exacta "/user-profile"
   const isUserProfileActive = location.pathname === "/user-profile";
 
   return (
@@ -46,6 +45,11 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
             <FaUserCircle className="profile-icon" />
             <h1>Mi perfil</h1>
           </Link>
+        </div>
+
+        {/* Nuevo bloque centrado para UNITYNET */}
+        <div className="navbar-title">
+          <h1>UNITYNET</h1>
         </div>
 
         <div className="navbar-actions">

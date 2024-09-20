@@ -17,16 +17,16 @@ const Aside = ({ isMenuOpen, toggleMenu }) => {
   const location = useLocation();
 
   const menuItems = [
-    { name: "Tasks", path: "/user-profile/tasks", icon: <FaTasks /> },
-    { name: "Notes", path: "/user-profile/notes", icon: <FaStickyNote /> },
+    { name: "Tareas", path: "/user-profile/tasks", icon: <FaTasks /> },
+    { name: "Notas", path: "/user-profile/notes", icon: <FaStickyNote /> },
     {
-      name: "Calendar",
+      name: "Calendario",
       path: "/user-profile/calendar",
       icon: <FaCalendarAlt />,
     },
     {
-      name: "Tourist Places",
-      path: "/user-profile/tourist-places",
+      name: "Apartamentos",
+      path: "/user-profile/apartments",
       icon: <FaMapMarkerAlt />,
     },
   ];
