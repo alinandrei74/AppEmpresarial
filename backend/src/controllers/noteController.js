@@ -152,23 +152,23 @@ const deleteNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
-                message: 'Note deleted successfully',
+                message: 'Nota eliminada con éxito',
                 data: null,
             });
         }
         else {
             return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
                 status: http_status_codes_1.StatusCodes.NOT_FOUND,
-                message: 'Note not found',
+                message: 'Nota no encontrada',
                 data: null,
             });
         }
     }
     catch (error) {
-        console.error('Error deleting note:', error);
+        console.error('Error eliminando la nota:', error);
         return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-            message: 'Internal server error',
+            message: 'Error interno del servidor',
             data: null,
         });
     }

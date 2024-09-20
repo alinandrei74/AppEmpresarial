@@ -26,9 +26,6 @@ const Notes = ({ userData }) => {
   const toggleSortOrder = () => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
-    // toast.info(
-    //   `Orden cambiado a: ${newSortOrder === "asc" ? "Antiguo" : "Reciente"}`
-    // );
   };
 
   const updateNoteView = (rawNotes) => {
@@ -56,7 +53,6 @@ const Notes = ({ userData }) => {
 
       const notesResult = await response.json();
       updateNoteView(notesResult.data);
-      // toast.success("Notas cargadas con éxito");
     } catch (error) {
       console.error("Error al cargar notas:", error.message);
       toast.error("Error al cargar las notas");
@@ -119,11 +115,16 @@ const Notes = ({ userData }) => {
   return (
     <div className="notes-container">
       <h2>Notas</h2>
+
       <AddNoteForm onAddNote={handleAddNote} userId={userData.id} />
       <button className="filter-button" onClick={toggleSortOrder}>
         Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
       </button>
       <div className="notes-list">
+        <div className="info-message">
+          <p>Las notas se eliminarán automáticamente después de 24 horas.</p>
+        </div>
+
         {notes.map((note) => (
           <div key={note.id} className="note-item">
             <h3 className="note-title">{note.title}</h3>

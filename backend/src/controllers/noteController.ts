@@ -148,22 +148,23 @@ export const deleteNote = async (req: Request, res: Response) => {
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
-        message: 'Note deleted successfully',
+        message: 'Nota eliminada con éxito',
         data: null,
       });
     } else {
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
-        message: 'Note not found',
+        message: 'Nota no encontrada',
         data: null,
       });
     }
   } catch (error) {
-    console.error('Error deleting note:', error);
+    console.error('Error eliminando la nota:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: 'Error interno del servidor',
       data: null,
     });
   }
 };
+

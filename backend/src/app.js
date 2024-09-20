@@ -72,3 +72,20 @@ node_cron_1.default.schedule('0 0 1 */5 *', () => __awaiter(void 0, void 0, void
         console.error('Error eliminando horarios de trabajo antiguos:', error);
     }
 }));
+// Programar tarea cron para eliminar notas cada 24 horas
+node_cron_1.default.schedule('0 0 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Ejecutando tarea cron para eliminar notas antiguas...'); // Log para confirmar la ejecución
+    try {
+        // Eliminar notas creadas hace más de 24 horas
+        const result = yield db_1.db.result(`DELETE FROM notes WHERE created_at < NOW() - INTERVAL '24 HOURS'`);
+        if (result.rowCount > 0) {
+            console.log(`Eliminadas ${result.rowCount} notas creadas hace más de 24 horas.`);
+        }
+        else {
+            console.log('No se encontraron notas para eliminar.');
+        }
+    }
+    catch (error) {
+        console.error('Error eliminando notas antiguas:', error);
+    }
+}));

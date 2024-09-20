@@ -3,13 +3,13 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  background-color: var(--clr-OnPrimary);
+  background-color: var(--clr-primary);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .notes-container h2 {
-  color: var(--clr-OnText);
+  color: var(--clr-text);
   margin-bottom: 10px;
 }
 
@@ -120,12 +120,36 @@
   font-size: 14px;
   line-height: 1.4;
   color: var(--clr-text);
-  background-color: var(--clr-background);
+  background-color: var(--clr-primary) !important;
   word-break: break-word;
   display: inline-block;
   margin-inline: 35%;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para el mensaje informativo */
+.info-message {
+  background-color: var(--clr-OnPrimary);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: var(--clr-OnText);
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.info-message p {
+  margin: 0;
+}
+
+.add-note-form input {
+  width: 90%;
+  /* height: 100px; */
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid var(--clr-secondary);
+  border-radius: 5px;
 }
 
 .add-note-form textarea {
@@ -138,12 +162,11 @@
 }
 
 .note-title {
-  border: 1px solid var(--clr-secondary);
-  border-radius: 50px;
+  /* border: 1px solid var(--clr-secondary); */
+  /* border-radius: 50px; */
 }
 
 .add-note-form button {
-  background-color: var(--clr-primary);
   color: white;
   border: none;
   padding: 10px 15px;
@@ -158,4 +181,20 @@
   margin-bottom: 5px;
   font-size: 13px;
   color: var(--clr-OnSurfaceVariant);
+}
+
+
+.delete-note-button {
+  background-color: var(--clr-error);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.1s ease;
+}
+
+.delete-note-button:hover {
+  background-color: darkred;
 }
