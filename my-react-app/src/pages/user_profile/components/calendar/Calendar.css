@@ -69,8 +69,6 @@
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: border-color 0.3s ease;
     box-sizing: border-box;
-    color: var(--clr-OnText);
-    /* Cambia el color del texto */
 }
 
 /* Estilo para el selector de día de la semana */
@@ -82,8 +80,6 @@
     background-position: right 10px center;
     background-size: 12px 12px;
     padding-right: 30px;
-    color: var(--clr-OnText);
-    /* Cambia el color del texto */
 }
 
 /* Botones */
