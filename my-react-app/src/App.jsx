@@ -72,7 +72,7 @@ const App = () => {
   return (
     <Router>
       <AppContent />
-      {/* <SampleWebStyle /> */}
+      <SampleWebStyle />
     </Router>
   );
 };
