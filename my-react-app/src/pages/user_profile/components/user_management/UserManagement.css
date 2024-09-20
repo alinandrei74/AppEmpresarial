@@ -52,7 +52,6 @@
   padding: 10px;
   border: 1px solid var(--clr-secondary);
   border-radius: 5px;
-  color: var(--clr-OnText) !important;
   font-size: 14px;
 }
 
