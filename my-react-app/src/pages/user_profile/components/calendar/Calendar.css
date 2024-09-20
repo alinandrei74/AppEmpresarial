@@ -1,7 +1,3 @@
-/* TODO: Arreglar CSS */
-
-/* ScheduleForm.css */
-
 /* Contenedor del formulario */
 .schedule-container {
     max-width: 900px;
@@ -9,21 +5,11 @@
     padding: 30px;
     border: 1px solid var(--clr-background);
     border-radius: 12px;
-    background-color: var(--clr-background);
+    background-color: var(--clr-OnPrimary);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     font-family: Arial, sans-serif;
-}
-
-#start-time-0 {
-    width: 90%;
-}
-
-#end-time-0 {
-    width: 90%;
-}
-
-#comment-0 {
-    width: 95%;
+    overflow-x: auto;
+    /* Permite el scroll horizontal si el contenido se desborda */
 }
 
 /* Título del formulario */
@@ -31,14 +17,7 @@
     text-align: center;
     margin-bottom: 20px;
     font-size: 28px;
-    color: var(--clr-text);
-}
-
-#historial-de-horarios {
-    margin-top: 2.5vw;
-    margin-bottom: 0.5vw;
-    font-size: x-large;
-    box-shadow: inset;
+    color: var(--clr-OnText);
 }
 
 /* Contenedor de cada entrada de horario */
@@ -47,9 +26,9 @@
     flex-direction: column;
     margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid var(--clr-primary);
+    border: 1px solid var(--clr-OnPrimary);
     border-radius: 8px;
-    background-color: var(--clr-background);
+    background-color: var(--clr-primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -66,12 +45,6 @@
     flex: 1;
 }
 
-/* Campo de comentario debajo de la fila de tiempos */
-.input-group.comment {
-    box-sizing: border-box;
-    margin-bottom: 20px;
-}
-
 /* Etiquetas */
 .input-group label {
     display: block;
@@ -80,28 +53,37 @@
     color: var(--clr-text);
 }
 
+.input-group.day-of-week {
+    margin-top: 15px;
+}
+
+
 /* Campos de entrada */
 .input-group input,
 .input-group select {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    border: 1px solid var(--clr-primary);
+    border: 1px solid var(--clr-OnPrimary);
     border-radius: 6px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
+    color: var(--clr-OnText);
+    /* Cambia el color del texto */
 }
 
 /* Estilo para el selector de día de la semana */
 .input-group select {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--clr-background);
     background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"%3E%3Cpath d="M7 10l5 5 5-5H7z" fill="%23000000"/%3E%3C/svg%3E');
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 12px 12px;
     padding-right: 30px;
+    color: var(--clr-OnText);
+    /* Cambia el color del texto */
 }
 
 /* Botones */
@@ -113,19 +95,13 @@
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    color: var(--clr-OnText);
-    background-color: var(--clr-primary);
     margin-top: 10px;
+    /* Elimina los estilos de color y fondo para que hereden los propios */
 }
 
-/* Botón de eliminar */
-.remove-button {
-    background-color: var(--clr-error);
-}
-
-/* Botón de enviar */
 .send-button {
-    background-color: var(--clr-secondary);
+    margin-top: 5px;
+    margin-bottom: 15px;
 }
 
 /* Contenedor para centrar el botón de enviar */
@@ -136,28 +112,74 @@
 }
 
 /* Estilo para la tabla de historial */
-.history-table {
+.schedule-list {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.schedule-list h3 {
+    color: var(--clr-OnText);
+}
+
+.schedule-list table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-}
-
-.history-table th,
-.history-table td {
-    padding: 12px;
-    border: 1px solid var(--clr-primary);
-    text-align: left;
-}
-
-.history-table th {
     background-color: var(--clr-primary);
+    /* Fondo de la tabla en OnPrimary */
+    color: var(--clr-OnPrimary);
+    /* Color del texto dentro de la tabla */
+}
+
+.schedule-list th,
+.schedule-list td {
+    padding: 12px;
+    border: 1px solid var(--clr-OnPrimary);
+    text-align: left;
     color: var(--clr-OnPrimary);
 }
 
-.history-table tr:nth-child(even) {
-    background-color: var(--clr-primary-light);
+
+.schedule-list th {
+    background-color: var(--clr-primary);
+    color: var(--clr-text);
 }
 
-.history-table tr:hover {
-    background-color: var(--clr-primary-light);
+
+.schedule-list tr:nth-child(even) {
+    background-color: var(--clr-OnPrimary-light);
+}
+
+.schedule-list tr:hover {
+    background-color: var(--clr-OnPrimary-light);
+}
+
+/* Media Queries */
+
+/* Para dispositivos pequeños (hasta 350px) */
+@media (max-width: 350px) {
+    .schedule-container {
+        padding: 20px;
+    }
+}
+
+/* Para dispositivos pequeños (351px - 600px) */
+@media (min-width: 351px) and (max-width: 600px) {
+    .schedule-container {
+        padding: 25px;
+    }
+}
+
+/* Para dispositivos medianos (601px - 900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+    .schedule-container {
+        padding: 30px;
+    }
+}
+
+/* Para dispositivos grandes (901px - 1200px) */
+@media (min-width: 901px) and (max-width: 1200px) {
+    .schedule-container {
+        padding: 40px;
+    }
 }
