@@ -1,8 +1,8 @@
 .user-details-container {
-    background-color: var(--clr-primary);
-    /* background-color: var(--clr-OnSecondary); */
-    /* background-color: rgb(148, 153, 157); */
-    border: 5px solid var(--clr-secondary);
+    background-color: var(--clr-OnPrimary);
+    /* Invertido */
+    border: 5px solid var(--clr-OnSecondary);
+    /* Invertido */
     border-radius: 8px;
     padding: 20px;
     margin: 20px 0;
@@ -10,24 +10,22 @@
     max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
-    color: var(--clr-text);
-    /* Color de texto general */
+    color: var(--clr-OnText);
+    /* Contraste de texto */
 }
 
 .user-details-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 2px solid var(--clr-primary);
-    /* Línea separadora primario */
+    border-bottom: 2px solid var(--clr-OnPrimary);
+    /* Invertido */
     padding-bottom: 10px;
     margin-bottom: 15px;
 }
 
 .user-details-header h2 {
     font-size: 1.8em;
-    color: var(--clr-OnBackground);
-    /* Contraste de texto */
     margin: 0;
 }
 
@@ -46,37 +44,37 @@
 
 .user-info-item {
     flex: 1 1 45%;
-    background-color: var(--clr-OnPrimary);
-    /* Fondo de elemento primario */
+    background-color: var(--clr-primary);
+    /* Invertido */
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     font-size: 1em;
-    color: var(--clr-OnText);
-    /* Contraste de texto */
+    color: var(--clr-text);
+    /* Invertido */
 }
 
 .user-info-item strong {
     display: block;
-    color: var(--clr-secondary);
-    /* Color de texto secundario */
+    color: var(--clr-OnSecondary);
+    /* Invertido */
     margin-bottom: 5px;
 }
 
 .user-contact {
-    background-color: var(--clr-OnPrimary);
-    /* Fondo de contacto primario */
+    background-color: var(--clr-primary);
+    /* Invertido */
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: var(--clr-OnText);
-    /* Contraste de texto */
+    color: var(--clr-text);
+    /* Invertido */
 }
 
 .user-contact h3 {
     font-size: 1.4em;
-    color: var(--clr-secondary);
-    /* Contraste de texto */
+    color: var(--clr-OnSecondary);
+    /* Invertido */
     margin-bottom: 10px;
 }
 
@@ -88,14 +86,14 @@
 .user-contact li {
     margin-bottom: 5px;
     font-size: 1em;
-    color: var(--clr-OnText);
-    /* Texto general */
+    color: var(--clr-text);
+    /* Invertido */
 }
 
 .user-contact li span {
     font-weight: bold;
-    color: var(--clr-primary);
-    /* Destacado en primario */
+    color: var(--clr-OnPrimary);
+    /* Invertido */
 }
 
 @media screen and (max-width: 768px) {
@@ -119,47 +117,46 @@
     }
 }
 
-
 /* Estilo para la nueva sección de tareas */
 .user-tasks {
-    background-color: var(--clr-OnPrimary);
-    /* Fondo minimalista */
+    background-color: var(--clr-primary);
+    /* Invertido */
     padding: 15px;
     border-radius: 5px;
     margin-top: 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    color: var(--clr-OnText);
-    /* Contraste de texto */
+    color: var(--clr-text);
+    /* Invertido */
 }
 
 .user-tasks h3 {
     font-size: 1.5em;
-    color: var(--clr-primary);
-    /* Texto destacado */
+    color: var(--clr-OnPrimary);
+    /* Invertido */
     margin-bottom: 10px;
-    border-bottom: 1px solid var(--clr-primary);
-    /* Línea separadora minimalista */
+    border-bottom: 1px solid var(--clr-OnPrimary);
+    /* Invertido */
     padding-bottom: 5px;
 }
 
 .user-tasks p {
     font-size: 1em;
     margin: 5px 0;
-    color: var(--clr-OnText);
-    /* Texto sencillo */
+    color: var(--clr-text);
+    /* Invertido */
 }
 
 .user-tasks p span {
     font-weight: bold;
-    color: var(--clr-secondary);
-    /* Texto resaltado */
+    color: var(--clr-OnSecondary);
+    /* Invertido */
 }
 
 .user-tasks .admin-note {
     font-size: 0.9em;
     margin-top: 10px;
-    color: var(--clr-secondary);
-    /* Texto informativo */
+    color: var(--clr-OnSecondary);
+    /* Invertido */
 }
 
 @media screen and (max-width: 768px) {
