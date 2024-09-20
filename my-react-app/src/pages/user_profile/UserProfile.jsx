@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
 import Aside from "./components/Aside";
 import Tasks from "./components/task/Tasks";
-// import Notes from "./components/Notes";
+import Notes from "./components/notes/Notes";
 import Calendar from "./components/calendar/Calendar";
 import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/profile/UserDetails";
+import UserDetails from "./components/UserDetails";
+import Register from "../register/Register";
+import UserManagement from "./components/UserManagement";
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -17,7 +18,6 @@ const UserProfile = () => {
   useEffect(() => {
     const token = sessionStorage.getItem("authToken");
 
-    //; Verifica si el token existe, de lo contrario redirige a /login
     if (!token) {
       handleInvalidToken("Token no encontrado. Por favor, inicia sesión.");
       return;
@@ -33,8 +33,7 @@ const UserProfile = () => {
         if (response.ok) {
           const result = await response.json();
           const userData = result.data.user;
-
-          setUserData(result.data.user);
+          setUserData(userData);
           console.log("Todos los datos del usuario autenticado:", userData);
         } else {
           const result = await response.json();
@@ -51,14 +50,10 @@ const UserProfile = () => {
     verifyToken();
   }, [navigate]);
 
-  /**
-   ** Maneja el token inválido eliminándolo del almacenamiento de sesión y redirigiendo a la página de inicio de sesión.
-   * @param {string} message - El mensaje a mostrar al usuario.
-   */
   const handleInvalidToken = (message) => {
     console.warn(message);
-    toast.error(message);
-    sessionStorage.removeItem("authToken"); //; Elimina el token del almacenamiento de sesión
+    alert(message);
+    sessionStorage.removeItem("authToken");
     navigate("/login");
   };
 
@@ -66,7 +61,7 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile-container">
-      <Aside />
+      <Aside userData={userData} />
       <div className="user-profile-content">
         {location.pathname === "/user-profile" && (
           <UserDetails userData={userData} />
@@ -74,12 +69,15 @@ const UserProfile = () => {
 
         <Routes>
           <Route path="tasks" element={<Tasks userData={userData} />} />
-          {/* <Route path="notes" element={<Notes userData={userData} />} /> */}
+          <Route path="notes" element={<Notes userData={userData} />} />
           <Route path="calendar" element={<Calendar userData={userData} />} />
-          <Route
-            path="tourist-places"
-            element={<TouristPlaces userData={userData} />}
-          />
+          <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
+          {userData.role === 'admin' && (
+            <>
+              <Route path="create-profile" element={<Register />} />
+              <Route path="user-management" element={<UserManagement currentUserId={userData.id} />} />
+            </>
+          )}
         </Routes>
       </div>
     </div>
