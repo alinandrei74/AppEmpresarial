@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -28,16 +19,16 @@ const throwError = (status, message) => {
     throw { status, message };
 };
 // Servicio para registrar un nuevo usuario
-const registerUserService = (userData) => __awaiter(void 0, void 0, void 0, function* () {
+const registerUserService = async (userData) => {
     try {
-        const existingUser = yield (0, userDataAccess_1.getUserByEmailFromDB)(userData.email);
+        const existingUser = await (0, userDataAccess_1.getUserByEmailFromDB)(userData.email);
         if (existingUser) {
             throw { status: http_status_codes_1.StatusCodes.BAD_REQUEST, message: 'User with this email already exists' };
         }
         // Hashear la contraseña
-        const hashedPassword = yield bcryptjs_1.default.hash(userData.password, 10);
+        const hashedPassword = await bcryptjs_1.default.hash(userData.password, 10);
         // Crear el usuario en la base de datos
-        const newUser = yield (0, userDataAccess_1.createUserInDB)(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
+        const newUser = await (0, userDataAccess_1.createUserInDB)(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
         return {
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'User registered successfully',
@@ -52,16 +43,16 @@ const registerUserService = (userData) => __awaiter(void 0, void 0, void 0, func
         }
         throwError(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR, 'An unexpected error occurred during registration');
     }
-});
+};
 exports.registerUserService = registerUserService;
 // Servicio para iniciar sesión de un usuario
-const loginUserService = (username, password) => __awaiter(void 0, void 0, void 0, function* () {
+const loginUserService = async (username, password) => {
     try {
-        const user = yield (0, userDataAccess_1.getUserByUsernameFromDB)(username);
+        const user = await (0, userDataAccess_1.getUserByUsernameFromDB)(username);
         if (!user) {
             throw new Error('Invalid credentials');
         }
-        const isMatch = yield bcryptjs_1.default.compare(password, user.password);
+        const isMatch = await bcryptjs_1.default.compare(password, user.password);
         if (!isMatch) {
             throw new Error('Invalid credentials');
         }
@@ -71,15 +62,15 @@ const loginUserService = (username, password) => __awaiter(void 0, void 0, void 
     catch (error) {
         throw new Error('Login failed');
     }
-});
+};
 exports.loginUserService = loginUserService;
 // Servicio genérico para obtener un usuario por un identificador (username o email)
-const getUserService = (identifier, getUserFn, fieldName) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserService = async (identifier, getUserFn, fieldName) => {
     try {
         if (!identifier) {
             throwError(http_status_codes_1.StatusCodes.BAD_REQUEST, `${fieldName} is required`);
         }
-        const user = yield getUserFn(identifier);
+        const user = await getUserFn(identifier);
         if (!user) {
             throwError(http_status_codes_1.StatusCodes.NOT_FOUND, `User with ${fieldName} not found`);
         }
@@ -94,7 +85,7 @@ const getUserService = (identifier, getUserFn, fieldName) => __awaiter(void 0, v
         console.error(`Error fetching user by ${fieldName}:`, errorMessage);
         throwError(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR, errorMessage);
     }
-});
+};
 // Servicios para obtener usuario por username o email, reutilizando la lógica de `getUserService`
 const getUserByUsernameService = (username) => getUserService(username, userDataAccess_1.getUserByUsernameFromDB, 'username');
 exports.getUserByUsernameService = getUserByUsernameService;

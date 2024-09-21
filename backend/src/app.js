@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -18,74 +9,75 @@ const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const authRoutes_1 = __importDefault(require("./routes/authRoutes"));
 const taskRoutes_1 = __importDefault(require("./routes/taskRoutes"));
 const noteRoutes_1 = __importDefault(require("./routes/noteRoutes"));
-const workScheduleRoutes_1 = __importDefault(require("./routes/workScheduleRoutes")); // Asegúrate de importar las rutas de work schedule
+const workScheduleRoutes_1 = __importDefault(require("./routes/workScheduleRoutes"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = require("./config/db");
-dotenv_1.default.config(); //! Asegúrate de cargar las variables de entorno al principio
+const Logger_1 = __importDefault(require("./utils/Logger"));
+dotenv_1.default.config(); //; Carga las variables de entorno al principio
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
-// Middlewares
+//; Middlewares
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-// Routes
+//; Routes
 app.use('/api/users', userRoutes_1.default);
 app.use('/api/tasks', taskRoutes_1.default);
 app.use('/api/notes', noteRoutes_1.default);
 app.use('/api/auth', authRoutes_1.default);
-app.use('/api/work-schedules', workScheduleRoutes_1.default); // Añade las rutas de horarios de trabajo
-// Inicia el servidor
+app.use('/api/work-schedules', workScheduleRoutes_1.default); //; Añade las rutas de horarios de trabajo
+//; Inicia el servidor
 app.listen(PORT, () => {
-    console.log(`Server is running http://localhost:${PORT}`);
+    Logger_1.default.finalSuccess(`Servidor iniciado en {http://localhost:${PORT}}`);
 });
-// Programar tarea cron para eliminar tareas completadas cada hora
-node_cron_1.default.schedule('0 * * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Ejecutando tarea cron para eliminar tareas completadas...'); // Log para confirmar la ejecución
+//; Programar tarea cron para eliminar tareas completadas cada hora
+node_cron_1.default.schedule('0 * * * *', async () => {
+    Logger_1.default.information('Ejecutando tarea cron: {Eliminando tareas completadas hace más de 24 horas.}');
     try {
-        // Eliminar tareas completadas hace más de 24 horas
-        const result = yield db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`);
+        //; Eliminar tareas completadas hace más de 24 horas
+        const result = await db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`);
         if (result.rowCount > 0) {
-            console.log(`Eliminadas ${result.rowCount} tareas completadas hace más de 24 horas.`);
+            Logger_1.default.success(`Eliminadas {${result.rowCount}} tareas completadas hace más de 24 horas.`);
         }
         else {
-            console.log('No se encontraron tareas para eliminar.');
+            Logger_1.default.information('No se encontraron tareas para eliminar.');
         }
     }
     catch (error) {
-        console.error('Error eliminando tareas completadas:', error);
+        Logger_1.default.finalError('Error eliminando tareas completadas:', error);
     }
-}));
-// Programar tarea cron para eliminar horarios de trabajo antiguos cada 5 meses
-node_cron_1.default.schedule('0 0 1 */5 *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Ejecutando tarea cron para eliminar horarios de trabajo antiguos...'); // Log para confirmar la ejecución
+});
+//; Programar tarea cron para eliminar horarios de trabajo antiguos cada 5 meses
+node_cron_1.default.schedule('0 0 1 */5 *', async () => {
+    Logger_1.default.information('Ejecutando tarea cron: {Eliminando horarios de trabajo antiguos.}');
     try {
-        // Eliminar horarios de trabajo creados hace más de 5 meses
-        const result = yield db_1.db.result(`DELETE FROM work_schedule WHERE created_at < NOW() - INTERVAL '5 months'`);
+        //; Eliminar horarios de trabajo creados hace más de 5 meses
+        const result = await db_1.db.result(`DELETE FROM work_schedule WHERE created_at < NOW() - INTERVAL '5 months'`);
         if (result.rowCount > 0) {
-            console.log(`Eliminados ${result.rowCount} horarios de trabajo antiguos.`);
+            Logger_1.default.success(`Eliminados {${result.rowCount}} horarios de trabajo antiguos.`);
         }
         else {
-            console.log('No se encontraron horarios de trabajo para eliminar.');
+            Logger_1.default.information('No se encontraron horarios de trabajo para eliminar.');
         }
     }
     catch (error) {
-        console.error('Error eliminando horarios de trabajo antiguos:', error);
+        Logger_1.default.finalError('Error eliminando horarios de trabajo antiguos:', error);
     }
-}));
-// Programar tarea cron para eliminar notas cada 24 horas
-node_cron_1.default.schedule('0 0 * * *', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Ejecutando tarea cron para eliminar notas antiguas...'); // Log para confirmar la ejecución
+});
+//; Programar tarea cron para eliminar notas cada 24 horas
+node_cron_1.default.schedule('0 0 * * *', async () => {
+    Logger_1.default.information('Ejecutando tarea cron: {Eliminando notas antiguas.}');
     try {
-        // Eliminar notas creadas hace más de 24 horas
-        const result = yield db_1.db.result(`DELETE FROM notes WHERE created_at < NOW() - INTERVAL '24 HOURS'`);
+        //; Eliminar notas creadas hace más de 24 horas
+        const result = await db_1.db.result(`DELETE FROM notes WHERE created_at < NOW() - INTERVAL '24 HOURS'`);
         if (result.rowCount > 0) {
-            console.log(`Eliminadas ${result.rowCount} notas creadas hace más de 24 horas.`);
+            Logger_1.default.success(`Eliminadas {${result.rowCount}} notas creadas hace más de 24 horas.`);
         }
         else {
-            console.log('No se encontraron notas para eliminar.');
+            Logger_1.default.information('No se encontraron notas para eliminar.');
         }
     }
     catch (error) {
-        console.error('Error eliminando notas antiguas:', error);
+        Logger_1.default.finalError('Error eliminando notas antiguas:', error);
     }
-}));
+});

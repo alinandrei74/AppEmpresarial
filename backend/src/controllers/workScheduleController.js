@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateWorkSchedule = exports.deleteWorkSchedule = exports.createWorkSchedule = exports.getWorkScheduleById = exports.getAllWorkSchedules = void 0;
 const db_1 = require("../config/db");
@@ -19,17 +10,17 @@ class WorkScheduleError extends Error {
     }
 }
 // Método para obtener todos los horarios de trabajo
-const getAllWorkSchedules = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllWorkSchedules = async (req, res) => {
     const user = req.user;
     try {
         let work_schedules;
         // Los administradores pueden ver todos los horarios
         if (user.role === 'admin') {
-            work_schedules = yield db_1.db.any("SELECT * FROM work_schedule");
+            work_schedules = await db_1.db.any("SELECT * FROM work_schedule");
         }
         else {
             // Los usuarios normales solo ven sus propios horarios
-            work_schedules = yield db_1.db.any("SELECT * FROM work_schedule WHERE user_id = $1", [user.id]);
+            work_schedules = await db_1.db.any("SELECT * FROM work_schedule WHERE user_id = $1", [user.id]);
         }
         console.log(work_schedules);
         return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -46,10 +37,10 @@ const getAllWorkSchedules = (req, res) => __awaiter(void 0, void 0, void 0, func
             data: null,
         });
     }
-});
+};
 exports.getAllWorkSchedules = getAllWorkSchedules;
 // Método para obtener un horario de trabajo por ID (clave primaria) y user_id
-const getWorkScheduleById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getWorkScheduleById = async (req, res) => {
     const { id } = req.params; // ID del horario (clave primaria)
     const user = req.user;
     try {
@@ -59,11 +50,11 @@ const getWorkScheduleById = (req, res) => __awaiter(void 0, void 0, void 0, func
         let work_schedule;
         if (user.role === 'admin') {
             // Los administradores pueden acceder a cualquier horario
-            work_schedule = yield db_1.db.oneOrNone("SELECT * FROM work_schedule WHERE id = $1", [id]);
+            work_schedule = await db_1.db.oneOrNone("SELECT * FROM work_schedule WHERE id = $1", [id]);
         }
         else {
             // Usuarios normales solo pueden acceder a sus propios horarios
-            work_schedule = yield db_1.db.oneOrNone("SELECT * FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
+            work_schedule = await db_1.db.oneOrNone("SELECT * FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
         }
         if (work_schedule) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -98,10 +89,10 @@ const getWorkScheduleById = (req, res) => __awaiter(void 0, void 0, void 0, func
             });
         }
     }
-});
+};
 exports.getWorkScheduleById = getWorkScheduleById;
 // Método POST para crear una nueva entrada en el horario de trabajo
-const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createWorkSchedule = async (req, res) => {
     const { start_time, end_time, description, day_of_week } = req.body;
     const user = req.user;
     try {
@@ -113,7 +104,7 @@ const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             throw new WorkScheduleError("La hora de inicio debe ser anterior a la hora de finalización.");
         }
         // Insertar el horario con el user_id del usuario autenticado
-        const result = yield db_1.db.one("INSERT INTO work_schedule (user_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id", [user.id, start_time, end_time, description, day_of_week]);
+        const result = await db_1.db.one("INSERT INTO work_schedule (user_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id", [user.id, start_time, end_time, description, day_of_week]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: "Horario de trabajo creado exitosamente",
@@ -138,10 +129,10 @@ const createWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
     }
-});
+};
 exports.createWorkSchedule = createWorkSchedule;
 // Método para eliminar un horario de trabajo por ID (clave primaria) y user_id
-const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteWorkSchedule = async (req, res) => {
     const { id } = req.params;
     const user = req.user;
     try {
@@ -149,7 +140,7 @@ const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             throw new WorkScheduleError("ID es requerido");
         }
         // Solo los admins o el mismo usuario pueden eliminar el horario
-        const result = yield db_1.db.result("DELETE FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
+        const result = await db_1.db.result("DELETE FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
@@ -183,10 +174,10 @@ const deleteWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
     }
-});
+};
 exports.deleteWorkSchedule = deleteWorkSchedule;
 // Método para actualizar un horario de trabajo por ID (clave primaria) y user_id
-const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateWorkSchedule = async (req, res) => {
     const { id } = req.params; // ID del horario (clave primaria)
     const { start_time, end_time, description, day_of_week } = req.body;
     const user = req.user; // Información del usuario autenticado
@@ -202,11 +193,11 @@ const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
         // Verifica si es admin o si es el propietario del horario que intenta actualizar
         if (user.role === 'admin') {
             // Los administradores pueden actualizar cualquier horario
-            result = yield db_1.db.result("UPDATE work_schedule SET start_time = $1, end_time = $2, description = $3, day_of_week = $4 WHERE id = $5 RETURNING *", [start_time, end_time, description, day_of_week, id]);
+            result = await db_1.db.result("UPDATE work_schedule SET start_time = $1, end_time = $2, description = $3, day_of_week = $4 WHERE id = $5 RETURNING *", [start_time, end_time, description, day_of_week, id]);
         }
         else {
             // Los usuarios normales solo pueden actualizar sus propios horarios
-            result = yield db_1.db.result("UPDATE work_schedule SET start_time = $1, end_time = $2, description = $3, day_of_week = $4 WHERE id = $5 AND user_id = $6 RETURNING *", [start_time, end_time, description, day_of_week, id, user.id]);
+            result = await db_1.db.result("UPDATE work_schedule SET start_time = $1, end_time = $2, description = $3, day_of_week = $4 WHERE id = $5 AND user_id = $6 RETURNING *", [start_time, end_time, description, day_of_week, id, user.id]);
         }
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
@@ -256,5 +247,5 @@ const updateWorkSchedule = (req, res) => __awaiter(void 0, void 0, void 0, funct
             });
         }
     }
-});
+};
 exports.updateWorkSchedule = updateWorkSchedule;

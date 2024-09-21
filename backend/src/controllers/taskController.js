@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = exports.updateTask = exports.createTask = exports.getCompletedTasksByUserId = exports.getTasks = void 0;
 const db_1 = require("../config/db");
@@ -18,9 +9,9 @@ class TaskError extends Error {
         this.name = 'TaskError';
     }
 }
-const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getTasks = async (req, res) => {
     try {
-        const tasks = yield db_1.db.any('SELECT * FROM tasks');
+        const tasks = await db_1.db.any('SELECT * FROM tasks');
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
             message: 'Tasks fetched successfully',
@@ -35,7 +26,7 @@ const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             data: null,
         });
     }
-});
+};
 exports.getTasks = getTasks;
 /**
  *! Necesitaba `getCompletedTasksByUserId` o `getTasksById` pero no estaba y no hay tiempo.
@@ -44,7 +35,7 @@ exports.getTasks = getTasks;
  * @param {Response} res - La respuesta de Express.
  * @returns {Promise<Response>} - La respuesta con el estado y los datos de las tareas.
  */
-const getCompletedTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getCompletedTasksByUserId = async (req, res) => {
     const { userId } = req.params;
     try {
         if (!userId) {
@@ -56,7 +47,7 @@ const getCompletedTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0
             throw new TaskError('User ID must be a valid number');
         }
         // Obtener todas las tareas completadas por el usuario
-        const tasks = yield db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parsedUserId, 'done']);
+        const tasks = await db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parsedUserId, 'done']);
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
             message: 'Completed tasks fetched successfully',
@@ -71,9 +62,9 @@ const getCompletedTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0
             data: null,
         });
     }
-});
+};
 exports.getCompletedTasksByUserId = getCompletedTasksByUserId;
-const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createTask = async (req, res) => {
     const { description, status, user_id, created_at, title } = req.body;
     try {
         if (!description || !status || !user_id || !created_at || !title) {
@@ -84,7 +75,7 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (isNaN(parsedUserId)) {
             throw new TaskError('user_id must be a valid number');
         }
-        const result = yield db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, parsedUserId, created_at, title]);
+        const result = await db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, parsedUserId, created_at, title]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'Task created successfully',
@@ -109,9 +100,9 @@ const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
     }
-});
+};
 exports.createTask = createTask;
-const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateTask = async (req, res) => {
     const { id } = req.params;
     const { description, status, user_id, created_at, title } = req.body;
     try {
@@ -125,7 +116,7 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             throw new TaskError('ID and user_id must be valid numbers');
         }
         const completedAt = status === 'done' ? new Date() : null;
-        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, parsedUserId, created_at, title, completedAt, parsedId]);
+        const result = await db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, parsedUserId, created_at, title, completedAt, parsedId]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
@@ -159,9 +150,9 @@ const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
     }
-});
+};
 exports.updateTask = updateTask;
-const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteTask = async (req, res) => {
     const { id } = req.params;
     try {
         if (!id) {
@@ -172,7 +163,7 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (isNaN(parsedId)) {
             throw new TaskError('ID must be a valid number');
         }
-        const result = yield db_1.db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
+        const result = await db_1.db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
@@ -206,5 +197,5 @@ const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             });
         }
     }
-});
+};
 exports.deleteTask = deleteTask;

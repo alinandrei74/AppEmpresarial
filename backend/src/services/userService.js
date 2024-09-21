@@ -1,21 +1,12 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserByUserName = exports.updateUserById = exports.getUserById = void 0;
 const userDataAccess_1 = require("../data_access/userDataAccess");
 const http_status_codes_1 = require("http-status-codes");
 // Obtener usuario por ID
-const getUserById = (user_id) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = async (user_id) => {
     try {
-        const user = yield (0, userDataAccess_1.getUserByIdFromDB)(user_id);
+        const user = await (0, userDataAccess_1.getUserByIdFromDB)(user_id);
         return {
             status: http_status_codes_1.StatusCodes.OK,
             message: 'User found',
@@ -29,12 +20,12 @@ const getUserById = (user_id) => __awaiter(void 0, void 0, void 0, function* () 
             message: 'Error fetching user by ID',
         };
     }
-});
+};
 exports.getUserById = getUserById;
 // Actualizar usuario por ID
-const updateUserById = (user_id, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const updateUserById = async (user_id, userData) => {
     try {
-        const updatedUser = yield (0, userDataAccess_1.updateUserInDB)(user_id, userData);
+        const updatedUser = await (0, userDataAccess_1.updateUserInDB)(user_id, userData);
         return {
             status: http_status_codes_1.StatusCodes.OK,
             message: 'User updated successfully',
@@ -48,12 +39,12 @@ const updateUserById = (user_id, userData) => __awaiter(void 0, void 0, void 0, 
             message: 'Error updating user',
         };
     }
-});
+};
 exports.updateUserById = updateUserById;
 // Obtener usuario por username
-const getUserByUserName = (username) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserByUserName = async (username) => {
     try {
-        const user = yield (0, userDataAccess_1.getUserByUsernameFromDB)(username);
+        const user = await (0, userDataAccess_1.getUserByUsernameFromDB)(username);
         return {
             status: http_status_codes_1.StatusCodes.OK,
             message: 'User found',
@@ -67,5 +58,5 @@ const getUserByUserName = (username) => __awaiter(void 0, void 0, void 0, functi
             message: 'Error fetching user by username',
         };
     }
-});
+};
 exports.getUserByUserName = getUserByUserName;

@@ -1,6 +1,3 @@
-/* TODO#code3: El estilo está inverso a los demás, arreglar esto: cambiar `var(--clr-primary)` por `var(--clr-OnPrimary)` y viceversa. 
-   Cambiar la tarjeta `smallNotes` a color de fondo `var(--clr-primary)` y su texto a `var(--clr-OnText)` */
-
 .notes-container {
   width: 100%;
   max-width: 800px;

@@ -1,26 +1,26 @@
-// db.ts
 import pgPromise from 'pg-promise';
 import dotenv from 'dotenv';
-import { ensureDatabaseSchema } from './schema'; // Ajusta la ruta según tu estructura
+import { ensureDatabaseSchema } from './schema';
+import Logger from '../utils/Logger';
 
 dotenv.config();
 
 const pgp = pgPromise();
 const db = pgp(process.env.DATABASE_URL as string);
 
-// Prueba de conexión a la base de datos
-db.one('SELECT NOW()')
-  .then((data) => {
-    console.log('Database connection successful:', data);
+/**
+ * Prueba de conexión a la base de datos y asegura el esquema.
+ */
+(async () => {
+  try {
+    const data = await db.one('SELECT NOW()');
+    Logger.success('Conexión a la base de datos exitosa:', data);
 
-    // Una vez conectados, asegurar que el esquema de la base de datos esté correcto
-    return ensureDatabaseSchema();
-  })
-  .then(() => {
-    console.log('Database schema ensured successfully.');
-  })
-  .catch((error) => {
-    console.error('Error during database connection or schema setup:', error);
-  });
+    await ensureDatabaseSchema();
+    Logger.finalSuccess('Esquema de la base de datos asegurado exitosamente.');
+  } catch (error) {
+    Logger.finalError('Error durante la conexión a la base de datos o la configuración del esquema:', error);
+  }
+})();
 
 export { db };
