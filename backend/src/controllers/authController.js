@@ -10,7 +10,7 @@ const authService_1 = require("../services/authService");
 const logger_1 = __importDefault(require("../utils/logger"));
 const JWT_SECRET = process.env.JWT_SECRET;
 const registerUser = async (req, res) => {
-    const userData = req.body;
+    const userData = req.body; // Extraer los datos del cuerpo de la solicitud
     try {
         const requiredFields = [
             'role', 'username', 'name', 'firstname', 'lastname', 'dni',

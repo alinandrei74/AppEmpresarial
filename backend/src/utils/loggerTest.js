@@ -26,7 +26,7 @@ console.log('\n');
 logger_1.default.finalSuccess('El proceso ha finalizado {exitosamente}.');
 console.log('\n');
 //; Ejemplo de error final con resaltado
-logger_1.default.finalError('Error crítico: {No se pudo finalizar el proceso}.');
+logger_1.default.finalError('Error crítico: {No se pudo finalizar el proceso} => {Reiniciando}.');
 /**
  *? Ejemplos Avanzados de Logger
  *
