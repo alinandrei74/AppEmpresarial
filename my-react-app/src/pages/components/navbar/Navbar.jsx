@@ -28,30 +28,47 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     navigate("/login");
   };
 
-  const isUserProfileActive = location.pathname === "/user-profile";
+  const isUserProfileActive = location.pathname.includes("/user-profile");
+
+  // Verificar si estamos en la ruta /login
+  const isLoginRoute = location.pathname === "/login";
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div className="menu-icon" onClick={toggleMenu}>
-          ☰
-        </div>
+        {/* Menú desplegable */}
+        {isLoggedIn && isUserProfileActive && (
+          <div className="menu-icon" onClick={toggleMenu}>
+            ☰
+          </div>
+        )}
 
-        <div className={`navbar-logo ${isMenuOpen ? "menu-item" : ""}`}>
+        {/* Logo "Mi perfil" con margen condicional */}
+        <div
+          className={`navbar-logo ${!isUserProfileActive ? "no-margin" : ""}`}
+        >
           <Link
-            to="/user-profile"
-            className={isUserProfileActive ? "active-link" : ""}
+            to={isLoggedIn ? "/user-profile" : "#"}
+            className={`${isUserProfileActive ? "active-link" : ""} ${
+              !isLoggedIn ? "disabled-link" : ""
+            }`}
+            onClick={(e) => !isLoggedIn && e.preventDefault()}
           >
             <FaUserCircle className="profile-icon" />
             <h1>Mi perfil</h1>
           </Link>
         </div>
 
-        {/* Nuevo bloque centrado para UNITYNET */}
-        <div className="navbar-title">
+        {/* Título principal */}
+        <div
+          className={`navbar-title ${!isLoggedIn ? "adjust-title" : ""} ${
+            isLoginRoute && isLoggedIn ? "login-margin" : ""
+          }`}
+        >
           <h1>UNITYNET</h1>
         </div>
 
+        {/* Botón de cerrar sesión */}
         <div className="navbar-actions">
           {isLoggedIn && (
             <button className="logout-button" onClick={handleLogout}>
