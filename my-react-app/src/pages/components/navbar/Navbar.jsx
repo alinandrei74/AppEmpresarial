@@ -43,21 +43,20 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
           </div>
         )}
 
-        {/* Logo "Mi perfil" con margen condicional */}
-        <div
-          className={`navbar-logo ${!isUserProfileActive ? "no-margin" : ""}`}
-        >
-          <Link
-            to={isLoggedIn ? "/user-profile" : "#"}
-            className={`${isUserProfileActive ? "active-link" : ""} ${
-              !isLoggedIn ? "disabled-link" : ""
-            }`}
-            onClick={(e) => !isLoggedIn && e.preventDefault()}
+        {/* Logo "Mi perfil" solo si el usuario está logueado */}
+        {isLoggedIn && (
+          <div
+            className={`navbar-logo ${!isUserProfileActive ? "no-margin" : ""}`}
           >
-            <FaUserCircle className="profile-icon" />
-            <h1>Mi perfil</h1>
-          </Link>
-        </div>
+            <Link
+              to="/user-profile"
+              className={`${isUserProfileActive ? "active-link" : ""}`}
+            >
+              <FaUserCircle className="profile-icon" />
+              <h1>Mi perfil</h1>
+            </Link>
+          </div>
+        )}
 
         {/* Título principal */}
         <div

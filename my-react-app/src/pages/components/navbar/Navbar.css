@@ -66,7 +66,12 @@
 
 /* Cuando el botón de logout no está, ajustar el margen */
 .adjust-title h1 {
-  margin-left: -93px !important;
+
+  /* Con el 'Mi Perfil' mostrandose */
+  /* margin-left: -93px !important; */
+
+  /* Sin el con el 'Mi Perfil' mostrandose */
+  margin-left: 33px !important;
 }
 
 /* Cuando estamos en la ruta /login y el usuario está logueado */
