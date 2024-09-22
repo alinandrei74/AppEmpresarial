@@ -8,7 +8,7 @@ import workScheduleRoutes from './routes/workScheduleRoutes';
 import dotenv from 'dotenv';
 import cron from 'node-cron';
 import { db } from './config/db';
-import Logger from './utils/Logger';
+import Logger from './utils/logger';
 
 dotenv.config(); //; Carga las variables de entorno al principio
 

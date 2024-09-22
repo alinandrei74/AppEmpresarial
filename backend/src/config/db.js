@@ -7,7 +7,7 @@ exports.db = void 0;
 const pg_promise_1 = __importDefault(require("pg-promise"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const schema_1 = require("./schema");
-const Logger_1 = __importDefault(require("../utils/Logger"));
+const logger_1 = __importDefault(require("../utils/logger"));
 dotenv_1.default.config();
 const pgp = (0, pg_promise_1.default)();
 const db = pgp(process.env.DATABASE_URL);
@@ -18,11 +18,11 @@ exports.db = db;
 (async () => {
     try {
         const data = await db.one('SELECT NOW()');
-        Logger_1.default.success('Conexión a la base de datos exitosa:', data);
+        logger_1.default.success('Conexión a la base de datos exitosa:', data);
         await (0, schema_1.ensureDatabaseSchema)();
-        Logger_1.default.finalSuccess('Esquema de la base de datos asegurado exitosamente.');
+        logger_1.default.finalSuccess('Esquema de la base de datos asegurado exitosamente.');
     }
     catch (error) {
-        Logger_1.default.finalError('Error durante la conexión a la base de datos o la configuración del esquema:', error);
+        logger_1.default.finalError('Error durante la conexión a la base de datos o la configuración del esquema:', error);
     }
 })();

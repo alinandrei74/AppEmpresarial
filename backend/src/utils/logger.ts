@@ -28,18 +28,49 @@ class Logger {
         finalError: chalk.redBright,
     };
 
-    //; Caracteres para resaltar texto
-    private static highlightPrefix: string = '{';
-    private static highlightSuffix: string = '}';
+
+    //; Objeto que agrupa los caracteres predeterminados, actuales y las listas válidas para el resaltado
+    private static highlightEnclosers = {
+        default: { prefix: '{', suffix: '}' },    //; Valores predeterminados
+        current: { prefix: '{', suffix: '}' },    //; Valores actuales
+        validPrefixes: ['{', '[', '(', '<'],      //; Prefijos válidos
+        validSuffixes: ['}', ']', ')', '>'],      //; Sufijos válidos
+    };
 
     /**
-     * Método estático para configurar los caracteres de resaltado.
-     * @param prefix - Carácter de apertura.
-     * @param suffix - Carácter de cierre.
+     * Método estático para configurar o recuperar los caracteres de resaltado.
+     * Si no se proporcionan parámetros, devuelve el valor actual de los caracteres de resaltado.
+     * Si se proporciona un prefijo o sufijo no válido, no se aplicará ningún cambio.
+     * Si se pasa una cadena vacía en lugar de un prefijo o sufijo, se restaurará al valor predeterminado.
+     * 
+     * @param {string} [prefix] - El carácter de apertura (opcional). Si está vacío, restaura el predeterminado.
+     * @param {string} [suffix] - El carácter de cierre (opcional). Si está vacío, restaura el predeterminado.
+     * @returns {{prefix: string, suffix: string}} - Los caracteres de resaltado actuales.
      */
-    static setHighlightEnclosers(prefix: string, suffix: string): void {
-        Logger.highlightPrefix = prefix;
-        Logger.highlightSuffix = suffix;
+    static setHighlightEnclosers(prefix?: string, suffix?: string): { prefix: string; suffix: string } {
+        const { validPrefixes, validSuffixes, default: defaultEnclosers, current } = Logger.highlightEnclosers;
+
+        //; Si no se pasa ningún parámetro, devolver los valores actuales
+        if (prefix === undefined && suffix === undefined) {
+            return { ...current };
+        }
+
+        //; Validar el prefijo: si es una cadena vacía, restaurar al valor predeterminado
+        if (prefix === '') {
+            current.prefix = defaultEnclosers.prefix;
+        } else if (prefix && validPrefixes.includes(prefix)) {
+            current.prefix = prefix;
+        }
+
+        //; Validar el sufijo: si es una cadena vacía, restaurar al valor predeterminado
+        if (suffix === '') {
+            current.suffix = defaultEnclosers.suffix;
+        } else if (suffix && validSuffixes.includes(suffix)) {
+            current.suffix = suffix;
+        }
+
+        //; Devolver los valores actuales de prefijo y sufijo
+        return { ...current };
     }
 
     /**
@@ -78,7 +109,7 @@ class Logger {
      * @returns El mensaje con el texto resaltado.
      */
     private static applyHighlighting(message: string, color: (text: string) => string): string {
-        const { highlightPrefix, highlightSuffix } = Logger;
+        const { current: { prefix: highlightPrefix, suffix: highlightSuffix } } = Logger.highlightEnclosers;
         const regex = new RegExp(
             `${escapeRegExp(highlightPrefix)}(.*?)${escapeRegExp(highlightSuffix)}`,
             'g'

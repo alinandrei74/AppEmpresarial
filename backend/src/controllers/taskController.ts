@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { StatusCodes } from 'http-status-codes';
+import Logger from '../utils/logger';
 
 class TaskError extends Error {
   constructor(message: string) {
@@ -10,16 +11,16 @@ class TaskError extends Error {
 }
 
 export const getTasks = async (req: Request, res: Response) => {
-
   try {
     const tasks = await db.any('SELECT * FROM tasks');
+    Logger.success('Tasks fetched successfully');
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       message: 'Tasks fetched successfully',
       data: tasks,
     });
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    Logger.error('Error fetching tasks:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: 'Internal server error',
@@ -50,19 +51,15 @@ export const getCompletedTasksByUserId = async (req: Request, res: Response) => 
       throw new TaskError('User ID must be a valid number');
     }
 
-    // Obtener todas las tareas completadas por el usuario
-    const tasks = await db.any(
-      'SELECT * FROM tasks WHERE user_id = $1 AND status = $2',
-      [parsedUserId, 'done']
-    );
-
+    const tasks = await db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parsedUserId, 'done']);
+    Logger.success(`Completed tasks for user ${parsedUserId} fetched successfully`);
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       message: 'Completed tasks fetched successfully',
       data: tasks,
     });
   } catch (error) {
-    console.error('Error fetching completed tasks:', error);
+    Logger.error('Error fetching completed tasks:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: 'Internal server error',
@@ -70,7 +67,6 @@ export const getCompletedTasksByUserId = async (req: Request, res: Response) => 
     });
   }
 };
-
 
 export const createTask = async (req: Request, res: Response) => {
   const { description, status, user_id, created_at, title } = req.body;
@@ -90,6 +86,7 @@ export const createTask = async (req: Request, res: Response) => {
       'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
       [description, status, parsedUserId, created_at, title]
     );
+    Logger.finalSuccess('Task created successfully');
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: 'Task created successfully',
@@ -97,14 +94,14 @@ export const createTask = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof TaskError) {
-      console.error('Task creation error:', error.message);
+      Logger.error('Task creation error:', error.message);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error('Error creating task:', error);
+      Logger.finalError('Error creating task:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
@@ -113,7 +110,6 @@ export const createTask = async (req: Request, res: Response) => {
     }
   }
 };
-
 
 export const updateTask = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -139,12 +135,14 @@ export const updateTask = async (req: Request, res: Response) => {
     );
 
     if (result.rowCount) {
+      Logger.success(`Task with ID ${parsedId} updated successfully`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: 'Task updated successfully',
-        data: result.rows[0], // Devolver la tarea actualizada
+        data: result.rows[0],
       });
     } else {
+      Logger.warning(`Task with ID ${parsedId} not found`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
         message: 'Task not found',
@@ -153,14 +151,14 @@ export const updateTask = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof TaskError) {
-      console.error('Task update error:', error.message);
+      Logger.error('Task update error:', error.message);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error('Error updating task:', error);
+      Logger.finalError('Error updating task:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
@@ -169,8 +167,6 @@ export const updateTask = async (req: Request, res: Response) => {
     }
   }
 };
-
-
 
 export const deleteTask = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -188,12 +184,14 @@ export const deleteTask = async (req: Request, res: Response) => {
 
     const result = await db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
     if (result.rowCount) {
+      Logger.success(`Task with ID ${parsedId} deleted successfully`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: 'Task deleted successfully',
         data: null,
       });
     } else {
+      Logger.warning(`Task with ID ${parsedId} not found`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
         message: 'Task not found',
@@ -202,14 +200,14 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof TaskError) {
-      console.error('Task deletion error:', error.message);
+      Logger.error('Task deletion error:', error.message);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error('Error deleting task:', error);
+      Logger.finalError('Error deleting task:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
@@ -218,4 +216,3 @@ export const deleteTask = async (req: Request, res: Response) => {
     }
   }
 };
-

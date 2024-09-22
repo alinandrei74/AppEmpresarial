@@ -5,13 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ensureDatabaseSchema = void 0;
 const db_1 = require("./db");
-const Logger_1 = __importDefault(require("../utils/Logger"));
+const logger_1 = __importDefault(require("../utils/logger"));
 /**
  * Asegura que las tablas, columnas y triggers necesarios existen en la base de datos.
  */
 const ensureDatabaseSchema = async () => {
     try {
-        Logger_1.default.information('Iniciando verificación y aseguramiento del esquema de la base de datos.');
+        logger_1.default.information('Iniciando verificación y aseguramiento del esquema de la base de datos.');
         //; Definiciones de las tablas y columnas esperadas
         const tables = [
             {
@@ -56,6 +56,7 @@ const ensureDatabaseSchema = async () => {
                 createQuery: `
           CREATE TABLE IF NOT EXISTS tasks (
             id SERIAL PRIMARY KEY,
+            title TEXT NOT NULL,
             description TEXT NOT NULL,
             status VARCHAR(50) NOT NULL,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -66,6 +67,7 @@ const ensureDatabaseSchema = async () => {
         `,
                 columns: {
                     id: 'SERIAL PRIMARY KEY',
+                    title: 'TEXT NOT NULL',
                     description: 'TEXT NOT NULL',
                     status: 'VARCHAR(50) NOT NULL',
                     user_id: 'INT REFERENCES users(id) ON DELETE CASCADE',
@@ -127,10 +129,10 @@ const ensureDatabaseSchema = async () => {
             await checkAndAlterTableColumns(table.name, table.columns);
             await createUpdatedAtTrigger(table.name);
         }
-        Logger_1.default.finalSuccess('Tablas, columnas y triggers verificados/creados exitosamente.');
+        logger_1.default.finalSuccess('Tablas, columnas y triggers verificados/creados exitosamente.');
     }
     catch (error) {
-        Logger_1.default.finalError('Error en el proceso de creación/verificación del esquema de la base de datos:', error);
+        logger_1.default.finalError('Error en el proceso de creación/verificación del esquema de la base de datos:', error);
         throw new Error('Fallo al asegurar el esquema de la base de datos.');
     }
 };
@@ -143,10 +145,10 @@ exports.ensureDatabaseSchema = ensureDatabaseSchema;
 const createTableIfNotExists = async (tableName, createTableQuery) => {
     try {
         await db_1.db.none(createTableQuery);
-        Logger_1.default.success(`Tabla {'${tableName}'} creada o ya existente.`);
+        logger_1.default.success(`Tabla {'${tableName}'} creada o ya existente.`);
     }
     catch (error) {
-        Logger_1.default.error(`Error creando la tabla {'${tableName}'}:`, error);
+        logger_1.default.error(`Error creando la tabla {'${tableName}'}:`, error);
         await dropTableAndRetry(tableName, createTableQuery);
     }
 };
@@ -157,14 +159,14 @@ const createTableIfNotExists = async (tableName, createTableQuery) => {
  */
 const dropTableAndRetry = async (tableName, createTableQuery) => {
     try {
-        Logger_1.default.warning(`Eliminando la tabla '${tableName}' debido a un error previo...`);
+        logger_1.default.warning(`Eliminando la tabla '${tableName}' debido a un error previo...`);
         await db_1.db.none(`DROP TABLE IF EXISTS ${tableName} CASCADE`);
-        Logger_1.default.success(`Tabla '${tableName}' eliminada. Intentando recrear...`);
+        logger_1.default.success(`Tabla '${tableName}' eliminada. Intentando recrear...`);
         await db_1.db.none(createTableQuery);
-        Logger_1.default.success(`Tabla '${tableName}' recreada exitosamente.`);
+        logger_1.default.success(`Tabla '${tableName}' recreada exitosamente.`);
     }
     catch (error) {
-        Logger_1.default.error(`Error al eliminar o recrear la tabla '${tableName}':`, error);
+        logger_1.default.error(`Error al eliminar o recrear la tabla '${tableName}':`, error);
         throw new Error(`Fallo al recrear la tabla '${tableName}'.`);
     }
 };
@@ -175,21 +177,21 @@ const dropTableAndRetry = async (tableName, createTableQuery) => {
  */
 const checkAndAlterTableColumns = async (tableName, expectedColumns) => {
     try {
-        Logger_1.default.information(`Verificando columnas de la tabla {'${tableName}'}.`);
+        logger_1.default.information(`Verificando columnas de la tabla {'${tableName}'}.`);
         const existingColumns = await db_1.db.any(`SELECT column_name FROM information_schema.columns WHERE table_name = $1`, [tableName]);
         const existingColumnNames = existingColumns.map((col) => col.column_name.toLowerCase());
         //; Crear columnas que faltan
         for (const [columnName, columnDefinition] of Object.entries(expectedColumns)) {
             if (!existingColumnNames.includes(columnName.toLowerCase())) {
                 await db_1.db.none(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`);
-                Logger_1.default.success(`Columna '{${columnName}'} añadida a la tabla {'${tableName}'}.`);
+                logger_1.default.success(`Columna '{${columnName}'} añadida a la tabla {'${tableName}'}.`);
             }
         }
         //; Eliminar columnas sobrantes
         await removeExtraColumns(tableName, existingColumnNames, Object.keys(expectedColumns));
     }
     catch (error) {
-        Logger_1.default.error(`Error verificando/ajustando columnas de la tabla {'${tableName}'}:`, error);
+        logger_1.default.error(`Error verificando/ajustando columnas de la tabla {'${tableName}'}:`, error);
         throw new Error(`Fallo al verificar/ajustar columnas en la tabla {'${tableName}'}.`);
     }
 };
@@ -204,10 +206,10 @@ const removeExtraColumns = async (tableName, existingColumns, expectedColumns) =
         if (!expectedColumns.map((col) => col.toLowerCase()).includes(columnName.toLowerCase())) {
             try {
                 await db_1.db.none(`ALTER TABLE ${tableName} DROP COLUMN ${columnName} CASCADE`);
-                Logger_1.default.warning(`Columna {'${columnName}'} eliminada de la tabla {'${tableName}'}.`);
+                logger_1.default.warning(`Columna {'${columnName}'} eliminada de la tabla {'${tableName}'}.`);
             }
             catch (error) {
-                Logger_1.default.error(`Error eliminando la columna {'${columnName}'} de la tabla {'${tableName}'}:`, error);
+                logger_1.default.error(`Error eliminando la columna {'${columnName}'} de la tabla {'${tableName}'}:`, error);
             }
         }
     }
@@ -240,10 +242,10 @@ const createUpdatedAtTrigger = async (tableName) => {
       END;
       $$;
     `);
-        Logger_1.default.success(`Trigger 'update_{${tableName}}_updated_at_trigger' creado/verificado para la tabla '${tableName}'.`);
+        logger_1.default.success(`Trigger 'update_{${tableName}}_updated_at_trigger' creado/verificado para la tabla '${tableName}'.`);
     }
     catch (error) {
-        Logger_1.default.error(`Error creando/verificando el trigger para la tabla {'${tableName}'}:`, error);
+        logger_1.default.error(`Error creando/verificando el trigger para la tabla {'${tableName}'}:`, error);
         throw new Error(`Fallo al crear/verificar el trigger para la tabla '${tableName}'.`);
     }
 };

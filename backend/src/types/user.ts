@@ -11,4 +11,5 @@ export interface User {
   telephone: string;
   address: string;
   cp: string;
-  password: string;}
+  password: string;
+}

@@ -11,13 +11,37 @@ const util_1 = __importDefault(require("util"));
  */
 class Logger {
     /**
-     * Método estático para configurar los caracteres de resaltado.
-     * @param prefix - Carácter de apertura.
-     * @param suffix - Carácter de cierre.
+     * Método estático para configurar o recuperar los caracteres de resaltado.
+     * Si no se proporcionan parámetros, devuelve el valor actual de los caracteres de resaltado.
+     * Si se proporciona un prefijo o sufijo no válido, no se aplicará ningún cambio.
+     * Si se pasa una cadena vacía en lugar de un prefijo o sufijo, se restaurará al valor predeterminado.
+     *
+     * @param {string} [prefix] - El carácter de apertura (opcional). Si está vacío, restaura el predeterminado.
+     * @param {string} [suffix] - El carácter de cierre (opcional). Si está vacío, restaura el predeterminado.
+     * @returns {{prefix: string, suffix: string}} - Los caracteres de resaltado actuales.
      */
     static setHighlightEnclosers(prefix, suffix) {
-        Logger.highlightPrefix = prefix;
-        Logger.highlightSuffix = suffix;
+        const { validPrefixes, validSuffixes, default: defaultEnclosers, current } = Logger.highlightEnclosers;
+        //; Si no se pasa ningún parámetro, devolver los valores actuales
+        if (prefix === undefined && suffix === undefined) {
+            return Object.assign({}, current);
+        }
+        //; Validar el prefijo: si es una cadena vacía, restaurar al valor predeterminado
+        if (prefix === '') {
+            current.prefix = defaultEnclosers.prefix;
+        }
+        else if (prefix && validPrefixes.includes(prefix)) {
+            current.prefix = prefix;
+        }
+        //; Validar el sufijo: si es una cadena vacía, restaurar al valor predeterminado
+        if (suffix === '') {
+            current.suffix = defaultEnclosers.suffix;
+        }
+        else if (suffix && validSuffixes.includes(suffix)) {
+            current.suffix = suffix;
+        }
+        //; Devolver los valores actuales de prefijo y sufijo
+        return Object.assign({}, current);
     }
     /**
      * Método privado que maneja el log para un tipo específico.
@@ -52,7 +76,7 @@ class Logger {
      * @returns El mensaje con el texto resaltado.
      */
     static applyHighlighting(message, color) {
-        const { highlightPrefix, highlightSuffix } = Logger;
+        const { current: { prefix: highlightPrefix, suffix: highlightSuffix } } = Logger.highlightEnclosers;
         const regex = new RegExp(`${escapeRegExp(highlightPrefix)}(.*?)${escapeRegExp(highlightSuffix)}`, 'g');
         return message.replace(regex, (match, p1) => {
             return chalk_1.default.bold.underline(p1);
@@ -97,9 +121,13 @@ Logger.colors = {
     finalSuccess: chalk_1.default.greenBright,
     finalError: chalk_1.default.redBright,
 };
-//; Caracteres para resaltar texto
-Logger.highlightPrefix = '{';
-Logger.highlightSuffix = '}';
+//; Objeto que agrupa los caracteres predeterminados, actuales y las listas válidas para el resaltado
+Logger.highlightEnclosers = {
+    default: { prefix: '{', suffix: '}' }, //; Valores predeterminados
+    current: { prefix: '{', suffix: '}' }, //; Valores actuales
+    validPrefixes: ['{', '[', '(', '<'], //; Prefijos válidos
+    validSuffixes: ['}', ']', ')', '>'], //; Sufijos válidos
+};
 /**
  * Función para escapar caracteres especiales en expresiones regulares.
  * @param string - La cadena a escapar.

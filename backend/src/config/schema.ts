@@ -1,5 +1,5 @@
 import { db } from './db';
-import Logger from '../utils/Logger';
+import Logger from '../utils/logger';
 
 /**
  * Asegura que las tablas, columnas y triggers necesarios existen en la base de datos.
@@ -52,6 +52,7 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
         createQuery: `
           CREATE TABLE IF NOT EXISTS tasks (
             id SERIAL PRIMARY KEY,
+            title TEXT NOT NULL,
             description TEXT NOT NULL,
             status VARCHAR(50) NOT NULL,
             user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -62,6 +63,7 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
         `,
         columns: {
           id: 'SERIAL PRIMARY KEY',
+          title: 'TEXT NOT NULL',
           description: 'TEXT NOT NULL',
           status: 'VARCHAR(50) NOT NULL',
           user_id: 'INT REFERENCES users(id) ON DELETE CASCADE',

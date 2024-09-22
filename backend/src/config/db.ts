@@ -1,7 +1,7 @@
 import pgPromise from 'pg-promise';
 import dotenv from 'dotenv';
 import { ensureDatabaseSchema } from './schema';
-import Logger from '../utils/Logger';
+import Logger from '../utils/logger';
 
 dotenv.config();
 

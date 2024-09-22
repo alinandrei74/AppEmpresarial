@@ -13,7 +13,7 @@ const workScheduleRoutes_1 = __importDefault(require("./routes/workScheduleRoute
 const dotenv_1 = __importDefault(require("dotenv"));
 const node_cron_1 = __importDefault(require("node-cron"));
 const db_1 = require("./config/db");
-const Logger_1 = __importDefault(require("./utils/Logger"));
+const logger_1 = __importDefault(require("./utils/logger"));
 dotenv_1.default.config(); //; Carga las variables de entorno al principio
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
@@ -28,56 +28,56 @@ app.use('/api/auth', authRoutes_1.default);
 app.use('/api/work-schedules', workScheduleRoutes_1.default); //; Añade las rutas de horarios de trabajo
 //; Inicia el servidor
 app.listen(PORT, () => {
-    Logger_1.default.finalSuccess(`Servidor iniciado en {http://localhost:${PORT}}`);
+    logger_1.default.finalSuccess(`Servidor iniciado en {http://localhost:${PORT}}`);
 });
 //; Programar tarea cron para eliminar tareas completadas cada hora
 node_cron_1.default.schedule('0 * * * *', async () => {
-    Logger_1.default.information('Ejecutando tarea cron: {Eliminando tareas completadas hace más de 24 horas.}');
+    logger_1.default.information('Ejecutando tarea cron: {Eliminando tareas completadas hace más de 24 horas.}');
     try {
         //; Eliminar tareas completadas hace más de 24 horas
         const result = await db_1.db.result(`DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`);
         if (result.rowCount > 0) {
-            Logger_1.default.success(`Eliminadas {${result.rowCount}} tareas completadas hace más de 24 horas.`);
+            logger_1.default.success(`Eliminadas {${result.rowCount}} tareas completadas hace más de 24 horas.`);
         }
         else {
-            Logger_1.default.information('No se encontraron tareas para eliminar.');
+            logger_1.default.information('No se encontraron tareas para eliminar.');
         }
     }
     catch (error) {
-        Logger_1.default.finalError('Error eliminando tareas completadas:', error);
+        logger_1.default.finalError('Error eliminando tareas completadas:', error);
     }
 });
 //; Programar tarea cron para eliminar horarios de trabajo antiguos cada 5 meses
 node_cron_1.default.schedule('0 0 1 */5 *', async () => {
-    Logger_1.default.information('Ejecutando tarea cron: {Eliminando horarios de trabajo antiguos.}');
+    logger_1.default.information('Ejecutando tarea cron: {Eliminando horarios de trabajo antiguos.}');
     try {
         //; Eliminar horarios de trabajo creados hace más de 5 meses
         const result = await db_1.db.result(`DELETE FROM work_schedule WHERE created_at < NOW() - INTERVAL '5 months'`);
         if (result.rowCount > 0) {
-            Logger_1.default.success(`Eliminados {${result.rowCount}} horarios de trabajo antiguos.`);
+            logger_1.default.success(`Eliminados {${result.rowCount}} horarios de trabajo antiguos.`);
         }
         else {
-            Logger_1.default.information('No se encontraron horarios de trabajo para eliminar.');
+            logger_1.default.information('No se encontraron horarios de trabajo para eliminar.');
         }
     }
     catch (error) {
-        Logger_1.default.finalError('Error eliminando horarios de trabajo antiguos:', error);
+        logger_1.default.finalError('Error eliminando horarios de trabajo antiguos:', error);
     }
 });
 //; Programar tarea cron para eliminar notas cada 24 horas
 node_cron_1.default.schedule('0 0 * * *', async () => {
-    Logger_1.default.information('Ejecutando tarea cron: {Eliminando notas antiguas.}');
+    logger_1.default.information('Ejecutando tarea cron: {Eliminando notas antiguas.}');
     try {
         //; Eliminar notas creadas hace más de 24 horas
         const result = await db_1.db.result(`DELETE FROM notes WHERE created_at < NOW() - INTERVAL '24 HOURS'`);
         if (result.rowCount > 0) {
-            Logger_1.default.success(`Eliminadas {${result.rowCount}} notas creadas hace más de 24 horas.`);
+            logger_1.default.success(`Eliminadas {${result.rowCount}} notas creadas hace más de 24 horas.`);
         }
         else {
-            Logger_1.default.information('No se encontraron notas para eliminar.');
+            logger_1.default.information('No se encontraron notas para eliminar.');
         }
     }
     catch (error) {
-        Logger_1.default.finalError('Error eliminando notas antiguas:', error);
+        logger_1.default.finalError('Error eliminando notas antiguas:', error);
     }
 });
