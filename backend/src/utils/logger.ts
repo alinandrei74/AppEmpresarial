@@ -3,7 +3,37 @@ import util from 'util';
 
 /**
  * @module Logger
- * @description Clase Logger para manejar logs con emojis, colores predefinidos y resaltado de texto.
+ * @description
+ * La clase `Logger` proporciona un sistema centralizado para gestionar logs en una aplicación Node.js.
+ * Utiliza emojis, colores personalizados y delimitadores para mejorar la legibilidad de los mensajes en la consola.
+ *
+ * ### Funcionalidades principales:
+ * - **Resaltado de texto**: Permite definir delimitadores personalizados para resaltar partes específicas del mensaje.
+ * - **Emojis y colores**: Asocia diferentes emojis y colores a tipos de logs como éxito, error, advertencia, y más.
+ * - **Soporte para objetos**: Los objetos y arrays son formateados automáticamente usando utilidades de inspección para una visualización clara.
+ *
+ * ### Tipos de logs soportados:
+ * - `success`: Logs de operaciones exitosas.
+ * - `error`: Logs de errores o fallos.
+ * - `warning`: Logs para advertencias.
+ * - `information`: Logs para información general.
+ * - `finalSuccess`: Logs de éxito final en procesos largos.
+ * - `finalError`: Logs de errores críticos o finales.
+ *
+ * ### Características adicionales:
+ * - **Customización de delimitadores**: Puedes definir caracteres para abrir y cerrar secciones resaltadas en los mensajes, como `{}` o `[]`.
+ * - **Configuración flexible**: El sistema es personalizable a través de métodos para modificar los delimitadores de resaltado y otros comportamientos visuales.
+ *
+ * ### Uso básico:
+ * ```js
+ * Logger.success('Operación completada.');
+ * Logger.error('Hubo un error en la solicitud.');
+ * Logger.setHighlightEnclosers('[', ']');
+ * Logger.warning('Advertencia: [Disco casi lleno]');
+ * ```
+ * 
+ * @version 1.0.0
+ * @author codevaried
  */
 class Logger {
 
@@ -92,7 +122,18 @@ class Logger {
      * 
      ** Si no se proporcionan parámetros, devuelve los caracteres actuales.
      ** Si se pasa un prefijo o sufijo no válido, no se aplicará ningún cambio.
-     ** Si se pasa una cadena vacía, restaura el valor predeterminado.
+     ** Si se pasa una cadena vacía, restaura el valor predeterminado `{` `}`.
+     * 
+     * @example
+     * // Cambiar los caracteres de resaltado a "[ ]"
+     * Logger.setHighlightEnclosers('[', ']');
+     * 
+     * // Recuperar los valores actuales
+     * const enclosers = Logger.setHighlightEnclosers();
+     * console.log(enclosers); // { prefix: '[', suffix: ']' }
+     * 
+     * // Restaurar valores predeterminados
+     * Logger.setHighlightEnclosers('', '');
      * 
      * @param {string} [prefix] - Carácter de apertura (opcional). Si está vacío, restaura el predeterminado.
      * @param {string} [suffix] - Carácter de cierre (opcional). Si está vacío, restaura el predeterminado.
@@ -127,48 +168,72 @@ class Logger {
     //^MARK:*
 
     /**
-     * Log para operaciones exitosas.
-     * @param {...any[]} messages - Mensajes a mostrar.
-     */
+      * Registra un mensaje de éxito.
+      * 
+      * @example
+      * Logger.success('Operación completada con éxito.');
+      * 
+      * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
+      */
     static success(...messages: any[]): void {
         Logger.log('success', ...messages);
     }
 
     /**
-     * Log para errores.
-     * @param {...any[]} messages - Mensajes a mostrar.
+     * Registra un mensaje de error.
+     * 
+     * @example
+     * Logger.error('Error al procesar la solicitud.');
+     * 
+     * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
      */
     static error(...messages: any[]): void {
         Logger.log('error', ...messages);
     }
 
     /**
-     * Log para advertencias.
-     * @param {...any[]} messages - Mensajes a mostrar.
+     * Registra una advertencia.
+     * 
+     * @example
+     * Logger.warning('Advertencia: Baja memoria.');
+     * 
+     * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
      */
     static warning(...messages: any[]): void {
         Logger.log('warning', ...messages);
     }
 
     /**
-     * Log para información general.
-     * @param {...any[]} messages - Mensajes a mostrar.
+     * Registra información general.
+     * 
+     * @example
+     * Logger.information('Información del sistema cargada.');
+     * 
+     * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
      */
     static information(...messages: any[]): void {
         Logger.log('information', ...messages);
     }
 
     /**
-     * Log para éxito final de un proceso.
-     * @param {...any[]} messages - Mensajes a mostrar.
+     * Registra un mensaje de éxito final.
+     * 
+     * @example
+     * Logger.finalSuccess('Proceso completado exitosamente.');
+     * 
+     * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
      */
     static finalSuccess(...messages: any[]): void {
         Logger.log('finalSuccess', ...messages);
     }
 
     /**
-     * Log para error crítico o final.
-     * @param {...any[]} messages - Mensajes a mostrar.
+     * Registra un error crítico o final.
+     * 
+     * @example
+     * Logger.finalError('Error crítico en la operación.');
+     * 
+     * @param {...any[]} messages - Mensajes o valores a mostrar en el log.
      */
     static finalError(...messages: any[]): void {
         Logger.log('finalError', ...messages);

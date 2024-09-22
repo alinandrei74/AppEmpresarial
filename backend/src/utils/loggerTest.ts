@@ -208,8 +208,10 @@ Logger.information(`Valores actuales de resaltado:\n prefix: '${currentEnclosers
 
 console.log('\n');
 
+//; Probar la salida con valores actuales
 Logger.information(`Valores actuales de resaltado:`, Logger.setHighlightEnclosers());
 
 console.log('\n');
 
+//; Prueba final con resaltado y delimitadores personalizados
 Logger.information(`Valores actuales de resaltado: ${Logger.setHighlightEnclosers()}`);

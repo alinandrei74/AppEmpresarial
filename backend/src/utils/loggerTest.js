@@ -152,6 +152,8 @@ console.log('\n');
 const currentEnclosers = logger_1.default.setHighlightEnclosers();
 logger_1.default.information(`Valores actuales de resaltado:\n prefix: '${currentEnclosers.prefix}'\n suffix: '${currentEnclosers.suffix}'`);
 console.log('\n');
+//; Probar la salida con valores actuales
 logger_1.default.information(`Valores actuales de resaltado:`, logger_1.default.setHighlightEnclosers());
 console.log('\n');
+//; Prueba final con resaltado y delimitadores personalizados
 logger_1.default.information(`Valores actuales de resaltado: ${logger_1.default.setHighlightEnclosers()}`);
