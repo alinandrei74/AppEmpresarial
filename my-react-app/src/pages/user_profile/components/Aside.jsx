@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import "./Aside.css";
 import {
@@ -6,8 +6,8 @@ import {
   FaStickyNote,
   FaCalendarAlt,
   FaMapMarkerAlt,
-  FaUsersCog, // Icono para UserManagement
-} from "react-icons/fa"; // Importar iconos
+  FaUsersCog,
+} from "react-icons/fa";
 
 /**
  * Componente Aside para la navegación lateral.
@@ -16,8 +16,22 @@ import {
  */
 const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
   const location = useLocation();
+  const [isMobile, setIsMobile] = useState(false); // Estado para detectar si es móvil
 
-  // Definir los items del menú
+  // Detectar cambios de tamaño de ventana para actualizar isMobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Si el ancho de la ventana es <= 768px, es móvil
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Inicialmente comprobar el tamaño de la ventana
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   const menuItems = [
     { name: "Tareas", path: "/user-profile/tasks", icon: <FaTasks /> },
     { name: "Notas", path: "/user-profile/notes", icon: <FaStickyNote /> },
@@ -33,7 +47,6 @@ const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
     },
   ];
 
-  // Si el usuario es admin, añadimos la opción de "Gestión de usuarios"
   if (userData?.role === "admin") {
     menuItems.push({
       name: "Gestión de usuarios",
@@ -43,27 +56,25 @@ const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
   }
 
   return (
-    <>
-      <aside className={`aside ${isMenuOpen ? "open" : ""}`}>
-        <div className="logo"></div>
-        <ul className="aside-items">
-          {menuItems.map((item, index) => {
-            const isActive = location.pathname.includes(item.path);
-            return (
-              <li key={index}>
-                <Link
-                  to={item.path}
-                  className={isActive ? "active-link" : ""}
-                  onClick={toggleMenu}
-                >
-                  {item.icon} {item.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </aside>
-    </>
+    <aside className={`aside ${isMenuOpen || !isMobile ? "open" : ""}`}>
+      <div className="logo"></div>
+      <ul className="aside-items">
+        {menuItems.map((item, index) => {
+          const isActive = location.pathname.includes(item.path);
+          return (
+            <li key={index}>
+              <Link
+                to={item.path}
+                className={isActive ? "active-link" : ""}
+                onClick={toggleMenu}
+              >
+                {item.icon} {item.name}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </aside>
   );
 };
 

@@ -1,12 +1,11 @@
-import React, { useContext, useState } from "react";
-import { BrowserRouter as Router, useLocation } from "react-router-dom"; //; Asegúrate de que el Router está aquí
+import React, { useContext, useState, useEffect } from "react";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./pages/components/navbar/Navbar";
-import AppRoutes from "./pages/AppRoutes"; //; Importar el componente de rutas
-import { DarkModeContext } from "./contexts/DarkModeContext"; //; Importar contexto de DarkMode
-import Aside from "./pages/user_profile/components/Aside"; //; Importar el componente Aside para el menú lateral
-import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle"; //; Importar el componente Aside para el menú lateral
+import AppRoutes from "./pages/AppRoutes";
+import { DarkModeContext } from "./contexts/DarkModeContext";
+import Aside from "./pages/user_profile/components/Aside";
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
@@ -14,35 +13,51 @@ import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle"; //; Import
  * @returns {JSX.Element} App
  */
 const AppContent = () => {
-  const { darkMode } = useContext(DarkModeContext); //; Usar el contexto de modo oscuro
-  const [isMenuOpen, setIsMenuOpen] = useState(false); //; Estado para controlar el menú lateral
+  const { darkMode } = useContext(DarkModeContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado del menú hamburguesa
+  const [isMobile, setIsMobile] = useState(false); // Estado para manejar si es móvil
+  const [userData, setUserData] = useState(null); // Simular datos del usuario
 
-  /**
-   * Función que alterna el estado del menú desplegable.
-   * @function
-   */
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen); //; Alternar entre abierto y cerrado
+    setIsMenuOpen(!isMenuOpen); // Alternar entre abrir/cerrar el menú
   };
 
-  //; Este hook de ubicación ahora está dentro del Router
   const location = useLocation();
-
-  /**
-   * Función para verificar si estamos en una ruta que incluya "/user-profile"
-   * @function
-   * @returns {boolean} true si la ruta actual incluye "/user-profile"
-   */
   const isUserProfileRoute = location.pathname.includes("/user-profile");
+
+  useEffect(() => {
+    // Simular obtención de datos del usuario
+    setUserData({
+      role: "admin", // Simular usuario administrador
+    });
+
+    // Función para verificar el tamaño de la pantalla
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Detectar si es móvil (ancho <= 768px)
+    };
+
+    // Escuchar cambios de tamaño de la ventana
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Ejecutar al cargar
+
+    return () => {
+      window.removeEventListener("resize", handleResize); // Limpiar efecto
+    };
+  }, []);
 
   return (
     <div>
-      <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />{" "}
-      {/* Navbar que comparte el estado del menú */}
-      {/* Mostrar Aside solo en rutas de perfil de usuario */}
-      {isUserProfileRoute && (
-        <Aside isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
-      )}
+      <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      {/* Renderizar Aside solo si estamos en la ruta de perfil de usuario */}
+      {isUserProfileRoute &&
+        // Mostrar Aside solo en pantallas grandes o si el menú hamburguesa está abierto
+        (!isMobile || (isMobile && isMenuOpen)) && (
+          <Aside
+            isMenuOpen={isMenuOpen}
+            toggleMenu={toggleMenu}
+            userData={userData}
+          />
+        )}
       <div className="app">
         <main>
           <div className="app-container">
@@ -50,19 +65,18 @@ const AppContent = () => {
           </div>
         </main>
       </div>
-      {/* ToastContainer montado en App, con tema dinámico */}
       <ToastContainer
         theme={darkMode ? "light" : "dark"}
-        position="bottom-left" //; Posición abajo a la derecha
-        autoClose={3000} //; Cierre automático después de 1.5 segundos
-        hideProgressBar //; Ocultar barra de progreso
-        newestOnTop={false} //; Las notificaciones nuevas se muestran en la parte inferior
-        closeButton={false} //; Ocultar el botón de cierre ("x")
-        closeOnClick={false} //; No cerrar al hacer clic en la notificación
-        rtl={false} //; No usar la dirección de derecha a izquierda
-        pauseOnFocusLoss //; Pausar la notificación al perder el foco
-        draggable //; Habilitar arrastre para eliminar la notificación
-        pauseOnHover //; Pausar al pasar el ratón por encima
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar
+        newestOnTop={false}
+        closeButton={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
       />
     </div>
   );
@@ -72,7 +86,6 @@ const App = () => {
   return (
     <Router>
       <AppContent />
-      {/* <SampleWebStyle /> */}
     </Router>
   );
 };
