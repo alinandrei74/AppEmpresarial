@@ -28,7 +28,9 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     navigate("/login");
   };
 
-  const isUserProfileActive = location.pathname.includes("/user-profile");
+  const isUserProfileActive = location.pathname === "/user-profile";
+
+  const isUserProfileRoute = location.pathname.includes("/user-profile");
 
   // Verificar si estamos en la ruta /login
   const isLoginRoute = location.pathname === "/login";
@@ -37,7 +39,7 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     <nav className="navbar">
       <div className="navbar-container">
         {/* Menú desplegable */}
-        {isLoggedIn && isUserProfileActive && (
+        {isLoggedIn && isUserProfileRoute && (
           <div className="menu-icon" onClick={toggleMenu}>
             ☰
           </div>
@@ -46,14 +48,14 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
         {/* Logo "Mi perfil" solo si el usuario está logueado */}
         {isLoggedIn && (
           <div
-            className={`navbar-logo ${!isUserProfileActive ? "no-margin" : ""}`}
+            className={`navbar-logo ${!isUserProfileRoute ? "no-margin" : ""}`}
           >
             <Link
               to="/user-profile"
               className={`${isUserProfileActive ? "active-link" : ""}`}
             >
               <FaUserCircle className="profile-icon" />
-              <h1>Mi perfil</h1>
+              <h1>Mi Perfil</h1>
             </Link>
           </div>
         )}

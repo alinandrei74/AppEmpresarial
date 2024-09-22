@@ -37,17 +37,30 @@
   color: white;
 }
 
+/* Estilo base del enlace "Mi perfil" */
 .navbar-logo a {
   text-decoration: none;
   color: inherit;
   display: flex;
   align-items: center;
+  transition: text-decoration 0.3s ease, color 0.3s ease;
 }
 
+/* Efecto al pasar el ratón */
 .navbar-logo a:hover {
   text-decoration: underline;
   color: white;
   cursor: pointer;
+}
+
+/* Estilo cuando el enlace "Mi perfil" está activo */
+.navbar-logo a.active-link {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-decoration-color: white;
+  text-underline-offset: 4px;
+  color: white;
+  transition: text-decoration 0.3s ease, color 0.3s ease;
 }
 
 /* Cuando el enlace "Mi perfil" está deshabilitado */
@@ -100,14 +113,6 @@
   pointer-events: none;
   cursor: not-allowed;
   color: grey;
-}
-
-/* Estilo para cuando "Mi perfil" esté activo */
-.navbar-logo a.active-link {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-decoration-color: white;
-  text-underline-offset: 4px;
 }
 
 .navbar-menu {
