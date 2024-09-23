@@ -72,17 +72,15 @@ exports.getNoteById = getNoteById;
 const createNote = async (req, res) => {
     const { title, description, user_id } = req.body;
     try {
-        // Validar que todos los campos requeridos están presentes
         if (!title || !description || !user_id) {
             throw new NoteError("El título, descripción y user_id son obligatorios");
         }
-        // Modificar la consulta para insertar también el título
         const result = await db_1.db.one("INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id", [title, description, user_id]);
-        // Retornar la respuesta con los datos insertados
+        const userInfo = await db_1.db.one("SELECT name AS user_name, role AS user_role FROM users WHERE id = $1", [user_id]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: "Nota creada exitosamente",
-            data: { id: result.id, title, description, user_id },
+            data: { id: result.id, title, description, user_id, user_role: userInfo.user_role, user_name: userInfo.user_name },
         });
     }
     catch (error) {
