@@ -81,19 +81,19 @@ export const createUserInDB = async (userData: {
   email: string;
   telephone: string;
   address: string;
-  cp: string;
+  postal_code: string;
   password: string; // Este es el hash de la contraseña
 }) => {
   try {
     const result = await db.one<User>(
-      `INSERT INTO users (role, username, name, firstname, lastname, dni, email, telephone, address, cp, password)
+      `INSERT INTO users (role, username, name, firstname, lastname, dni, email, telephone, address, postal_code, password)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *`,
       [
         userData.role, userData.username, userData.name,
         userData.firstname, userData.lastname, userData.dni,
         userData.email, userData.telephone, userData.address,
-        userData.cp, userData.password
+        userData.postal_code, userData.password
       ]
     );
     Logger.success(`Usuario creado exitosamente con username: ${userData.username}`);

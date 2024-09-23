@@ -2,50 +2,34 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { StatusCodes } from 'http-status-codes';
 import { registerUserService, loginUserService } from '../services/authService';
+import { userRegistrationSchema } from '../validators/validationSchemas';
+import { validateRequest } from '../middlewares/validateRequest';
 import { User } from '../types/user';
 import Logger from '../utils/logger';
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-export const registerUser = async (req: Request, res: Response) => {
-  const userData: User = req.body;  // Extraer los datos del cuerpo de la solicitud
-
-  try {
-    const requiredFields: Array<keyof User> = [
-      'role', 'username', 'name', 'firstname', 'lastname', 'dni',
-      'email', 'telephone', 'address', 'cp', 'password'
-    ];
-
-    // Verificar que todos los campos requeridos están presentes
-    for (const field of requiredFields) {
-      if (!userData[field]) {
-        Logger.warning(`Registro fallido. Falta campo: ${field}`);
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          status: StatusCodes.BAD_REQUEST,
-          message: `Field ${field} is required`,
-          data: null,
-        });
-      }
+export const registerUser = [
+  validateRequest(userRegistrationSchema), 
+  async (req: Request, res: Response) => {
+    try {
+      const newUser = await registerUserService(req.body);
+      Logger.success(`Usuario registrado exitosamente: ${req.body.username}`);
+      return res.status(StatusCodes.CREATED).json({
+        status: StatusCodes.CREATED,
+        message: 'User registered successfully',
+        data: newUser,
+      });
+    } catch (error: any) {
+      Logger.finalError('Error en el registro de usuario:', error.message || error);
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        status: StatusCodes.INTERNAL_SERVER_ERROR,
+        message: error.message || 'An unexpected error occurred during registration',
+        data: null,
+      });
     }
-
-    // Llamar al servicio para registrar al usuario en la base de datos
-    const newUser = await registerUserService(userData);
-    Logger.success(`Usuario registrado exitosamente: ${userData.username}`);
-    return res.status(StatusCodes.CREATED).json({
-      status: StatusCodes.CREATED,
-      message: 'User registered successfully',
-      data: newUser,
-    });
-
-  } catch (error: any) {
-    Logger.finalError('Error en el registro de usuario:', error.message || error);
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: error.message || 'An unexpected error occurred during registration',
-      data: null,
-    });
   }
-};
+];
 
 export const loginUser = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -69,7 +53,7 @@ export const loginUser = async (req: Request, res: Response) => {
         data: null,
       });
     }
-
+    
     const { token, user }: { token: string; user: User } = result;
     Logger.success(`Inicio de sesión exitoso: ${username}`);
     return res.status(StatusCodes.OK).json({

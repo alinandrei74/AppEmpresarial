@@ -7,45 +7,32 @@ exports.logoutUser = exports.verifyToken = exports.loginUser = exports.registerU
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const http_status_codes_1 = require("http-status-codes");
 const authService_1 = require("../services/authService");
+const validationSchemas_1 = require("../validators/validationSchemas");
+const validateRequest_1 = require("../middlewares/validateRequest");
 const logger_1 = __importDefault(require("../utils/logger"));
 const JWT_SECRET = process.env.JWT_SECRET;
-const registerUser = async (req, res) => {
-    const userData = req.body; // Extraer los datos del cuerpo de la solicitud
-    try {
-        const requiredFields = [
-            'role', 'username', 'name', 'firstname', 'lastname', 'dni',
-            'email', 'telephone', 'address', 'cp', 'password'
-        ];
-        // Verificar que todos los campos requeridos están presentes
-        for (const field of requiredFields) {
-            if (!userData[field]) {
-                logger_1.default.warning(`Registro fallido. Falta campo: ${field}`);
-                return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                    status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                    message: `Field ${field} is required`,
-                    data: null,
-                });
-            }
+exports.registerUser = [
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.userRegistrationSchema),
+    async (req, res) => {
+        try {
+            const newUser = await (0, authService_1.registerUserService)(req.body);
+            logger_1.default.success(`Usuario registrado exitosamente: ${req.body.username}`);
+            return res.status(http_status_codes_1.StatusCodes.CREATED).json({
+                status: http_status_codes_1.StatusCodes.CREATED,
+                message: 'User registered successfully',
+                data: newUser,
+            });
         }
-        // Llamar al servicio para registrar al usuario en la base de datos
-        const newUser = await (0, authService_1.registerUserService)(userData);
-        logger_1.default.success(`Usuario registrado exitosamente: ${userData.username}`);
-        return res.status(http_status_codes_1.StatusCodes.CREATED).json({
-            status: http_status_codes_1.StatusCodes.CREATED,
-            message: 'User registered successfully',
-            data: newUser,
-        });
+        catch (error) {
+            logger_1.default.finalError('Error en el registro de usuario:', error.message || error);
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                message: error.message || 'An unexpected error occurred during registration',
+                data: null,
+            });
+        }
     }
-    catch (error) {
-        logger_1.default.finalError('Error en el registro de usuario:', error.message || error);
-        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-            message: error.message || 'An unexpected error occurred during registration',
-            data: null,
-        });
-    }
-};
-exports.registerUser = registerUser;
+];
 const loginUser = async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
