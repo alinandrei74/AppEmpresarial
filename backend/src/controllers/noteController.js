@@ -107,7 +107,7 @@ const updateNote = async (req, res) => {
         if (!description) {
             throw new NoteError('La descripción es obligatoria');
         }
-        const result = await db_1.db.result('UPDATE notes SET description = $1 WHERE id = $2', [description, id]);
+        const result = await db_1.db.result('UPDATE notes SET title = $1, description = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3', [title, description, id]);
         if (result.rowCount) {
             logger_1.default.success(`Nota con ID ${id} actualizada exitosamente.`);
             return res.status(http_status_codes_1.StatusCodes.OK).json({
