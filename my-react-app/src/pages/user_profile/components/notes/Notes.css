@@ -4,12 +4,14 @@
   margin: 0 auto;
   padding: 20px;
   background-color: var(--clr-OnPrimary);
+  /* Cambiado */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .notes-container h2 {
   color: var(--clr-OnText);
+  /* Mantiene el color de texto */
   margin-bottom: 10px;
 }
 
@@ -21,7 +23,8 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  background-color: var(--clr-primary);
+  background-color: var(--clr-OnPrimary);
+  /* Cambiado */
 }
 
 .filter-button {
@@ -49,8 +52,10 @@
 
 .create-note-form button {
   padding: 10px 16px;
-  background-color: var(--clr-primary);
-  color: white;
+  background-color: var(--clr-OnPrimary);
+  /* Cambiado */
+  color: var(--clr-OnText);
+  /* Cambiado */
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -64,7 +69,8 @@
 }
 
 .note-item {
-  background-color: var(--clr-OnPrimary);
+  background-color: var(--clr-primary);
+  /* Cambiado */
   border: 1px solid var(--clr-secondary);
   border-radius: 5px;
   padding: 15px;
@@ -81,18 +87,26 @@
   font-weight: bold;
   font-size: 18px;
   color: var(--clr-OnText);
+  /* Cambiado */
 }
 
 .note-item .note-description {
   margin: 0 0 10px 0;
   font-size: 16px;
   word-break: break-word;
-  color: var(--clr-OnText);
+  color: var(--clr-text) !important;
+  /* Cambiado */
+}
+
+.note-item .note-title {
+  color: var(--clr-text) !important;
+  margin-bottom: 8px;
 }
 
 .note-item small {
   display: block;
-  color: var(--clr-OnText);
+  color: var(--clr-OnText) !important;
+  /* Cambiado */
   font-size: 0.8em;
   margin-bottom: 5px;
 }
@@ -119,14 +133,40 @@
   border-radius: 6px;
   font-size: 14px;
   line-height: 1.4;
-  color: var(--clr-text);
-  background-color: var(--clr-background);
+  /* color: var(--clr-OnText) ; */
+  /* Cambiado */
+  background-color: var(--clr-OnPrimary) !important;
+  /* Cambiado */
   word-break: break-word;
   display: inline-block;
   margin-inline: 35%;
   text-align: center;
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+/* Estilo para el mensaje informativo */
+.info-message {
+  background-color: var(--clr-primary);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: var(--clr-text);
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.info-message p {
+  margin: 0;
+}
+
+.add-note-form input {
+  width: 90%;
+  padding: 15px;
+  margin-bottom: 10px;
+  border: 1px solid var(--clr-secondary);
+  border-radius: 5px;
+}
+
 .add-note-form textarea {
   width: 90%;
   height: 100px;
@@ -136,25 +176,17 @@
   border-radius: 5px;
 }
 
-.note-title {
-  border: 1px solid var(--clr-secondary);
-  border-radius: 50px;
-}
-
 .add-note-form button {
-  background-color: var(--clr-primary);
   color: white;
   border: none;
   padding: 10px 15px;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 10px
+  margin-bottom: 10px;
 }
 
-/* Aplicar al small dentro de note-item, asegurando su alineación */
 .note-item small {
   display: block;
   margin-bottom: 5px;
   font-size: 13px;
-  color: var(--clr-OnSurfaceVariant);
 }

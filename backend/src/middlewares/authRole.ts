@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { Role } from './../types/role'; // Ajusta el path si es necesario
+import { Role } from './../types/role';
+import Logger from '../utils/logger';
 
 // Definir permisos por rol
 const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: string[], work_schedules: string[] }> = {
@@ -8,7 +9,7 @@ const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: s
     tasks: ['create', 'read', 'update', 'delete'],
     users: ['create', 'read', 'update', 'delete'],
     notes: ['create', 'read', 'update', 'delete'],
-    work_schedules: ['create', 'read', 'update', 'delete'], 
+    work_schedules: ['create', 'read', 'update', 'delete'],
   },
   maintenance: {
     tasks: ['read', 'update'],
@@ -36,6 +37,7 @@ export const authorizeRole = (entity: 'tasks' | 'users' | 'notes' | 'work_schedu
     const user = req.user; // Asumiendo que el rol del usuario está en req.user
 
     if (!user || !user.role) {
+      Logger.warning("User not authenticated");
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'User not authenticated' });
     }
 
@@ -43,34 +45,31 @@ export const authorizeRole = (entity: 'tasks' | 'users' | 'notes' | 'work_schedu
 
     // Verificar si el rol es válido
     if (!isValidRole(role)) {
+      Logger.error(`Invalid role: ${role}`);
       return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid role' });
     }
 
     // Verificar si el rol tiene permiso para la acción solicitada en la entidad
     if (rolePermissions[role] && rolePermissions[role][entity]?.includes(action)) {
-      // Restricción para creación de horarios: El admin solo puede crear su propio horario
+      // Restricción para creación de horarios
       if (entity === 'work_schedules') {
-        const scheduleUserId = req.params.workerId || req.body.workerId; // Asumiendo que el ID del usuario para el horario está en params o body
+        const scheduleUserId = req.params.workerId || req.body.workerId;
 
         // Validación para creación de horarios
-        if (action === 'create') {
-          if (role === 'admin' && scheduleUserId && scheduleUserId !== id) {
-            // Admin no puede crear horarios para otros usuarios
-            return res.status(StatusCodes.FORBIDDEN).json({ message: 'Admin cannot create schedule for another user' });
-          } else if (role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
-            // Otros roles no pueden crear horarios para otros usuarios
-            return res.status(StatusCodes.FORBIDDEN).json({ message: 'Cannot create schedule for another user' });
-          }
+        if (action === 'create' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
+          Logger.warning("User attempting to create schedule for another user");
+          return res.status(StatusCodes.FORBIDDEN).json({ message: 'Cannot create schedule for another user' });
         }
-
         // Validación para lectura de horarios
         if (action === 'read' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
           // No pueden leer horarios de otros usuarios, excepto el admin
           return res.status(StatusCodes.FORBIDDEN).json({ message: 'Access denied to this schedule' });
         }
       }
-      next(); // El rol tiene acceso, continuar con la siguiente función
+      Logger.success(`User ${role} authorized for action: ${action} on entity: ${entity}`);
+      next();
     } else {
+      Logger.error(`Access denied: Role ${role} does not have permission for ${action} on ${entity}`);
       return res.status(StatusCodes.FORBIDDEN).json({ message: 'Access denied' });
     }
   };

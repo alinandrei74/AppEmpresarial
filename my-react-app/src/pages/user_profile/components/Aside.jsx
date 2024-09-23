@@ -1,51 +1,80 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import './Aside.css';
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./Aside.css";
+import {
+  FaTasks,
+  FaStickyNote,
+  FaCalendarAlt,
+  FaMapMarkerAlt,
+  FaUsersCog,
+} from "react-icons/fa";
 
-const Aside = ({ userData }) => {
+/**
+ * Componente Aside para la navegación lateral.
+ * @param {Object} props - Recibe el estado del menú del Navbar y los datos del usuario
+ * @returns {JSX.Element} Componente Aside
+ */
+const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
   const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false); // Estado para detectar si es móvil
 
-  const isActive = (path) => {
-    return location.pathname.includes(path) ? 'active-link' : '';
-  };
+  // Detectar cambios de tamaño de ventana para actualizar isMobile
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Si el ancho de la ventana es <= 768px, es móvil
+    };
 
-  const toggleAside = () => {
-    setIsOpen(!isOpen);
-  };
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Inicialmente comprobar el tamaño de la ventana
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const menuItems = [
+    { name: "Tareas", path: "/user-profile/tasks", icon: <FaTasks /> },
+    { name: "Notas", path: "/user-profile/notes", icon: <FaStickyNote /> },
+    {
+      name: "Calendario",
+      path: "/user-profile/calendar",
+      icon: <FaCalendarAlt />,
+    },
+    {
+      name: "Apartamentos",
+      path: "/user-profile/apartments",
+      icon: <FaMapMarkerAlt />,
+    },
+  ];
+
+  if (userData?.role === "admin") {
+    menuItems.push({
+      name: "Gestión de usuarios",
+      path: "/user-profile/user-management",
+      icon: <FaUsersCog />,
+    });
+  }
 
   return (
-    <>
-      <div className="menu-icon" onClick={toggleAside}>☰</div>
-      <aside className={`aside ${isOpen ? 'open' : ''}`}>
-        <nav>
-          <ul className="aside-items">
-            <li>
-              <Link to="/user-profile/tasks" className={isActive('/user-profile/tasks')}>Tasks</Link>
+    <aside className={`aside ${isMenuOpen || !isMobile ? "open" : ""}`}>
+      <div className="logo"></div>
+      <ul className="aside-items">
+        {menuItems.map((item, index) => {
+          const isActive = location.pathname.includes(item.path);
+          return (
+            <li key={index}>
+              <Link
+                to={item.path}
+                className={isActive ? "active-link" : ""}
+                onClick={toggleMenu}
+              >
+                {item.icon} {item.name}
+              </Link>
             </li>
-            <li>
-              <Link to="/user-profile/notes" className={isActive('/user-profile/notes')}>Notes</Link>
-            </li>
-            <li>
-              <Link to="/user-profile/calendar" className={isActive('/user-profile/calendar')}>Calendar</Link>
-            </li>
-            <li>
-              <Link to="/user-profile/tourist-places" className={isActive('/user-profile/tourist-places')}>Tourist Places</Link>
-            </li>
-            {userData.role === 'admin' && (
-              <>
-                <li>
-                  <Link to="/user-profile/create-profile" className={isActive('/user-profile/create-profile')}>Create Profile</Link>
-                </li>
-                <li>
-                  <Link to="/user-profile/user-management" className={isActive('/user-profile/user-management')}>User Management</Link>
-                </li>
-              </>
-            )}
-          </ul>
-        </nav>
-      </aside>
-    </>
+          );
+        })}
+      </ul>
+    </aside>
   );
 };
 

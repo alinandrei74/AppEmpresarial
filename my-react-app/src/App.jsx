@@ -1,24 +1,63 @@
-import React, { useContext } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import React, { useContext, useState, useEffect } from "react";
+import { BrowserRouter as Router, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./pages/components/navbar/Navbar";
-import AppRoutes from "./pages/AppRoutes"; //; Importar el componente de rutas
-import { DarkModeContext } from "./contexts/DarkModeContext"; //; Importar contexto de DarkMode
-import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
-import { resetAllTablesToDefaults } from "./data_base/mockDatabase.mjs"; //; Importa la función para verificar el token
+import AppRoutes from "./pages/AppRoutes";
+import { DarkModeContext } from "./contexts/DarkModeContext";
+import Aside from "./pages/user_profile/components/Aside";
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
  * @component
  * @returns {JSX.Element} App
  */
-const App = () => {
-  const { darkMode } = useContext(DarkModeContext); //; Usar el contexto de modo oscuro
+const AppContent = () => {
+  const { darkMode } = useContext(DarkModeContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado del menú hamburguesa
+  const [isMobile, setIsMobile] = useState(false); // Estado para manejar si es móvil
+  const [userData, setUserData] = useState(null); // Simular datos del usuario
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen); // Alternar entre abrir/cerrar el menú
+  };
+
+  const location = useLocation();
+  const isUserProfileRoute = location.pathname.includes("/user-profile");
+
+  useEffect(() => {
+    // Simular obtención de datos del usuario
+    setUserData({
+      role: "admin", // Simular usuario administrador
+    });
+
+    // Función para verificar el tamaño de la pantalla
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Detectar si es móvil (ancho <= 768px)
+    };
+
+    // Escuchar cambios de tamaño de la ventana
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Ejecutar al cargar
+
+    return () => {
+      window.removeEventListener("resize", handleResize); // Limpiar efecto
+    };
+  }, []);
 
   return (
-    <Router>
-      <Navbar />
+    <div>
+      <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
+      {/* Renderizar Aside solo si estamos en la ruta de perfil de usuario */}
+      {isUserProfileRoute &&
+        // Mostrar Aside solo en pantallas grandes o si el menú hamburguesa está abierto
+        (!isMobile || (isMobile && isMenuOpen)) && (
+          <Aside
+            isMenuOpen={isMenuOpen}
+            toggleMenu={toggleMenu}
+            userData={userData}
+          />
+        )}
       <div className="app">
         <main>
           <div className="app-container">
@@ -27,35 +66,27 @@ const App = () => {
           </div>
         </main>
       </div>
-
-      {/* ToastContainer montado en App, con tema dinámico */}
-      {/* <ToastContainer
-        theme={darkMode ? "dark" : "light"}
-        position="bottom-center"
-        autoClose={1500}
-        hideProgressBar={true}
+      <ToastContainer
+        theme={darkMode ? "light" : "dark"}
+        position="bottom-left"
+        autoClose={3000}
+        hideProgressBar
         newestOnTop={false}
-        closeOnClick
+        closeButton={false}
+        closeOnClick={false}
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
-      /> */}
-
-      <ToastContainer
-        theme={darkMode ? "light" : "dark"}
-        position="bottom-right" //; Posición abajo a la derecha
-        autoClose={1500} //; Cierre automático después de 3 segundos
-        hideProgressBar //; Mostrar barra de progreso
-        newestOnTop={false} //; Las notificaciones nuevas se muestran en la parte inferior
-        closeButton={false} //; Ocultar el botón de cierre ("x")
-        closeOnClick={false} //; No cerrar al hacer clic en la notificación
-        rtl={false} //; No usar la dirección de derecha a izquierda
-        pauseOnFocusLoss //; Pausar la notificación al perder el foco
-        draggable //; Habilitar arrastre para eliminar la notificación
-        pauseOnHover //; Pausar al pasar el ratón por encima
-        // icon={false}
       />
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 };

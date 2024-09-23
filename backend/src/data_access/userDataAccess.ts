@@ -1,5 +1,6 @@
 import { db } from '../config/db';
 import { User } from '../types/user';
+import Logger from '../utils/logger';
 
 // Clase de error personalizada para manejo de datos de usuario
 class UserDataError extends Error {
@@ -9,20 +10,24 @@ class UserDataError extends Error {
   }
 }
 
-
 // Obtiene un usuario por ID
 export const getUserByIdFromDB = async (user_id: string): Promise<User | null> => {
   try {
     if (!user_id) throw new UserDataError('User ID is required');
-    
+
     const result = await db.oneOrNone<User>('SELECT * FROM users WHERE id = $1', [user_id]);
-    return result; // Devolver el usuario directamente o null si no lo encuentra
+    if (result) {
+      Logger.success(`Usuario con ID ${user_id} recuperado exitosamente.`);
+    } else {
+      Logger.warning(`Usuario con ID ${user_id} no encontrado.`);
+    }
+    return result;
   } catch (error) {
     if (error instanceof UserDataError) {
-      console.error('User ID error:', error.message);
-      throw error;      
+      Logger.error(`Error de ID de usuario: ${error.message}`);
+      throw error;
     } else {
-      console.error('Error getting user by ID from DB:', error);
+      Logger.finalError(`Error obteniendo usuario por ID de la DB: ${error}`);
       throw new Error('Error getting user from DB');
     }
   }
@@ -35,10 +40,7 @@ export const updateUserInDB = async (user_id: string, userData: Partial<User>) =
 
     // Verificar si el nuevo username ya existe (si se envía uno)
     if (userData.username) {
-      const existingUser = await db.oneOrNone(
-        'SELECT id FROM users WHERE username = $1 AND id != $2',
-        [userData.username, user_id]
-      );
+      const existingUser = await db.oneOrNone('SELECT id FROM users WHERE username = $1 AND id != $2', [userData.username, user_id]);
       if (existingUser) {
         throw new UserDataError('Username is already taken');
       }
@@ -50,21 +52,19 @@ export const updateUserInDB = async (user_id: string, userData: Partial<User>) =
 
     // Crear la parte dinámica de la consulta SQL
     const setClause = fields.map((field, index) => `${field} = $${index + 1}`).join(', ');
-    const values = [...fields.map(field => (userData as any)[field]), user_id]; // Añadir el user_id al final
+    const values = [...fields.map(field => (userData as any)[field]), user_id];
 
     // Realizar la actualización
-    const result = await db.one(
-      `UPDATE users SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`,
-      values
-    );
-    
-    return result; // Devolver el usuario actualizado
+    const result = await db.one(`UPDATE users SET ${setClause} WHERE id = $${fields.length + 1} RETURNING *`, values);
+
+    Logger.success(`Usuario con ID ${user_id} actualizado exitosamente.`);
+    return result;
   } catch (error) {
     if (error instanceof UserDataError) {
-      console.error('User update error:', error.message);
+      Logger.error(`Error al actualizar el usuario: ${error.message}`);
       throw new UserDataError('Error updating user: ' + error.message);
     } else {
-      console.error('Error updating user in DB:', error);
+      Logger.finalError(`Error actualizando usuario en la DB: ${error}`);
       throw new Error('Error updating user in DB');
     }
   }
@@ -96,9 +96,10 @@ export const createUserInDB = async (userData: {
         userData.cp, userData.password
       ]
     );
-    return result; // Devolver el nuevo usuario creado
+    Logger.success(`Usuario creado exitosamente con username: ${userData.username}`);
+    return result;
   } catch (error) {
-    console.error('Error creating user in DB:', error);
+    Logger.finalError(`Error creando usuario en la DB: ${error}`);
     throw new Error('Error creating user in DB');
   }
 };
@@ -111,9 +112,14 @@ export const getUserByUsernameFromDB = async (username: string): Promise<User | 
     }
 
     const result = await db.oneOrNone<User>('SELECT * FROM users WHERE username = $1', [username]);
-    return result; // Devolver el usuario o null si no lo encuentra
+    if (result) {
+      Logger.success(`Usuario con username ${username} recuperado exitosamente.`);
+    } else {
+      Logger.warning(`Usuario con username ${username} no encontrado.`);
+    }
+    return result;
   } catch (error) {
-    console.error('Error fetching user by username:', error);
+    Logger.finalError(`Error obteniendo usuario por username: ${error}`);
     throw new Error('Error fetching user by username');
   }
 };
@@ -126,9 +132,14 @@ export const getUserByEmailFromDB = async (email: string): Promise<User | null> 
     }
 
     const result = await db.oneOrNone<User>('SELECT * FROM users WHERE email = $1', [email]);
-    return result; // Devolver el usuario o null si no lo encuentra
+    if (result) {
+      Logger.success(`Usuario con email ${email} recuperado exitosamente.`);
+    } else {
+      Logger.warning(`Usuario con email ${email} no encontrado.`);
+    }
+    return result;
   } catch (error) {
-    console.error('Error fetching user by email:', error);
+    Logger.finalError(`Error obteniendo usuario por email: ${error}`);
     throw new Error('Error fetching user by email');
   }
 };
@@ -139,11 +150,12 @@ export const deleteUserFromDB = async (user_id: string | number) => {
     if (!user_id) {
       throw new UserDataError('User ID is required');
     }
-    
+
     await db.none('DELETE FROM users WHERE id = $1', [user_id]);
-    return { message: 'User deleted successfully' }; // Devolver mensaje de éxito
+    Logger.success(`Usuario con ID ${user_id} eliminado exitosamente.`);
+    return { message: 'User deleted successfully' };
   } catch (error) {
-    console.error('Error deleting user from DB:', error);
+    Logger.finalError(`Error eliminando usuario de la DB: ${error}`);
     throw new Error('Error deleting user from DB');
   }
 };

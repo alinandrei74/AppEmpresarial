@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import Aside from "./components/Aside";
+import { toast } from "react-toastify";
+import UserDetails from "./components/profile/UserDetails";
 import Tasks from "./components/task/Tasks";
 import Notes from "./components/notes/Notes";
 import Calendar from "./components/calendar/Calendar";
-import TouristPlaces from "./components/TouristPlaces";
-import UserDetails from "./components/UserDetails";
-import Register from "../register/Register";
-import UserManagement from "./components/UserManagement";
+import Apartments from "./components/apartments/Apartments";
+import UserManagement from "./components/user_management/UserManagement";
 import "./UserProfile.css";
 
 const UserProfile = () => {
@@ -32,9 +31,7 @@ const UserProfile = () => {
 
         if (response.ok) {
           const result = await response.json();
-          const userData = result.data.user;
-          setUserData(userData);
-          console.log("Todos los datos del usuario autenticado:", userData);
+          setUserData(result.data.user);
         } else {
           const result = await response.json();
           handleInvalidToken(result.message);
@@ -52,7 +49,7 @@ const UserProfile = () => {
 
   const handleInvalidToken = (message) => {
     console.warn(message);
-    alert(message);
+    toast.error(message);
     sessionStorage.removeItem("authToken");
     navigate("/login");
   };
@@ -60,26 +57,26 @@ const UserProfile = () => {
   if (!userData) return null;
 
   return (
-    <div className="user-profile-container">
-      <Aside userData={userData} />
-      <div className="user-profile-content">
-        {location.pathname === "/user-profile" && (
-          <UserDetails userData={userData} />
-        )}
+    <div className="user-profile-content">
+      {location.pathname === "/user-profile" && (
+        <UserDetails userData={userData} />
+      )}
 
+      {userData.role === "admin" && (
         <Routes>
-          <Route path="tasks" element={<Tasks userData={userData} />} />
-          <Route path="notes" element={<Notes userData={userData} />} />
-          <Route path="calendar" element={<Calendar userData={userData} />} />
-          <Route path="tourist-places" element={<TouristPlaces userData={userData} />} />
-          {userData.role === 'admin' && (
-            <>
-              <Route path="create-profile" element={<Register />} />
-              <Route path="user-management" element={<UserManagement currentUserId={userData.id} />} />
-            </>
-          )}
+          <Route
+            path="user-management"
+            element={<UserManagement userData={userData} />}
+          />
         </Routes>
-      </div>
+      )}
+
+      <Routes>
+        <Route path="tasks" element={<Tasks userData={userData} />} />
+        <Route path="notes" element={<Notes userData={userData} />} />
+        <Route path="calendar" element={<Calendar userData={userData} />} />
+        <Route path="apartments" element={<Apartments userData={userData} />} />
+      </Routes>
     </div>
   );
 };

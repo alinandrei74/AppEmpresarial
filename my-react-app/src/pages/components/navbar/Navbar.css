@@ -12,10 +12,9 @@
 .navbar-container {
   display: flex;
   justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 0.5rem 2rem;
-  /* max-width: 1400px; */
-  /* Aumentado para mayor ancho */
+  padding: 0.5rem 1rem;
   margin: 0 auto;
 }
 
@@ -25,43 +24,95 @@
   display: flex;
   align-items: center;
   transition: margin 0.3s ease-in-out;
-  /* Transición añadida */
 }
 
-@media screen and (max-width: 768px) {
-  .navbar-logo {
-    margin-left: 50px;
-    /* Separar del .menu-icon en pantallas pequeñas */
-  }
+/* Cuando la sesión está cerrada, el margen izquierdo es 0 */
+.navbar-logo.no-margin {
+  margin-left: 0 !important;
 }
 
 .navbar-logo h1 {
   margin: 0;
   font-size: 1.5rem;
+  color: white;
 }
 
+/* Estilo base del enlace "Mi perfil" */
 .navbar-logo a {
   text-decoration: none;
   color: inherit;
   display: flex;
   align-items: center;
+  transition: text-decoration 0.3s ease, color 0.3s ease;
 }
 
+/* Efecto al pasar el ratón */
 .navbar-logo a:hover {
   text-decoration: underline;
+  color: white;
+  cursor: pointer;
 }
 
-
-/* Estilo para cuando "Mi perfil" esté activo */
+/* Estilo cuando el enlace "Mi perfil" está activo */
 .navbar-logo a.active-link {
   text-decoration: underline;
   text-decoration-thickness: 2px;
-  /* Grosor de la subrayado */
-  text-decoration-color: var(--clr-text);
-  /* Color del subrayado */
+  text-decoration-color: white;
   text-underline-offset: 4px;
-  /* Separación del subrayado respecto al texto */
-  color: var(--clr-text) !important;
+  color: white;
+  transition: text-decoration 0.3s ease, color 0.3s ease;
+}
+
+/* Cuando el enlace "Mi perfil" está deshabilitado */
+.navbar-logo a.disabled-link {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: grey;
+}
+
+/* Centrar el título en el navbar */
+.navbar-title {
+  flex: 1;
+  margin-left: 20px;
+  text-align: left;
+}
+
+/* Cuando el botón de logout no está, ajustar el margen */
+.adjust-title h1 {
+
+  /* Con el 'Mi Perfil' mostrandose */
+  /* margin-left: -93px !important; */
+
+  /* Sin el con el 'Mi Perfil' mostrandose */
+  margin-left: 33px !important;
+}
+
+/* Cuando estamos en la ruta /login y el usuario está logueado */
+.login-margin h1 {
+  margin-left: 42px !important;
+}
+
+.navbar-title h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-weight: bold;
+  color: antiquewhite;
+  text-align: center;
+  margin-left: 25%;
+}
+
+.menu-icon {
+  color: white;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Cuando el menú está deshabilitado */
+.menu-icon.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: grey;
 }
 
 .navbar-menu {
@@ -82,9 +133,8 @@
 /* Icono de perfil */
 .profile-icon {
   font-size: 1.8rem;
-  /* Tamaño del ícono */
   margin-right: 0.5rem;
-  /* Espacio entre el ícono y el texto */
+  color: white;
 }
 
 .logout-button {
@@ -115,14 +165,12 @@
   background-color: var(--primary-dark);
 }
 
-.menu-icon {
-  display: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-}
-
 /* Responsividad */
 @media screen and (max-width: 768px) {
+  .navbar-logo {
+    margin-left: 50px;
+  }
+
   .navbar-container {
     flex-wrap: wrap;
     padding: 0.5rem 1rem;
@@ -133,10 +181,11 @@
     order: 1;
   }
 
-  .navbar-logo {
+  .navbar-title h1 {
     flex: 1;
     order: 2;
     text-align: center;
+    margin-left: 0% !important;
   }
 
   .navbar-actions {
@@ -159,6 +208,10 @@
   .logout-button {
     width: 100%;
     text-align: center;
+  }
+
+  .navbar-logo a.active-link {
+    text-decoration-thickness: 1.5px;
   }
 }
 

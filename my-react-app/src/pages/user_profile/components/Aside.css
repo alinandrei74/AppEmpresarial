@@ -1,75 +1,104 @@
+/*TODO#code3: 🙁 No consigo que funcione la 'transition' del aside debo estar haciendo algo mal, o hay algo qeu se me escapa */
+
+/* Mejorar el ancho en pantallas grandes y añadir iconos */
 .aside {
-  width: 200px !important;
-  padding: 0 !important;
-  height: 100vh !important;
-  box-sizing: border-box !important;
-  overflow: auto !important;
-  background-color: var(--clr-primary) !important;
+  width: 20%;
+  min-width: 250px;
+  max-width: 300px;
+  padding: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: auto;
+  background-color: var(--clr-primary);
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+
+  /* Transición suave para abrir y cerrar el Aside */
   transition: transform 0.3s ease-in-out !important;
-  position: fixed !important;
-  left: 0 !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  z-index: 999 !important;
+  transform: translateX(-100%);
+  /* Ocultar por defecto en móviles */
 }
 
+.aside.open {
+  transform: translateX(0);
+  /* Mostrar Aside cuando el menú está abierto */
+}
+
+/* Elementos dentro del Aside */
 .aside-items {
-  list-style: none !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .aside-items li:first-child {
-  margin-top: 57px !important;
+  margin-top: 60px;
 }
 
 .aside-items li {
-  margin-bottom: 1px !important;
-  text-align: left !important;
-}
-
-.aside-items li:hover {
-  cursor: pointer !important;
+  margin-bottom: 1px;
+  text-align: left;
+  display: flex;
+  align-items: center;
 }
 
 .aside-items a {
-  display: block !important;
-  text-decoration: none !important;
-  padding: 10px 15px !important;
-  color: var(--clr-OnBackground) !important;
-  width: 100% !important;
-  border-radius: 0px !important;
+  user-select: none;
+  display: block;
+  text-decoration: none;
+  padding: 10px 15px;
+  color: var(--clr-OnBackground);
+  width: 100%;
+  font-size: 1.2rem;
+  border-radius: 0;
 }
 
 .aside-items a:hover {
-  background-color: var(--primary-default) !important;
+  background-color: var(--primary-default);
 }
 
 .active-link {
-  background-color: var(--clr-secondary) !important;
-  color: var(--clr-OnText) !important;
+  background-color: var(--clr-secondary);
+  color: var(--clr-OnText);
 }
 
+/* Iconos a la izquierda */
+.aside-items li svg {
+  margin-right: 10px;
+}
+
+/* Estilo del ícono del menú hamburguesa */
 .menu-icon {
-  display: none !important;
-  font-size: 1.5rem !important;
-  cursor: pointer !important;
-  position: fixed !important;
-  top: 10px !important;
-  left: 10px !important;
-  z-index: 1000 !important;
+  display: none;
+  font-size: 1.6rem;
+  cursor: pointer;
+  position: fixed;
+  top: 10px;
+  left: 15px;
+  z-index: 1000;
 }
 
+/* Estilos específicos para pantallas pequeñas (menos de 768px) */
 @media screen and (max-width: 768px) {
   .aside {
-    transform: translateX(-100%) !important;
+    transform: translateX(-100%);
+    /* Ocultar Aside inicialmente en pantallas pequeñas */
   }
 
   .aside.open {
-    transform: translateX(0) !important;
+    transform: translateX(0);
+    /* Mostrar Aside cuando el menú está abierto */
+  }
+
+  .aside-items a {
+    font-size: 1rem;
   }
 
   .menu-icon {
-    display: block !important;
+    display: block;
+    /* Mostrar el ícono del menú hamburguesa en pantallas pequeñas */
   }
 }

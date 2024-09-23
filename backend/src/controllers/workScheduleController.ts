@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { db } from "../config/db";
 import { StatusCodes } from "http-status-codes";
 import { User } from "../types/user";
+import Logger from "../utils/logger";
 
 class WorkScheduleError extends Error {
   constructor(message: string) {
@@ -19,21 +20,22 @@ export const getAllWorkSchedules = async (req: Request, res: Response) => {
 
     // Los administradores pueden ver todos los horarios
     if (user.role === 'admin') {
+      Logger.information("Recuperando todos los horarios de trabajo para el administrador...");
       work_schedules = await db.any("SELECT * FROM work_schedule");
     } else {
       // Los usuarios normales solo ven sus propios horarios
+      Logger.information(`Recuperando horarios de trabajo para el usuario con ID: ${user.id}...`);
       work_schedules = await db.any("SELECT * FROM work_schedule WHERE user_id = $1", [user.id]);
     }
 
-    console.log(work_schedules);
-
+    Logger.success("Horarios de trabajo recuperados exitosamente.");
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       message: "Horarios de trabajo recuperados exitosamente",
       data: work_schedules,
     });
   } catch (error) {
-    console.error("Error al recuperar los horarios de trabajo:", error);
+    Logger.finalError("Error al recuperar los horarios de trabajo:", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: "Error interno del servidor",
@@ -52,6 +54,7 @@ export const getWorkScheduleById = async (req: Request, res: Response) => {
       throw new WorkScheduleError("ID es requerido");
     }
 
+    Logger.information(`Recuperando horario de trabajo con ID: ${id} para el usuario con rol ${user.role}...`);
     let work_schedule;
 
     if (user.role === 'admin') {
@@ -63,12 +66,14 @@ export const getWorkScheduleById = async (req: Request, res: Response) => {
     }
 
     if (work_schedule) {
+      Logger.success(`Horario de trabajo con ID ${id} recuperado exitosamente.`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: `Horario de trabajo con ID ${id} recuperado exitosamente`,
         data: work_schedule,
       });
     } else {
+      Logger.warning(`Horario de trabajo con ID ${id} no encontrado.`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
         message: `Horario de trabajo con ID ${id} no encontrado`,
@@ -77,14 +82,14 @@ export const getWorkScheduleById = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof WorkScheduleError) {
-      console.error("Error al recuperar el horario de trabajo:", error.message);
+      Logger.error(`Error al recuperar el horario de trabajo: ${error.message}`);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error("Error interno al recuperar el horario de trabajo:", error);
+      Logger.finalError("Error interno al recuperar el horario de trabajo:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error interno del servidor",
@@ -109,12 +114,14 @@ export const createWorkSchedule = async (req: Request, res: Response) => {
       throw new WorkScheduleError("La hora de inicio debe ser anterior a la hora de finalización.");
     }
 
+    Logger.information("Creando nuevo horario de trabajo...");
     // Insertar el horario con el user_id del usuario autenticado
     const result = await db.one(
       "INSERT INTO work_schedule (user_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING id, user_id",
       [user.id, start_time, end_time, description, day_of_week]
     );
 
+    Logger.success("Horario de trabajo creado exitosamente.");
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: "Horario de trabajo creado exitosamente",
@@ -122,14 +129,14 @@ export const createWorkSchedule = async (req: Request, res: Response) => {
     });
   } catch (error) {
     if (error instanceof WorkScheduleError) {
-      console.error("Error al crear el horario de trabajo:", error.message);
+      Logger.error(`Error al crear el horario de trabajo: ${error.message}`);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error("Error inesperado:", error);
+      Logger.finalError("Error inesperado al crear el horario de trabajo:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error interno del servidor",
@@ -149,16 +156,19 @@ export const deleteWorkSchedule = async (req: Request, res: Response) => {
       throw new WorkScheduleError("ID es requerido");
     }
 
+    Logger.information(`Eliminando horario de trabajo con ID: ${id}...`);
     // Solo los admins o el mismo usuario pueden eliminar el horario
     const result = await db.result("DELETE FROM work_schedule WHERE id = $1 AND user_id = $2", [id, user.id]);
 
     if (result.rowCount) {
+      Logger.success("Horario de trabajo eliminado exitosamente.");
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: "Horario de trabajo eliminado exitosamente",
         data: null,
       });
     } else {
+      Logger.warning("Horario de trabajo no encontrado o no tienes permiso para eliminarlo.");
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
         message: "Horario de trabajo no encontrado o no tienes permiso para eliminarlo",
@@ -167,14 +177,14 @@ export const deleteWorkSchedule = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof WorkScheduleError) {
-      console.error("Error al eliminar el horario de trabajo:", error.message);
+      Logger.error(`Error al eliminar el horario de trabajo: ${error.message}`);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error("Error inesperado:", error);
+      Logger.finalError("Error inesperado al eliminar el horario de trabajo:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error interno del servidor",
@@ -200,6 +210,7 @@ export const updateWorkSchedule = async (req: Request, res: Response) => {
       throw new WorkScheduleError("La hora de inicio debe ser anterior a la hora de finalización.");
     }
 
+    Logger.information(`Actualizando horario de trabajo con ID: ${id}...`);
     let result;
 
     // Verifica si es admin o si es el propietario del horario que intenta actualizar
@@ -218,12 +229,14 @@ export const updateWorkSchedule = async (req: Request, res: Response) => {
     }
 
     if (result.rowCount) {
+      Logger.success("Horario de trabajo actualizado exitosamente.");
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: "Horario de trabajo actualizado exitosamente",
         data: result.rows[0], // Devolver el horario actualizado
       });
     } else {
+      Logger.warning("Horario de trabajo no encontrado o no tienes permiso para actualizarlo.");
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
         message: "Horario de trabajo no encontrado o no tienes permiso para actualizarlo",
@@ -232,7 +245,7 @@ export const updateWorkSchedule = async (req: Request, res: Response) => {
     }
   } catch (error) {
     if (error instanceof WorkScheduleError) {
-      console.error("Error al actualizar el horario de trabajo:", error.message);
+      Logger.error(`Error al actualizar el horario de trabajo: ${error.message}`);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
@@ -240,20 +253,20 @@ export const updateWorkSchedule = async (req: Request, res: Response) => {
       });
     } else if (error && typeof error === "object" && "code" in error) {
       if (error.code === "23503") {
-        console.error("Error al actualizar el horario: usuario no existe");
+        Logger.finalError("Error al actualizar el horario: usuario no existe.");
         return res.status(StatusCodes.BAD_REQUEST).json({
           status: StatusCodes.BAD_REQUEST,
           message: "El usuario especificado no existe.",
         });
       }
-      console.error("Error inesperado:", error);
+      Logger.finalError("Error inesperado:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error interno del servidor",
         data: null,
       });
     } else {
-      console.error("Error desconocido:", error);
+      Logger.finalError("Error desconocido:", error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         message: "Error desconocido",
@@ -262,4 +275,3 @@ export const updateWorkSchedule = async (req: Request, res: Response) => {
     }
   }
 };
-

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { StatusCodes } from 'http-status-codes';
+import Logger from '../utils/logger';
 
 class NoteError extends Error {
   constructor(message: string) {
@@ -12,16 +13,17 @@ class NoteError extends Error {
 export const getNotes = async (req: Request, res: Response) => {
   try {
     const notes = await db.any('SELECT * FROM notes');
+    Logger.success('Notas recuperadas con éxito.');
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
-      message: 'Notes fetched successfully',
+      message: 'Notas recuperadas exitosamente',
       data: notes,
     });
   } catch (error) {
-    console.error('Error fetching notes:', error);
+    Logger.finalError('Error al recuperar las notas:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: 'Error interno del servidor',
       data: null,
     });
   }
@@ -33,58 +35,64 @@ export const getNoteById = async (req: Request, res: Response) => {
   try {
     const note = await db.oneOrNone('SELECT * FROM notes WHERE id = $1', [id]);
     if (note) {
+      Logger.success(`Nota con ID ${id} recuperada exitosamente.`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
-        message: 'Note fetched successfully',
+        message: 'Nota recuperada exitosamente',
         data: note,
       });
     } else {
+      Logger.warning(`Nota con ID ${id} no encontrada.`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
-        message: 'Note not found',
+        message: 'Nota no encontrada',
         data: null,
       });
     }
   } catch (error) {
-    console.error('Error fetching note by ID:', error);
+    Logger.finalError('Error al recuperar la nota por ID:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: 'Error interno del servidor',
       data: null,
     });
   }
 };
 
 export const createNote = async (req: Request, res: Response) => {
-  const { title, description, user_id } = req.body; // Eliminamos name
+  const { title, description, user_id } = req.body;
 
   try {
+    // Validar que todos los campos requeridos están presentes
     if (!title || !description || !user_id) {
-      throw new NoteError('title, description, and user_id are required');
+      throw new NoteError('El título, descripción y user_id son obligatorios');
     }
 
+    // Modificar la consulta para insertar también el título
     const result = await db.one(
       'INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id',
       [title, description, user_id]
     );
+
+    // Retornar la respuesta con los datos insertados
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
-      message: 'Note created successfully',
+      message: 'Nota creada exitosamente',
       data: { id: result.id, title, description, user_id },
     });
   } catch (error) {
     if (error instanceof NoteError) {
-      console.error('Note creation error:', error.message);
+      Logger.warning('Error de validación al crear la nota:', error.message);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error('Error creating note:', error);
+      Logger.finalError('Error al crear la nota:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: 'Internal server error',
+        message: 'Error interno del servidor',
         data: null,
       });
     }
@@ -97,40 +105,43 @@ export const updateNote = async (req: Request, res: Response) => {
   const { title, description } = req.body; // Eliminamos name
 
   try {
-    if (!title || !description) {
-      throw new NoteError('title and description are required');
+    if (!description) {
+      throw new NoteError('La descripción es obligatoria');
     }
 
     const result = await db.result(
       'UPDATE notes SET title = $1, description = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3',
       [title, description, id]
     );
+
     if (result.rowCount) {
+      Logger.success(`Nota con ID ${id} actualizada exitosamente.`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
-        message: 'Note updated successfully',
-        data: { id, title, description }, // Eliminamos name del response
+        message: 'Nota actualizada exitosamente',
+        data: null,
       });
     } else {
+      Logger.warning(`Nota con ID ${id} no encontrada.`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
-        message: 'Note not found',
+        message: 'Nota no encontrada',
         data: null,
       });
     }
   } catch (error) {
     if (error instanceof NoteError) {
-      console.error('Note update error:', error.message);
+      Logger.warning('Error de validación al actualizar la nota:', error.message);
       return res.status(StatusCodes.BAD_REQUEST).json({
         status: StatusCodes.BAD_REQUEST,
         message: error.message,
         data: null,
       });
     } else {
-      console.error('Error updating note:', error);
+      Logger.finalError('Error al actualizar la nota:', error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         status: StatusCodes.INTERNAL_SERVER_ERROR,
-        message: 'Internal server error',
+        message: 'Error interno del servidor',
         data: null,
       });
     }
@@ -145,23 +156,25 @@ export const deleteNote = async (req: Request, res: Response) => {
   try {
     const result = await db.result('DELETE FROM notes WHERE id = $1', [id]);
     if (result.rowCount) {
+      Logger.success(`Nota con ID ${id} eliminada exitosamente.`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
-        message: 'Note deleted successfully',
+        message: 'Nota eliminada con éxito',
         data: null,
       });
     } else {
+      Logger.warning(`Nota con ID ${id} no encontrada.`);
       return res.status(StatusCodes.NOT_FOUND).json({
         status: StatusCodes.NOT_FOUND,
-        message: 'Note not found',
+        message: 'Nota no encontrada',
         data: null,
       });
     }
   } catch (error) {
-    console.error('Error deleting note:', error);
+    Logger.finalError('Error al eliminar la nota:', error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: 'Error interno del servidor',
       data: null,
     });
   }
