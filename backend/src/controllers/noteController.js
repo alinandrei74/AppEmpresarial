@@ -67,16 +67,16 @@ const getNoteById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getNoteById = getNoteById;
 const createNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { description, user_id } = req.body;
+    const { title, description, user_id } = req.body; // Eliminamos name
     try {
-        if (!description || !user_id) {
-            throw new NoteError('description and user_id are required');
+        if (!title || !description || !user_id) {
+            throw new NoteError('title, description, and user_id are required');
         }
-        const result = yield db_1.db.one('INSERT INTO notes (description, user_id) VALUES ($1, $2) RETURNING id', [description, user_id]);
+        const result = yield db_1.db.one('INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id', [title, description, user_id]);
         return res.status(http_status_codes_1.StatusCodes.CREATED).json({
             status: http_status_codes_1.StatusCodes.CREATED,
             message: 'Note created successfully',
-            data: { id: result.id, description, user_id },
+            data: { id: result.id, title, description, user_id },
         });
     }
     catch (error) {
@@ -101,17 +101,17 @@ const createNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.createNote = createNote;
 const updateNote = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { description } = req.body;
+    const { title, description } = req.body; // Eliminamos name
     try {
-        if (!description) {
-            throw new NoteError('description is required');
+        if (!title || !description) {
+            throw new NoteError('title and description are required');
         }
-        const result = yield db_1.db.result('UPDATE notes SET description = $1 WHERE id = $2', [description, id]);
+        const result = yield db_1.db.result('UPDATE notes SET title = $1, description = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3', [title, description, id]);
         if (result.rowCount) {
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: 'Note updated successfully',
-                data: null,
+                data: { id, title, description }, // Eliminamos name del response
             });
         }
         else {

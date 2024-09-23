@@ -8,7 +8,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/db';
 import { StatusCodes } from 'http-status-codes';
-import { log } from 'console';
+
 
 class UserError extends Error {
   constructor(message: string) {

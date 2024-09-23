@@ -56,21 +56,21 @@ export const getNoteById = async (req: Request, res: Response) => {
 };
 
 export const createNote = async (req: Request, res: Response) => {
-  const { description, user_id } = req.body;
+  const { title, description, user_id } = req.body; // Eliminamos name
 
   try {
-    if (!description || !user_id) {
-      throw new NoteError('description and user_id are required');
+    if (!title || !description || !user_id) {
+      throw new NoteError('title, description, and user_id are required');
     }
 
     const result = await db.one(
-      'INSERT INTO notes (description, user_id) VALUES ($1, $2) RETURNING id',
-      [description, user_id]
+      'INSERT INTO notes (title, description, user_id) VALUES ($1, $2, $3) RETURNING id',
+      [title, description, user_id]
     );
     return res.status(StatusCodes.CREATED).json({
       status: StatusCodes.CREATED,
       message: 'Note created successfully',
-      data: { id: result.id, description, user_id },
+      data: { id: result.id, title, description, user_id },
     });
   } catch (error) {
     if (error instanceof NoteError) {
@@ -91,24 +91,25 @@ export const createNote = async (req: Request, res: Response) => {
   }
 };
 
+
 export const updateNote = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { description } = req.body;
+  const { title, description } = req.body; // Eliminamos name
 
   try {
-    if (!description) {
-      throw new NoteError('description is required');
+    if (!title || !description) {
+      throw new NoteError('title and description are required');
     }
 
     const result = await db.result(
-      'UPDATE notes SET description = $1 WHERE id = $2',
-      [description, id]
+      'UPDATE notes SET title = $1, description = $2, updated_at = CURRENT_TIMESTAMP WHERE id = $3',
+      [title, description, id]
     );
     if (result.rowCount) {
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
         message: 'Note updated successfully',
-        data: null,
+        data: { id, title, description }, // Eliminamos name del response
       });
     } else {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -135,6 +136,8 @@ export const updateNote = async (req: Request, res: Response) => {
     }
   }
 };
+
+
 
 export const deleteNote = async (req: Request, res: Response) => {
   const { id } = req.params;
