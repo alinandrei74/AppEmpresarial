@@ -139,6 +139,9 @@ export const userLoginSchema = Joi.object({
 
 // Para la creación de notas
 export const createNoteSchema = Joi.object({
+  user_id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+    "error en id" : "Error en id - userIdParamSchema" 
+  }),
   title: Joi.string().max(100).required().label("title - createNoteSchema").messages({
     "string.max": "{{#label}} no puede exceder los 100 caracteres",
     "any.required": "{{#label}} es requerido",
@@ -152,10 +155,11 @@ export const createNoteSchema = Joi.object({
 
 // Para la actualización de notas
 export const updateNoteSchema = Joi.object({
-  id: Joi.number().integer().required().positive().label("id - updateNoteSchema").messages({
-    "number.base": "{{#label}} debe ser un número entero",
-    "any.required": "{{#label}} es requerido",
-    "number.positive": "{{#label}} debe ser un número positivo",
+  id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+    "error en id" : "Error en id - userIdParamSchema" 
+  }),
+  user_id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+    "error en id" : "Error en id - userIdParamSchema" 
   }),
   title: Joi.string().max(100).required().label("title - updateNoteSchema").messages({
     "string.max": "{{#label}} no puede exceder los 100 caracteres",
@@ -181,6 +185,9 @@ export const idParamSchema = Joi.object({
 
 export const userIdParamSchema = Joi.object({
   id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+    "error en id" : "Error en id - userIdParamSchema" 
+  }),
+  user_id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
     "error en id" : "Error en id - userIdParamSchema" 
   }),
   created_at: Joi.date().timestamp().optional().allow(null).label("created_at - userIdParamSchema"),
