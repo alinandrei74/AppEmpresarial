@@ -185,6 +185,12 @@ export const userIdParamSchema = Joi.object({
 
 // Esquema de validación para la creación de tareas
 export const createTaskSchema = Joi.object({
+  user_id: Joi.number().integer().positive().required().messages({
+    'number.base': 'El ID de usuario debe ser un número.',
+    'number.integer': 'El ID de usuario debe ser un número entero.',
+    'number.positive': 'El ID de usuario debe ser un número positivo.',
+    'any.required': 'El ID de usuario es obligatorio.'  
+  }),
   
   title: Joi.string().max(100).required().messages({
     "string.max": "El título no puede exceder los 100 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
@@ -194,17 +200,17 @@ export const createTaskSchema = Joi.object({
     "string.max": "La descripción no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
     "any.required": "La descripción es requerida",
   }),
-  status: Joi.string()
-    .valid("pending", "in_progress", "completed") // Corregir los valores válidos para status
-    .required()
-    .messages({
-      "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
-      "any.required": "El estado de la tarea es requerido",
-    }),
+  // status: Joi.string()
+  //   .valid("pending", "in_progress", "completed") // Corregir los valores válidos para status
+  //   .required()
+  //   .messages({
+  //     "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
+  //     "any.required": "El estado de la tarea es requerido",
+  //   }),
   
-  completed_at: Joi.date().optional().messages({
-    "date.base": "La fecha de finalización debe ser válida",
-  }),
+  // completed_at: Joi.date().optional().messages({
+  //   "date.base": "La fecha de finalización debe ser válida",
+  // }),
   
   // Campos que deben ser prohibidos en la solicitud, ya que se manejan automáticamente en la base de datos
   created_at: Joi.forbidden().messages({
@@ -231,16 +237,16 @@ export const updateTaskSchema = Joi.object({
   description: Joi.string().max(200).required().messages({
     "any.required": "La descripción es requerida",
   }),
-  status: Joi.string()
-    .valid("pending", "in_progress", "completed")
-    .required()
-    .messages({
-      "any.only":
-        "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
-    }),
-  completed_at: Joi.date().optional().messages({
-    "date.base": "La fecha de finalización debe ser válida",
-  }),
+  // status: Joi.string()
+  //   .valid("pending", "in_progress", "completed")
+  //   .required()
+  //   .messages({
+  //     "any.only":
+  //       "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
+  //   }),
+  // completed_at: Joi.date().optional().messages({
+  //   "date.base": "La fecha de finalización debe ser válida",
+  // }),
   created_at: Joi.string(),
   updated_at: Joi.string()
 });
