@@ -8,10 +8,10 @@ import Logger from '../utils/logger';
 const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 
 // Define los campos obligatorios
-const requiredFields: (keyof User)[] = [
-  'role', 'username', 'name', 'firstname', 'lastname',
-  'dni', 'email', 'telephone', 'address', 'postal_code', 'password'
-];
+// const requiredFields: (keyof User)[] = [
+//   'role', 'username', 'name', 'firstname', 'lastname',
+//   'dni', 'email', 'telephone', 'address', 'postal_code', 'password'
+// ];
 
 // Función para lanzar errores
 const throwError = (status: number, message: string): never => {
@@ -38,12 +38,8 @@ export const registerUserService = async (userData: User) => {
     });
 
     Logger.success(`Usuario registrado exitosamente: ${newUser.email}`);
-    return {
-      status: StatusCodes.CREATED,
-      message: 'User registered successfully',
-      data: newUser,
-    };
-
+    return  newUser;
+   
   } catch (error: any) {
     Logger.error(`Error al registrar usuario: ${error.message || 'Error inesperado'}`);
     if (error.status) {

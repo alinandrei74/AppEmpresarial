@@ -11,10 +11,10 @@ const http_status_codes_1 = require("http-status-codes");
 const logger_1 = __importDefault(require("../utils/logger"));
 const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 // Define los campos obligatorios
-const requiredFields = [
-    'role', 'username', 'name', 'firstname', 'lastname',
-    'dni', 'email', 'telephone', 'address', 'postal_code', 'password'
-];
+// const requiredFields: (keyof User)[] = [
+//   'role', 'username', 'name', 'firstname', 'lastname',
+//   'dni', 'email', 'telephone', 'address', 'postal_code', 'password'
+// ];
 // Función para lanzar errores
 const throwError = (status, message) => {
     throw { status, message };
@@ -33,11 +33,7 @@ const registerUserService = async (userData) => {
         // Crear el usuario en la base de datos
         const newUser = await (0, userDataAccess_1.createUserInDB)(Object.assign(Object.assign({}, userData), { password: hashedPassword }));
         logger_1.default.success(`Usuario registrado exitosamente: ${newUser.email}`);
-        return {
-            status: http_status_codes_1.StatusCodes.CREATED,
-            message: 'User registered successfully',
-            data: newUser,
-        };
+        return newUser;
     }
     catch (error) {
         logger_1.default.error(`Error al registrar usuario: ${error.message || 'Error inesperado'}`);
