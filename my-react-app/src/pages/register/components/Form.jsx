@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify"; //; Importa react-toastify para notificaciones
 import "./Form.css";
+import API_S from "../../../utilities/js/apiService/ApiService.mjs";
 
 const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -95,34 +96,23 @@ const Form = () => {
         const [name, firstname, ...lastnameArray] = values.fullName.split(" ");
         const lastname = lastnameArray.join(" ");
 
-        const response = await fetch(
-          "http://localhost:3000/api/auth/register",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              username: values.username,
-              password: values.password,
-              role: values.rol.toLowerCase(),
-              name,
-              firstname,
-              lastname,
-              email: values.email,
-              telephone: values.telephone,
-              dni: values.dni,
-              address: values.address,
-              postal_code: values.postal_code,
-              created_at: new Date().toISOString().split("T")[0],
-              updated_at: new Date().toISOString().split("T")[0],
-            }),
-          }
-        );
+        const body = {
+          username: values.username,
+          password: values.password,
+          role: values.rol.toLowerCase(),
+          name,
+          firstname,
+          lastname,
+          email: values.email,
+          telephone: values.telephone,
+          dni: values.dni,
+          address: values.address,
+          postal_code: values.postal_code,
+        };
 
-        const data = await response.json();
+        const data = await API_S.post(API_S.urls.auth.register, body);
 
-        if (response.status === 201) {
+        if (data.status === 201) {
           toast.success("Usuario registrado con éxito."); //; Notificación de éxito
         } else {
           toast.error("Error al registrar el usuario: " + data.message); //; Notificación de error
@@ -138,17 +128,17 @@ const Form = () => {
   };
 
   return (
-    <form className="form" onSubmit={formik.handleSubmit}>
-      <div className="form-title">Registro de Usuario</div>
-      <div className="form-description">
+    <form className="register-form" onSubmit={formik.handleSubmit}>
+      <div className="register-form-title">Registro de Usuario</div>
+      <div className="register-form-description">
         Por favor, complete el formulario para registrarse.
       </div>
 
       {/* Campo para seleccionar el rol */}
-      <div className="form-group">
+      <div className="register-form-group">
         <label
           htmlFor="rol"
-          className={`form-label ${
+          className={`register-form-label ${
             formik.touched.rol && formik.errors.rol ? "required" : ""
           }`}
         >
@@ -157,7 +147,7 @@ const Form = () => {
         <select
           id="rol"
           name="rol"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.rol && formik.errors.rol ? "input-error" : ""
           }`}
           value={formik.values.rol}
@@ -176,10 +166,10 @@ const Form = () => {
       </div>
 
       {/* Campo de Nombre de Usuario */}
-      <div className="form-group">
+      <div className="register-form-group">
         <label
           htmlFor="username"
-          className={`form-label ${
+          className={`register-form-label ${
             formik.touched.username && formik.errors.username ? "required" : ""
           }`}
         >
@@ -189,7 +179,7 @@ const Form = () => {
           type="text"
           id="username"
           name="username"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.username && formik.errors.username
               ? "input-error"
               : ""
@@ -204,10 +194,10 @@ const Form = () => {
       </div>
 
       {/* Campo de Nombre Completo */}
-      <div className="form-group">
+      <div className="register-form-group">
         <label
           htmlFor="fullName"
-          className={`form-label ${
+          className={`register-form-label ${
             formik.touched.fullName && formik.errors.fullName ? "required" : ""
           }`}
         >
@@ -217,7 +207,7 @@ const Form = () => {
           type="text"
           id="fullName"
           name="fullName"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.fullName && formik.errors.fullName
               ? "input-error"
               : ""
@@ -232,10 +222,10 @@ const Form = () => {
       </div>
 
       {/* Campo de DNI */}
-      <div className="form-group">
+      <div className="register-form-group">
         <label
           htmlFor="dni"
-          className={`form-label ${
+          className={`register-form-label ${
             formik.touched.dni && formik.errors.dni ? "required" : ""
           }`}
         >
@@ -245,7 +235,7 @@ const Form = () => {
           type="text"
           id="dni"
           name="dni"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.dni && formik.errors.dni ? "input-error" : ""
           }`}
           value={formik.values.dni}
@@ -258,15 +248,15 @@ const Form = () => {
       </div>
 
       {/* Campo de Dirección */}
-      <div className="form-group">
-        <label htmlFor="address" className="form-label required">
+      <div className="register-form-group">
+        <label htmlFor="address" className="register-form-label required">
           Dirección
         </label>
         <input
           type="text"
           id="address"
           name="address"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.address && formik.errors.address ? "input-error" : ""
           }`}
           value={formik.values.address}
@@ -279,15 +269,15 @@ const Form = () => {
       </div>
 
       {/* Campo de Código Postal */}
-      <div className="form-group">
-        <label htmlFor="postal_code" className="form-label required">
+      <div className="register-form-group">
+        <label htmlFor="postal_code" className="register-form-label required">
           Código Postal
         </label>
         <input
           type="text"
           id="postal_code"
           name="postal_code"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.postal_code && formik.errors.postal_code
               ? "input-error"
               : ""
@@ -302,15 +292,15 @@ const Form = () => {
       </div>
 
       {/* Campo de Email */}
-      <div className="form-group">
-        <label htmlFor="email" className="form-label required">
+      <div className="register-form-group">
+        <label htmlFor="email" className="register-form-label required">
           Email
         </label>
         <input
           type="email"
           id="email"
           name="email"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.email && formik.errors.email ? "input-error" : ""
           }`}
           value={formik.values.email}
@@ -323,15 +313,15 @@ const Form = () => {
       </div>
 
       {/* Campo de Teléfono */}
-      <div className="form-group">
-        <label htmlFor="telephone" className="form-label required">
+      <div className="register-form-group">
+        <label htmlFor="telephone" className="register-form-label required">
           Teléfono
         </label>
         <input
           type="text"
           id="telephone"
           name="telephone"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.telephone && formik.errors.telephone
               ? "input-error"
               : ""
@@ -346,15 +336,15 @@ const Form = () => {
       </div>
 
       {/* Campo de Contraseña */}
-      <div className="form-group">
-        <label htmlFor="password" className="form-label required">
+      <div className="register-form-group">
+        <label htmlFor="password" className="register-form-label required">
           Contraseña
         </label>
         <input
           type={showPassword ? "text" : "password"}
           id="password"
           name="password"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.password && formik.errors.password
               ? "input-error"
               : ""
@@ -369,29 +359,32 @@ const Form = () => {
       </div>
 
       {/* Campo para Mostrar/Ocultar Contraseña */}
-      <div className="form-group form-checkbox-group">
+      <div className="register-form-group register-form-checkbox-group">
         <input
           type="checkbox"
           id="show-password"
           checked={showPassword}
           onChange={handlePasswordCheckboxChange}
-          className="form-checkbox"
+          className="register-form-checkbox"
         />
-        <label htmlFor="show-password" className="form-checkbox-label">
+        <label htmlFor="show-password" className="register-form-checkbox-label">
           Mostrar Contraseña
         </label>
       </div>
 
       {/* Campo de Confirmar Contraseña */}
-      <div className="form-group">
-        <label htmlFor="confirmPassword" className="form-label required">
+      <div className="register-form-group">
+        <label
+          htmlFor="confirmPassword"
+          className="register-form-label required"
+        >
           Confirmar Contraseña
         </label>
         <input
           type="password"
           id="confirmPassword"
           name="confirmPassword"
-          className={`form-input ${
+          className={`register-form-input ${
             formik.touched.confirmPassword && formik.errors.confirmPassword
               ? "input-error"
               : ""
@@ -408,8 +401,8 @@ const Form = () => {
       {/* Botón de Enviar */}
       <button
         type="submit"
-        className={`form-button ${
-          !formik.isValid ? "form-button-disabled" : ""
+        className={`register-form-button ${
+          !formik.isValid ? "register-form-button-disabled" : ""
         }`}
       >
         Registrar

@@ -1,28 +1,29 @@
-.form {
+.register-form {
   background-color: var(--clr-background);
   color: var(--clr-text);
   padding: 20px;
   border-radius: 5px;
   transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
   text-align: center;
-  max-width: 500px;
+  max-width: 800px;
+  width: 100%;
   /* Para centrar el formulario */
   margin: 0 auto;
 }
 
-.form-group {
+.register-form-group {
   margin-bottom: 25px;
   /* Aumenta el espacio entre los grupos de campos */
 }
 
-.form-label {
+.register-form-label {
   display: block;
   margin-bottom: 5px;
   color: var(--clr-OnBackground);
   text-align: center;
 }
 
-.form-input {
+.register-form-input {
   width: 90%;
   padding: 12px;
   /* Incrementa el padding para mayor área de clic */
@@ -35,27 +36,27 @@
   font-size: 1em;
 }
 
-.form-button {
+.register-form-button {
   padding: 12px 25px;
   /* Botones más grandes */
   margin-top: 20px;
   /* Espacio antes del botón */
 }
 
-.form-button-disabled {
+.register-form-button-disabled {
   background-color: var(--disabled);
   cursor: not-allowed;
 }
 
-.form-button:hover {
+.register-form-button:hover {
   background-color: var(--secondary-dark);
 }
 
-.form-button-disabled:hover {
+.register-form-button-disabled:hover {
   background-color: var(--disabled);
 }
 
-.form-checkbox-group {
+.register-form-checkbox-group {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,16 +66,16 @@
   /* Ajusta el margen superior */
 }
 
-.form-checkbox {
+.register-form-checkbox {
   margin-right: 10px;
   accent-color: var(--clr-OnPrimary);
 }
 
-.form-checkbox-label {
+.register-form-checkbox-label {
   color: var(--clr-OnBackground);
 }
 
-.form-title {
+.register-form-title {
   font-size: 1.5em;
   margin-bottom: 20px;
   /* Más espacio después del título */
@@ -86,7 +87,7 @@
   color: var(--clr-error);
 }
 
-.form-description {
+.register-form-description {
   font-size: 1em;
   margin-bottom: 25px;
   /* Más espacio después de la descripción */
