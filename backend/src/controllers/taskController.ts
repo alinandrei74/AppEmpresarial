@@ -61,13 +61,16 @@ export const getCompletedTasksByUserId = [
 export const createTask = [
   validateRequest(createTaskSchema), 
   async (req: Request, res: Response) => {
-    const { description, is_done, user_id, title } = req.body;
+    const { description, is_done = false, user_id, title } = req.body; // Valor predeterminado de is_done a false
 
     try {
       const result = await db.one(
-        'INSERT INTO tasks (description, is_done, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id',
+        `INSERT INTO tasks (description, is_done, user_id, title) 
+         VALUES ($1, $2, $3, $4) 
+         RETURNING id`,
         [description, is_done, user_id, title]
       );
+
       Logger.success('Tarea creada con éxito');
       return res.status(StatusCodes.CREATED).json({
         status: StatusCodes.CREATED,
@@ -85,6 +88,7 @@ export const createTask = [
   },
 ];
 
+
 // Actualizar una tarea existente
 export const updateTask = [
   validateRequest(updateTaskSchema, 'params'), // Validar cuerpo de la solicitud
@@ -94,7 +98,7 @@ export const updateTask = [
 
     try {
       const result = await db.result(
-        'UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
+        'UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $4, completed_at = $5 WHERE id = $6 RETURNING *',
         [description, is_done, user_id, title, is_done === true ? new Date() : null, parseInt(id)]
       );
 
