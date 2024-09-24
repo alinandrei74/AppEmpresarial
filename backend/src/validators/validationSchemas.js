@@ -69,7 +69,12 @@ exports.userRegistrationSchema = joi_1.default.object({
         "string.max": "{{#label}} debe tener máximo 16 caracteres",
         "any.required": "{{#label}} es requerido",
     }),
-    email: joi_1.default.string().email().max(100).required().label("email - userRegistrationSchema").messages({
+    email: joi_1.default.string()
+        .pattern(/^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i)
+        .max(100)
+        .required()
+        .label("email - userRegistrationSchema")
+        .messages({
         "string.email": "{{#label}} tiene un formato inválido",
         "any.required": "{{#label}} es requerido",
     }),
