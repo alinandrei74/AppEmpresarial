@@ -184,7 +184,7 @@ export const userIdParamSchema = Joi.object({
     .integer()
     .positive()
     .required()
-    .label("user_id - userIdParamSchema")
+    .label("id - userIdParamSchema")
     .messages({
       "number.base": "{{#label}} debe ser un número.",
       "number.integer": "{{#label}} debe ser un número entero.",
@@ -216,18 +216,19 @@ export const createTaskSchema = Joi.object({
     "string.max": "{{#label}} no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
     "any.required": "{{#label}} es requerida",
   }),
+
   is_done: Joi.boolean()
-    .valid(true, false)
-    .required()
-    .label("is_done -createTaskSchema")
+    .valid(false)
+    .optional()
+    .label("is_done - createTaskSchema")
     .messages({
       "any.only": "{{#label}} debe ser true o false.",
       "any.required": "{{#label}} es requerido.",
     }),
 
   completed_at: Joi.date().allow(null).label("completed_at - createTaskSchema"),
-  created_at: Joi.date().timestamp().optional().allow(null).label("created_at - createTaskSchema"),
-  updated_at: Joi.date().timestamp().optional().allow(null).label("updated_at - createTaskSchema"),
+  created_at: Joi.date().allow(null).label("created_at - createTaskSchema"),
+  updated_at: Joi.date().allow(null).label("updated_at - createTaskSchema"),
 });
 
 // Para la actualización de tareas
@@ -238,24 +239,25 @@ export const updateTaskSchema = Joi.object({
     "number.positive": "{{#label}} debe ser un número positivo.",
     "any.required": "{{#label}} es obligatorio.",
   }),
-  title: Joi.string().max(100).required().label("title - updateTaskSchema").messages({
+  user_id: Joi.number().allow().label("user_id - updateTaskSchema"),
+  title: Joi.string().max(100).optional().label("title - updateTaskSchema").messages({
     "string.max": "{{#label}} no puede exceder los 100 caracteres",
     "any.required": "{{#label}} es requerido",
   }),
-  description: Joi.string().max(200).required().label("description - updateTaskSchema").messages({
+  description: Joi.string().max(200).optional().label("description - updateTaskSchema").messages({
     "any.required": "{{#label}} es requerida",
   }),
   is_done: Joi.boolean()
     .valid(true, false)
-    .required()
+    .optional()
     .label("is_done - updateTaskSchema")
     .messages({
       "any.only": "{{#label}} debe ser true o false.",
       "any.required": "{{#label}} es requerido.",
     }),
   completed_at: Joi.date().allow(null).label("completed_at -updateTaskSchema"),
-  created_at: Joi.date().timestamp().optional().allow(null).label("created_at - updateTaskSchema"),
-  updated_at: Joi.date().timestamp().optional().allow(null).label("updated_at - updateTaskSchema"),
+  created_at: Joi.date().allow(null).label("created_at - updateTaskSchema"),
+  updated_at: Joi.date().allow(null).label("updated_at - updateTaskSchema"),
 });
 
 export const createWorkScheduleSchema = Joi.object({

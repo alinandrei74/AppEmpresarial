@@ -63,9 +63,11 @@ exports.getCompletedTasksByUserId = [
 exports.createTask = [
     (0, validateRequest_1.validateRequest)(validationSchemas_1.createTaskSchema),
     async (req, res) => {
-        const { description, is_done, user_id, title } = req.body;
+        const { description, is_done = false, user_id, title } = req.body; // Valor predeterminado de is_done a false
         try {
-            const result = await db_1.db.one('INSERT INTO tasks (description, is_done, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id', [description, is_done, user_id, title]);
+            const result = await db_1.db.one(`INSERT INTO tasks (description, is_done, user_id, title) 
+         VALUES ($1, $2, $3, $4) 
+         RETURNING id`, [description, is_done, user_id, title]);
             logger_1.default.success('Tarea creada con éxito');
             return res.status(http_status_codes_1.StatusCodes.CREATED).json({
                 status: http_status_codes_1.StatusCodes.CREATED,
@@ -90,7 +92,7 @@ exports.updateTask = [
         const { id } = req.params;
         const { description, is_done, user_id, title } = req.body;
         try {
-            const result = await db_1.db.result('UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, is_done, user_id, title, is_done === true ? new Date() : null, parseInt(id)]);
+            const result = await db_1.db.result('UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $4, completed_at = $5 WHERE id = $6 RETURNING *', [description, is_done, user_id, title, is_done === true ? new Date() : null, parseInt(id)]);
             if (result.rowCount) {
                 logger_1.default.success(`Tarea con ID ${id} actualizada con éxito`);
                 return res.status(http_status_codes_1.StatusCodes.OK).json({
