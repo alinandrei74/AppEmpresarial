@@ -1,21 +1,23 @@
-//TODO#code3: añadir boton de eliminar del usuario que no es admin para que solo pueda eliminar su propia nota
-
 import React, { useState, useEffect } from "react";
 import AddNoteForm from "./AddNoteForm";
 import { toast } from "react-toastify";
 import "./Notes.css";
 
+/**
+ * Componente para mostrar y gestionar notas.
+ * @param {Object} props - Propiedades del componente.
+ * @param {Object} props.userData - Datos del usuario actual.
+ * @param {string} props.userData.role - Rol del usuario (admin o no admin).
+ * @param {string} props.userData.id - ID del usuario.
+ */
 const Notes = ({ userData }) => {
   const [notes, setNotes] = useState([]);
   const [sortOrder, setSortOrder] = useState(
     localStorage.getItem("sortOrderNote") || "asc"
   );
-  const [users, setUsers] = useState([]); //; Estado de los usuarios obtenidos del backend
 
   useEffect(() => {
     loadNotes();
-
-    loadUsers();
 
     const interval = setInterval(() => {
       console.log("Actualizando notas...");
@@ -29,11 +31,18 @@ const Notes = ({ userData }) => {
     updateNoteView(notes);
   }, [sortOrder]);
 
+  /**
+   * Alterna el orden de clasificación de las notas.
+   */
   const toggleSortOrder = () => {
     const newSortOrder = sortOrder === "asc" ? "desc" : "asc";
     setSortOrder(newSortOrder);
   };
 
+  /**
+   * Actualiza la vista de las notas ordenadas por fecha.
+   * @param {Array} rawNotes - Notas sin procesar.
+   */
   const updateNoteView = (rawNotes) => {
     const sortedNotes = [...rawNotes].sort((a, b) =>
       sortOrder === "asc"
@@ -44,29 +53,8 @@ const Notes = ({ userData }) => {
   };
 
   /**
-   * Cargar los usuarios del servidor.
+   * Carga las notas desde el servidor.
    */
-  const loadUsers = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/api/users/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Error fetching users: " + response.statusText);
-      }
-
-      const usersResult = await response.json();
-      setUsers(usersResult.data);
-    } catch (error) {
-      console.error("Error al cargar usuarios:", error.message);
-    }
-  };
-
   const loadNotes = async () => {
     try {
       const response = await fetch("http://localhost:3000/api/notes", {
@@ -116,52 +104,28 @@ const Notes = ({ userData }) => {
   };
 
   const handleDeleteNote = async (noteId) => {
-    if (userData.role === "admin") {
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/notes/${noteId}`,
-          {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to delete note");
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/notes/${noteId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+          },
         }
+      );
 
-        setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
-        toast.success("Nota eliminada con éxito");
-      } catch (error) {
-        console.error("Error deleting note:", error);
-        toast.error("Error al eliminar la nota");
+      if (!response.ok) {
+        throw new Error("Failed to delete note");
       }
+
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteId));
+      toast.success("Nota eliminada con éxito");
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      toast.error("Error al eliminar la nota");
     }
-  };
-
-  /**
-   * Obtener el nombre completo, nombre de usuario y rol por ID.
-   * @param {number} userId - ID del usuario.
-   * @returns {Object} Objeto que contiene el nombre completo, nombre de usuario y rol.
-   */
-  const getUsernameById = (userId) => {
-    const user =
-      userId === userData.id
-        ? userData //; Si el userId es el del usuario actual, usamos directamente userData
-        : users.find((user) => user.id === userId); //; Buscar en la lista de usuarios
-
-    //; Retornar valores del usuario encontrado o valores por defecto
-    return {
-      fullName:
-        [user?.name, user?.firstname, user?.lastname]
-          .filter(Boolean)
-          .join(" ") || "Usuario desconocido",
-      username: user?.username || "Usuario desconocido",
-      role: user?.role || "unknown",
-    };
   };
 
   return (
@@ -186,24 +150,24 @@ const Notes = ({ userData }) => {
 
       <div className="SharedCard__items-list">
         {notes.map((note) => {
-          const { fullName, username, role } = getUsernameById(note.user_id); //; Obtener el nombre y el rol del usuario
           return (
             <div key={note.id} className="SharedCard__item">
               <div className="SharedCard__item-user-div">
                 <h1>
-                  {note.user_id === userData.id
-                    ? "(TU)"
-                    : `${fullName.split(" ")[0]} ${fullName.split(" ")[1]}`}
+                  {note.user_id === userData.id ? "(TU)" : note.user_name}
                 </h1>
-                {role !== "unknown" && (
-                  <div className={`user-role-tag ${role}`}>{role}</div>
+                {note.user_role !== "unknown" && (
+                  <div className={`user-role-tag ${note.user_role}`}>
+                    {note.user_role}
+                  </div>
                 )}
               </div>
 
               <h1>{note.title}</h1>
               <h2>{note.description}</h2>
 
-              {userData.role === "admin" && (
+              {/* Mostrar botón de eliminar solo si el usuario es admin o si la nota pertenece al usuario */}
+              {(userData.role === "admin" || userData.id === note.user_id) && (
                 <button
                   className="SharedCard__delete-button"
                   onClick={() => handleDeleteNote(note.id)}
