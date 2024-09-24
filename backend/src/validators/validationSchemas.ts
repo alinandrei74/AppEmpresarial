@@ -137,8 +137,8 @@ export const createNoteSchema = Joi.object({
     "any.required": "El ID de usuario es requerido",
     "number.positive": "El ID de usuario debe ser un número positivo",
   }),
-  title: Joi.string().max(30).required().messages({
-    "string.max": "El título no puede exceder los 255 caracteres",
+  title: Joi.string().max(100).required().messages({
+    "string.max": "El título no puede exceder los 100 caracteres",
     "any.required": "El título es requerido",
   }),
   description: Joi.string().max(800).required().messages({
@@ -150,8 +150,8 @@ export const createNoteSchema = Joi.object({
 
 // Para la actualización de notas
 export const updateNoteSchema = Joi.object({
-  title: Joi.string().max(30).required().messages({
-    "string.max": "El título no puede exceder los 255 caracteres",
+  title: Joi.string().max(100).required().messages({
+    "string.max": "El título no puede exceder los 100 caracteres",
     "any.required": "El título es requerido",
   }),
   description: Joi.string().max(800).required().messages({
@@ -162,7 +162,12 @@ export const updateNoteSchema = Joi.object({
 });
 
 export const idParamSchema = Joi.object({
-  id: Joi.number().integer().positive(),
+  id: Joi.number().integer().positive().required().messages({
+    'number.base': 'El ID debe ser un número.',
+    'number.integer': 'El ID debe ser un número entero.',
+    'number.positive': 'El ID debe ser un número positivo.',
+    'any.required': 'El ID es obligatorio.' 
+  }),
   created_at: Joi.string(),
   updated_at: Joi.string()
 });
@@ -178,41 +183,49 @@ export const userIdParamSchema = Joi.object({
   updated_at: Joi.string()
 });
 
-// Para la creación de tareas
+// Esquema de validación para la creación de tareas
 export const createTaskSchema = Joi.object({
-  title: Joi.string().max(30).required().messages({
-    "string.max": "El título no puede exceder los 255 caracteres",
+  
+  title: Joi.string().max(100).required().messages({
+    "string.max": "El título no puede exceder los 100 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
     "any.required": "El título es requerido",
   }),
   description: Joi.string().max(200).required().messages({
+    "string.max": "La descripción no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
     "any.required": "La descripción es requerida",
   }),
   status: Joi.string()
-    .valid("pending", "in_progress", "completed")
+    .valid("pending", "in_progress", "completed") // Corregir los valores válidos para status
     .required()
     .messages({
-      "any.only":
-        "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
+      "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
       "any.required": "El estado de la tarea es requerido",
     }),
-  user_id: Joi.number().integer().positive().required().messages({
-    "number.base": "El ID de usuario debe ser un número entero",
-    "any.required": "El ID de usuario es requerido",
-    'number.positive': 'El ID de usuario debe ser un número positivo',
-  }),
+  
   completed_at: Joi.date().optional().messages({
     "date.base": "La fecha de finalización debe ser válida",
   }),
   
-  created_at: Joi.string(),
-  updated_at: Joi.string()
+  // Campos que deben ser prohibidos en la solicitud, ya que se manejan automáticamente en la base de datos
+  created_at: Joi.forbidden().messages({
+    "any.unknown": "El campo 'created_at' no está permitido",
+  }),
+  updated_at: Joi.forbidden().messages({
+    "any.unknown": "El campo 'updated_at' no está permitido",
+  }),
 });
 
 // Para la actualización de tareas
 export const updateTaskSchema = Joi.object({
   
-  title: Joi.string().max(30).required().messages({
-    "string.max": "El título no puede exceder los 255 caracteres",
+  id: Joi.number().integer().positive().required().messages({
+    'number.base': 'El ID debe ser un número.',
+    'number.integer': 'El ID debe ser un número entero.',
+    'number.positive': 'El ID debe ser un número positivo.',
+    'any.required': 'El ID es obligatorio.'
+  }), 
+  title: Joi.string().max(100).required().messages({
+    "string.max": "El título no puede exceder los 100 caracteres",
     "any.required": "El título es requerido",
   }),
   description: Joi.string().max(200).required().messages({

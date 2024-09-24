@@ -151,12 +151,17 @@ exports.updateNoteSchema = joi_1.default.object({
     updated_at: joi_1.default.string()
 });
 exports.idParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive(),
+    id: joi_1.default.number().integer().positive().required().messages({
+        'number.base': 'El ID debe ser un número.',
+        'number.integer': 'El ID debe ser un número entero.',
+        'number.positive': 'El ID debe ser un número positivo.',
+        'any.required': 'El ID es obligatorio.'
+    }),
     created_at: joi_1.default.string(),
     updated_at: joi_1.default.string()
 });
 exports.userIdParamSchema = joi_1.default.object({
-    userId: joi_1.default.number().integer().positive().required().messages({
+    user_id: joi_1.default.number().integer().positive().required().messages({
         'number.base': 'El ID de usuario debe ser un número.',
         'number.integer': 'El ID de usuario debe ser un número entero.',
         'number.positive': 'El ID de usuario debe ser un número positivo.',
@@ -165,35 +170,42 @@ exports.userIdParamSchema = joi_1.default.object({
     created_at: joi_1.default.string(),
     updated_at: joi_1.default.string()
 });
-// Para la creación de tareas
+// Esquema de validación para la creación de tareas
 exports.createTaskSchema = joi_1.default.object({
     title: joi_1.default.string().max(30).required().messages({
-        "string.max": "El título no puede exceder los 255 caracteres",
+        "string.max": "El título no puede exceder los 30 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
         "any.required": "El título es requerido",
     }),
     description: joi_1.default.string().max(200).required().messages({
+        "string.max": "La descripción no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
         "any.required": "La descripción es requerida",
     }),
     status: joi_1.default.string()
-        .valid("pending", "in_progress", "completed")
+        .valid("pending", "in_progress", "completed") // Corregir los valores válidos para status
         .required()
         .messages({
         "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
         "any.required": "El estado de la tarea es requerido",
     }),
-    user_id: joi_1.default.number().integer().positive().required().messages({
-        "number.base": "El ID de usuario debe ser un número entero",
-        "any.required": "El ID de usuario es requerido",
-        'number.positive': 'El ID de usuario debe ser un número positivo',
-    }),
     completed_at: joi_1.default.date().optional().messages({
         "date.base": "La fecha de finalización debe ser válida",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    // Campos que deben ser prohibidos en la solicitud, ya que se manejan automáticamente en la base de datos
+    created_at: joi_1.default.forbidden().messages({
+        "any.unknown": "El campo 'created_at' no está permitido",
+    }),
+    updated_at: joi_1.default.forbidden().messages({
+        "any.unknown": "El campo 'updated_at' no está permitido",
+    }),
 });
 // Para la actualización de tareas
 exports.updateTaskSchema = joi_1.default.object({
+    id: joi_1.default.number().integer().positive().required().messages({
+        'number.base': 'El ID debe ser un número.',
+        'number.integer': 'El ID debe ser un número entero.',
+        'number.positive': 'El ID debe ser un número positivo.',
+        'any.required': 'El ID es obligatorio.'
+    }),
     title: joi_1.default.string().max(30).required().messages({
         "string.max": "El título no puede exceder los 255 caracteres",
         "any.required": "El título es requerido",
