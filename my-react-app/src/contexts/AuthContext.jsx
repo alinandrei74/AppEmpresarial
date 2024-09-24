@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
-// Crear contexto de autenticación
+//; Crear contexto de autenticación
 export const AuthContext = createContext();
 
 /**
@@ -44,17 +44,17 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
-    // Verificar el token en cada cambio de ruta (excepto en "/login")
+    //; Verificar el token en cada cambio de ruta (excepto en "/login")
     if (location.pathname !== "/login") {
       verifyToken();
     }
 
-    // Verificar el token cada 5 minutos
+    //; Verificar el token cada 5 minutos
     const intervalId = setInterval(() => {
       if (location.pathname !== "/login") {
         verifyToken();
       }
-    }, 300000); // 300000ms = 5 minutos
+    }, 300000); //; 300000ms = 5 minutos
 
     return () => clearInterval(intervalId);
   }, [location.pathname, navigate]);

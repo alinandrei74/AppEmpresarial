@@ -16,16 +16,16 @@ import {
  */
 const Aside = ({ isMenuOpen, toggleMenu, userData }) => {
   const location = useLocation();
-  const [isMobile, setIsMobile] = useState(false); // Estado para detectar si es móvil
+  const [isMobile, setIsMobile] = useState(false); //; Estado para detectar si es móvil
 
-  // Detectar cambios de tamaño de ventana para actualizar isMobile
+  //; Detectar cambios de tamaño de ventana para actualizar isMobile
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Si el ancho de la ventana es <= 768px, es móvil
+      setIsMobile(window.innerWidth <= 768); //; Si el ancho de la ventana es <= 768px, es móvil
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); // Inicialmente comprobar el tamaño de la ventana
+    handleResize(); //; Inicialmente comprobar el tamaño de la ventana
 
     return () => {
       window.removeEventListener("resize", handleResize);
