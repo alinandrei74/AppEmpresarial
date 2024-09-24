@@ -233,12 +233,12 @@ export const createTaskSchema = Joi.object({
 
 // Para la actualización de tareas
 export const updateTaskSchema = Joi.object({
-  id: Joi.number().integer().positive().required().label("id - updateTaskSchema").messages({
-    "number.base": "{{#label}} debe ser un número.",
-    "number.integer": "{{#label}} debe ser un número entero.",
-    "number.positive": "{{#label}} debe ser un número positivo.",
-    "any.required": "{{#label}} es obligatorio.",
-  }),
+  // id: Joi.number().integer().positive().required().label("id - updateTaskSchema").messages({
+  //   "number.base": "{{#label}} debe ser un número.",
+  //   "number.integer": "{{#label}} debe ser un número entero.",
+  //   "number.positive": "{{#label}} debe ser un número positivo.",
+  //   "any.required": "{{#label}} es obligatorio.",
+  // }),
   user_id: Joi.number().allow().label("user_id - updateTaskSchema"),
   title: Joi.string().max(100).optional().label("title - updateTaskSchema").messages({
     "string.max": "{{#label}} no puede exceder los 100 caracteres",
