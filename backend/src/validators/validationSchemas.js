@@ -160,7 +160,7 @@ exports.idParamSchema = joi_1.default.object({
     updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.userIdParamSchema = joi_1.default.object({
-    user_id: joi_1.default.number().integer().positive().required().messages({
+    id: joi_1.default.number().integer().positive().required().messages({
         "number.base": "El ID de usuario debe ser un número.",
         "number.integer": "El ID de usuario debe ser un número entero.",
         "number.positive": "El ID de usuario debe ser un número positivo.",

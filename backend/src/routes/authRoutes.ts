@@ -12,6 +12,9 @@ const authenticateAndAuthorizeAdmin = [
     authorizeAdmin, 
   ];
 
+//Ruta para verificar token
+router.get('/verify', verifyToken);
+
 // Ruta para el registro
 router.post('/register', authenticateAndAuthorizeAdmin, validateRequest(userRegistrationSchema), registerUser);
 
@@ -21,7 +24,6 @@ router.post('/login', validateRequest(userLoginSchema),loginUser);
 // Ruta para cerrar sesión
 router.post('/logout', logoutUser);
 
-//Ruta para verificar token
-router.get('/verify', verifyToken);
+
 
 export default router;
