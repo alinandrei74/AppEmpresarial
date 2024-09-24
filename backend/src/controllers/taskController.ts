@@ -39,7 +39,7 @@ export const getCompletedTasksByUserId = [
     const { userId } = req.params;
 
     try {
-      const tasks = await db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parseInt(userId), 'completed']);
+      const tasks = await db.any('SELECT * FROM tasks WHERE user_id = $1 AND is_done = $2', [parseInt(userId), true]);
       Logger.success(`Tareas completadas para el usuario ${userId} obtenidas con éxito`);
       return res.status(StatusCodes.OK).json({
         status: StatusCodes.OK,
@@ -61,12 +61,12 @@ export const getCompletedTasksByUserId = [
 export const createTask = [
   validateRequest(createTaskSchema), 
   async (req: Request, res: Response) => {
-    const { description, status, user_id, title } = req.body;
+    const { description, is_done, user_id, title } = req.body;
 
     try {
       const result = await db.one(
-        'INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id',
-        [description, status, user_id, title]
+        'INSERT INTO tasks (description, is_done, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id',
+        [description, is_done, user_id, title]
       );
       Logger.success('Tarea creada con éxito');
       return res.status(StatusCodes.CREATED).json({
@@ -90,12 +90,12 @@ export const updateTask = [
   validateRequest(updateTaskSchema, 'params'), // Validar cuerpo de la solicitud
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { description, status, user_id, title } = req.body;
+    const { description, is_done, user_id, title } = req.body;
 
     try {
       const result = await db.result(
-        'UPDATE tasks SET description = $1, status = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
-        [description, status, user_id, title, status === 'completed' ? new Date() : null, parseInt(id)]
+        'UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
+        [description, is_done, user_id, title, is_done === true ? new Date() : null, parseInt(id)]
       );
 
       if (result.rowCount) {
