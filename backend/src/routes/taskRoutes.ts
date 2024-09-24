@@ -11,7 +11,7 @@ const router = Router();
 router.get('/', authenticateToken, authorizeRole('tasks', 'read'), getTasks);
 
 // Nueva ruta para obtener todas las tareas completadas por un usuario
-router.get('/completed/:userId', authenticateToken, authorizeRole('tasks', 'read'), validateRequest(userIdParamSchema, 'params'), getCompletedTasksByUserId);
+router.get('/completed/:user_id', authenticateToken, authorizeRole('tasks', 'read'), validateRequest(userIdParamSchema, 'params'), getCompletedTasksByUserId);
 
 // Solo admin puede crear tareas
 router.post('/', authenticateToken, authorizeRole('tasks', 'create'), validateRequest(createTaskSchema), createTask);
