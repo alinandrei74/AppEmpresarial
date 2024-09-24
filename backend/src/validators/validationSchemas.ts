@@ -180,17 +180,9 @@ export const idParamSchema = Joi.object({
 });
 
 export const userIdParamSchema = Joi.object({
-  id: Joi.number()
-    .integer()
-    .positive()
-    .required()
-    .label("id - userIdParamSchema")
-    .messages({
-      "number.base": "{{#label}} debe ser un número.",
-      "number.integer": "{{#label}} debe ser un número entero.",
-      "number.positive": "{{#label}} debe ser un número positivo.",
-      "any.required": "{{#label}} es obligatorio.",
-    }),
+  id: Joi.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+    "error en id" : "Error en id - userIdParamSchema" 
+  }),
   created_at: Joi.date().timestamp().optional().allow(null).label("created_at - userIdParamSchema"),
   updated_at: Joi.date().timestamp().optional().allow(null).label("updated_at - userIdParamSchema"),
 });
