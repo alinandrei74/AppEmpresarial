@@ -2,11 +2,18 @@ import { Router } from 'express';
 import { registerUser, loginUser, verifyToken, logoutUser } from '../controllers/authController';
 import { validateRequest } from '../middlewares/validateRequest';
 import { userLoginSchema, userRegistrationSchema  } from '../validators/validationSchemas';
+import { authorizeAdmin } from '../middlewares/autorizeAdmin';
+import { authenticateToken } from '../middlewares/authMiddleware';
 
 const router = Router();
 
+const authenticateAndAuthorizeAdmin = [
+    authenticateToken, 
+    authorizeAdmin, 
+  ];
+
 // Ruta para el registro
-router.post('/register', validateRequest(userRegistrationSchema), registerUser);
+router.post('/register', authenticateAndAuthorizeAdmin, validateRequest(userRegistrationSchema), registerUser);
 
 // Ruta para el login
 router.post('/login', validateRequest(userLoginSchema),loginUser);

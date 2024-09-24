@@ -65,7 +65,7 @@ export const createTask = [
 
     try {
       const result = await db.one(
-        'INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        'INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id',
         [description, status, user_id, title]
       );
       Logger.success('Tarea creada con éxito');

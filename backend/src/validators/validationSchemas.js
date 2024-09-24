@@ -156,7 +156,12 @@ exports.idParamSchema = joi_1.default.object({
     updated_at: joi_1.default.string()
 });
 exports.userIdParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive(),
+    userId: joi_1.default.number().integer().positive().required().messages({
+        'number.base': 'El ID de usuario debe ser un número.',
+        'number.integer': 'El ID de usuario debe ser un número entero.',
+        'number.positive': 'El ID de usuario debe ser un número positivo.',
+        'any.required': 'El ID de usuario es obligatorio.'
+    }),
     created_at: joi_1.default.string(),
     updated_at: joi_1.default.string()
 });
@@ -181,7 +186,7 @@ exports.createTaskSchema = joi_1.default.object({
         "any.required": "El ID de usuario es requerido",
         'number.positive': 'El ID de usuario debe ser un número positivo',
     }),
-    completed_at: joi_1.default.date().required().messages({
+    completed_at: joi_1.default.date().optional().messages({
         "date.base": "La fecha de finalización debe ser válida",
     }),
     created_at: joi_1.default.string(),
@@ -202,7 +207,7 @@ exports.updateTaskSchema = joi_1.default.object({
         .messages({
         "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
     }),
-    completed_at: joi_1.default.date().required().messages({
+    completed_at: joi_1.default.date().optional().messages({
         "date.base": "La fecha de finalización debe ser válida",
     }),
     created_at: joi_1.default.string(),

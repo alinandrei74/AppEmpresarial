@@ -168,7 +168,12 @@ export const idParamSchema = Joi.object({
 });
 
 export const userIdParamSchema = Joi.object({
-  id: Joi.number().integer().positive(),
+  userId: Joi.number().integer().positive().required().messages({
+    'number.base': 'El ID de usuario debe ser un número.',
+    'number.integer': 'El ID de usuario debe ser un número entero.',
+    'number.positive': 'El ID de usuario debe ser un número positivo.',
+    'any.required': 'El ID de usuario es obligatorio.'
+  }),
   created_at: Joi.string(),
   updated_at: Joi.string()
 });
@@ -195,7 +200,7 @@ export const createTaskSchema = Joi.object({
     "any.required": "El ID de usuario es requerido",
     'number.positive': 'El ID de usuario debe ser un número positivo',
   }),
-  completed_at: Joi.date().required().messages({
+  completed_at: Joi.date().optional().messages({
     "date.base": "La fecha de finalización debe ser válida",
   }),
   
@@ -220,7 +225,7 @@ export const updateTaskSchema = Joi.object({
       "any.only":
         "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
     }),
-  completed_at: Joi.date().required().messages({
+  completed_at: Joi.date().optional().messages({
     "date.base": "La fecha de finalización debe ser válida",
   }),
   created_at: Joi.string(),

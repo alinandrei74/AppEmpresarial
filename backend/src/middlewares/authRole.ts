@@ -52,7 +52,7 @@ export const authorizeRole = (entity: 'tasks' | 'users' | 'notes' | 'work_schedu
     if (rolePermissions[role] && rolePermissions[role][entity]?.includes(action)) {
       // Restricción para creación de horarios
       if (entity === 'work_schedules') {
-        const scheduleUserId = req.params.workerId || req.body.workerId;
+        const scheduleUserId = req.params.user_id || req.body.user_Id;
 
         // Validación para creación de horarios
         if (action === 'create' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
