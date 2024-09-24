@@ -132,6 +132,9 @@ exports.userLoginSchema = joi_1.default.object({
 });
 // Para la creación de notas
 exports.createNoteSchema = joi_1.default.object({
+    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+        "error en id": "Error en id - userIdParamSchema"
+    }),
     title: joi_1.default.string().max(100).required().label("title - createNoteSchema").messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
         "any.required": "{{#label}} es requerido",
@@ -144,10 +147,11 @@ exports.createNoteSchema = joi_1.default.object({
 });
 // Para la actualización de notas
 exports.updateNoteSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().required().positive().label("id - updateNoteSchema").messages({
-        "number.base": "{{#label}} debe ser un número entero",
-        "any.required": "{{#label}} es requerido",
-        "number.positive": "{{#label}} debe ser un número positivo",
+    id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+        "error en id": "Error en id - userIdParamSchema"
+    }),
+    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+        "error en id": "Error en id - userIdParamSchema"
     }),
     title: joi_1.default.string().max(100).required().label("title - updateNoteSchema").messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
@@ -171,6 +175,9 @@ exports.idParamSchema = joi_1.default.object({
 });
 exports.userIdParamSchema = joi_1.default.object({
     id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+        "error en id": "Error en id - userIdParamSchema"
+    }),
+    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
         "error en id": "Error en id - userIdParamSchema"
     }),
     created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - userIdParamSchema"),
