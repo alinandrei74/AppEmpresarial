@@ -1,5 +1,3 @@
-import Logger from "../../../../../backend/src/utils/logger";
-
 /**
  * @typedef {Object} ApiResponse
  * @property {number} status - El código de estado HTTP.
@@ -126,7 +124,6 @@ class ApiService {
   static async _request(url, method, body = null) {
     try {
       const token = this.userToken;
-      // Logger.information(`userToken: {${token}}`);
 
       if (!token && method !== "GET") {
         throw new Error("No autorizado: se requiere autenticación.");
@@ -148,7 +145,7 @@ class ApiService {
       }
 
       return {
-        status: response.status,
+        status: result.status,
         message: result.message,
         data: result.data,
       };
