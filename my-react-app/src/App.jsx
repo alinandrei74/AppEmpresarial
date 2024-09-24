@@ -1,69 +1,59 @@
 import React, { useContext, useState, useEffect } from "react";
-import { BrowserRouter as Router, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom"; // Elimina BrowserRouter aquí
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "./pages/components/navbar/Navbar";
 import AppRoutes from "./pages/AppRoutes";
 import { DarkModeContext } from "./contexts/DarkModeContext";
+import { AuthContext } from "./contexts/AuthContext";
 import Aside from "./pages/user_profile/components/Aside";
 import SampleWebStyle from "./pages/sample_web_style/SampleWebStyle";
 
 /**
  * Componente principal de la aplicación que maneja la navegación global.
  * @component
- * @returns {JSX.Element} App
+ * @returns {JSX.Element} AppContent
  */
 const AppContent = () => {
   const { darkMode } = useContext(DarkModeContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Estado del menú hamburguesa
-  const [isMobile, setIsMobile] = useState(false); // Estado para manejar si es móvil
-  const [userData, setUserData] = useState(null); // Simular datos del usuario
+  const { userData } = useContext(AuthContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen); // Alternar entre abrir/cerrar el menú
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const location = useLocation();
   const isUserProfileRoute = location.pathname.includes("/user-profile");
 
   useEffect(() => {
-    // Simular obtención de datos del usuario
-    setUserData({
-      role: "admin", // Simular usuario administrador
-    });
-
-    // Función para verificar el tamaño de la pantalla
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Detectar si es móvil (ancho <= 768px)
+      setIsMobile(window.innerWidth <= 768);
     };
 
-    // Escuchar cambios de tamaño de la ventana
     window.addEventListener("resize", handleResize);
-    handleResize(); // Ejecutar al cargar
+    handleResize();
 
     return () => {
-      window.removeEventListener("resize", handleResize); // Limpiar efecto
+      window.removeEventListener("resize", handleResize);
     };
   }, []);
 
   return (
     <div>
       <Navbar isMenuOpen={isMenuOpen} toggleMenu={toggleMenu} />
-      {/* Renderizar Aside solo si estamos en la ruta de perfil de usuario */}
-      {isUserProfileRoute &&
-        // Mostrar Aside solo en pantallas grandes o si el menú hamburguesa está abierto
-        (!isMobile || (isMobile && isMenuOpen)) && (
-          <Aside
-            isMenuOpen={isMenuOpen}
-            toggleMenu={toggleMenu}
-            userData={userData}
-          />
-        )}
+      {isUserProfileRoute && (!isMobile || (isMobile && isMenuOpen)) && (
+        <Aside
+          isMenuOpen={isMenuOpen}
+          toggleMenu={toggleMenu}
+          userData={userData}
+        />
+      )}
       <div className="app">
         <main>
           <div className="app-container">
             <AppRoutes />
-            {/* <SampleWebStyle /> */}
           </div>
         </main>
       </div>
@@ -80,17 +70,9 @@ const AppContent = () => {
         draggable
         pauseOnHover
       />
+      {/* <SampleWebStyle /> */}
     </div>
   );
 };
 
-const App = () => {
-  return (
-    <Router>
-      <AppContent />
-      {/* <SampleWebStyle /> */}
-    </Router>
-  );
-};
-
-export default App;
+export default AppContent;
