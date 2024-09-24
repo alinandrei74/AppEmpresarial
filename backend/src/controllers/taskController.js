@@ -39,10 +39,10 @@ exports.getTasks = getTasks;
 exports.getCompletedTasksByUserId = [
     (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'),
     async (req, res) => {
-        const { userId } = req.params;
+        const { user_id } = req.params;
         try {
-            const tasks = await db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND is_done = $2', [parseInt(userId), true]);
-            logger_1.default.success(`Tareas completadas para el usuario ${userId} obtenidas con éxito`);
+            const tasks = await db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND is_done = $2', [parseInt(user_id), true]);
+            logger_1.default.success(`Tareas completadas para el usuario ${user_id} obtenidas con éxito`);
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
                 message: 'Tareas completadas obtenidas con éxito',
