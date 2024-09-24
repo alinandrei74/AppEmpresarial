@@ -45,6 +45,14 @@
     --clr-secondary: var(--secondary-light);
     --clr-OnSecondary: var(--secondary-dark);
 
+    /*? Info */
+    --clr-info: aquamarine;
+    --clr-OnInfo: rgb(4, 45, 179);
+
+    /*? Warning */
+    --clr-warning: yellow;
+    --clr-OnWarning: rgb(167, 167, 0);
+
     /*? Error */
     --clr-error: rgb(255, 48, 48);
     --clr-OnError: rgb(182, 0, 0);
@@ -80,6 +88,14 @@
     /*? Secundario */
     --clr-secondary: var(--secondary-dark);
     --clr-OnSecondary: var(--secondary-light);
+
+    /*? Info */
+    --clr-info: rgb(4, 45, 179);
+    --clr-OnInfo: aquamarine;
+
+    /*? Warning */
+    --clr-warning: rgb(167, 167, 0);
+    --clr-OnWarning: yellow;
 
     /*? Error */
     --clr-error: rgb(182, 0, 0);

@@ -1,24 +1,26 @@
-.user-profile-container {
-  /* display: flex; */
-}
-
 .user-profile-content {
   transition: 0.3s;
-  margin-left: auto;
-  padding: 20px;
-  width: calc(100% - 250px);
+  padding: 20px 35px;
+  width: calc(100% - 240px);
+  /* width: 100%; */
+  /* Ajusta el ancho basado en el aside */
+  margin-left: 240px;
+  /* Deja espacio para el Aside en pantallas grandes */
 }
 
 @media (max-width: 768px) {
   .user-profile-content {
-    margin-left: 0px;
-    width: auto;
+    width: 100%;
+    /* Full width cuando el Aside está oculto en pantallas pequeñas */
+    margin-left: 0;
+    /* Remueve el margen cuando el aside está oculto */
   }
 }
 
 @media (max-width: 480px) {
   .user-profile-content {
-    margin-left: 0px;
-    width: auto;
+    width: 100%;
+    /* Aseguramos que siempre ocupe el 100% del espacio disponible */
+    margin-left: 0;
   }
 }

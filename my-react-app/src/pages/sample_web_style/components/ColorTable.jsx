@@ -47,6 +47,12 @@ const ColorTable = () => {
     { name: "Secondary", variable: "--clr-secondary" },
     { name: "On Secondary", variable: "--clr-OnSecondary" },
 
+    { name: "Info", variable: "--clr-info" },
+    { name: "On Info", variable: "--clr-OnInfo" },
+
+    { name: "Warning", variable: "--clr-warning" },
+    { name: "On Warning", variable: "--clr-OnWarning" },
+
     { name: "Error", variable: "--clr-error" },
     { name: "On Error", variable: "--clr-OnError" },
 
@@ -87,6 +93,9 @@ const ColorTable = () => {
           break;
         case color.variable === "--clr-OnBackground":
         case color.variable === "--clr-text":
+        case color.variable === "--clr-OnWarning":
+        case color.variable === "--clr-OnInfo":
+        case color.variable === "--clr-OnPrimary":
         case color.variable.endsWith("-light"):
         case color.variable.endsWith("-hover"):
           textColor = `var(--clr-OnText)`;

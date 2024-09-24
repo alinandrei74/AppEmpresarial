@@ -169,8 +169,8 @@ const renderApartmentDetails = (apt, role) => {
 
 const Apartments = ({ userData }) => {
   return (
-    <div className="apartments-container">
-      <h2 className="apartments-title">Lista de Apartamentos</h2>
+    <div className="SharedCard__card-background apartments-container">
+      <h2 className="SharedCard__title">Lista de Apartamentos</h2>
       <div className="apartments-grid">
         {apartmentsData.map((apt) => (
           <div key={apt.number} className="apartment-card">

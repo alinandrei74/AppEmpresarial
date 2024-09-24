@@ -124,8 +124,8 @@ const Calendar = ({ userData }) => {
   };
 
   return (
-    <div className="schedule-container">
-      <h2>Gestión de Horarios</h2>
+    <div className="SharedCard__card-background schedule-container">
+      <h2 className="SharedCard__title">Gestión de Horarios</h2>
 
       <div className="schedule-input">
         <div className="time-row">
@@ -184,7 +184,7 @@ const Calendar = ({ userData }) => {
         </div>
       </div>
 
-      <div className="button-container">
+      <div className="SharedCard__button-div">
         <button className="send-button" onClick={handleSave}>
           Enviar Horarios
         </button>

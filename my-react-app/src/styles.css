@@ -20,8 +20,8 @@ body {
 
 /*? Main */
 main {
-    padding: 2rem;
-    max-width: 1200px;
+    /* padding: 2rem; */
+    padding-top: 2.5rem;
     margin: 0 auto;
 }
 
@@ -58,40 +58,82 @@ th {
 
 /*? Contenedor principal */
 .app-container {
+    display: flex;
+    flex-grow: 1;
     padding: 20px;
-    text-align: center;
-    max-width: 900px;
-    margin: 0 auto;
+    box-sizing: border-box;
+    width: 100%;
+    transition: margin-left 0.3s, width 0.3s;
+}
+
+@media (max-width: 768px) {
+    .app-container {
+        width: 100%;
+    }
 }
 
 
 /*todo---MARK: Roles */
 
-/* Clases de colores para cada rol de usuario */
-.user-role.admin {
+/*? Estilo base para los roles */
+.user-role {
+    color: var(--clr-text) !important;
+}
+
+.user-role-tag {
+    padding: 5px 15px;
+    border-radius: 5px;
+    font-size: 0.6em;
+    display: inline-block;
+    color: var(--clr-text) !important;
+
+    /*; Desplaza hacia la derecha */
+    margin-left: auto;
+    margin-bottom: auto;
+}
+
+/*? Clases de colores específicas para cada rol */
+.user-role.admin,
+.user-role-tag.admin {
     background-color: var(--clr-admin) !important;
-    color: var(--clr-text) !important;
-    /* color: cornsilk !important; */
-
 }
 
-.user-role.cleaning {
+.user-role.cleaning,
+.user-role-tag.cleaning {
     background-color: var(--clr-cleaning) !important;
-    color: var(--clr-text) !important;
-    /* color: cornsilk !important; */
-
 }
 
-.user-role.delivery {
+.user-role.delivery,
+.user-role-tag.delivery {
     background-color: var(--clr-delivery) !important;
-    color: var(--clr-text) !important;
-    /* color: cornsilk !important; */
 }
 
-.user-role.maintenance {
+.user-role.maintenance,
+.user-role-tag.maintenance {
     background-color: var(--clr-maintenance) !important;
-    color: var(--clr-text) !important;
-    /* color: cornsilk !important; */
+}
+
+/*? Añadir variaciones específicas para los tags */
+.user-role-tag.admin {
+    border: 1px solid var(--clr-admin-dark);
+}
+
+.user-role-tag.cleaning {
+    border: 1px solid var(--clr-cleaning-dark);
+}
+
+.user-role-tag.delivery {
+    border: 1px solid var(--clr-delivery-dark);
+}
+
+.user-role-tag.maintenance {
+    border: 1px solid var(--clr-maintenance-dark);
+}
+
+/*? Variación de hover opcional para mejorar la interacción */
+.user-role-tag:hover {
+    /* transform: scale(1.05); */
+    /* transition: transform 0.2s ease-in-out; */
 }
 
 

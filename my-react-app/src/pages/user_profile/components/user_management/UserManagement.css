@@ -1,11 +1,5 @@
 .user-management {
-  padding: 20px;
-  background-color: var(--clr-OnPrimary);
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  max-width: 100%;
-  overflow-x: auto;
+  max-width: 1400px;
 }
 
 /* Estilo para el botón flotante */
@@ -16,7 +10,7 @@
   width: 60px;
   height: 60px;
   background-color: var(--clr-OnPrimary);
-  color: white;
+  color: var(--clr-OnText);
   border-radius: 50%;
   text-align: center;
   font-size: 36px;
@@ -92,13 +86,24 @@ thead .thManagement {
 }
 
 .buttonManagement {
-  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+  /* Centra horizontalmente */
+  align-items: center;
+  /* Centra verticalmente */
+  padding: 10px 25px;
   background-color: var(--clr-error);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: none !important;
+  margin: 0 auto;
+  /* Centra el botón dentro de su contenedor */
+  transition: background-color 0.3s ease;
+  /* Añadir una transición suave */
+
+  /* width opcional si deseas que el botón ocupe todo el ancho del contenedor */
+  /* width: 100%; */
 }
 
 .buttonManagement:hover {

@@ -47,13 +47,15 @@ const UserDetails = ({ userData }) => {
     .join(" ");
 
   return (
-    <div className="user-details-container">
-      <div className="user-details-header">
-        <h2>
+    <div className="SharedCard__card-background">
+      <div className="SharedCard__item-user-div">
+        <h2 className="SharedCard__title">
           {fullName.split(" ")[0]} - {userData.dni}
         </h2>
         {userData.role && (
-          <div className={`user-role ${userData.role.toLowerCase()}`}>
+          <div
+            className={`user-role-tag ${userData.role.toLowerCase()} user-role-tag-UserDetais`}
+          >
             {userData.role}
           </div>
         )}

@@ -3,8 +3,8 @@
 /* Mejorar el ancho en pantallas grandes y añadir iconos */
 .aside {
   width: 20%;
-  min-width: 250px;
-  max-width: 300px;
+  min-width: 290px;
+  max-width: 290px;
   padding: 0;
   height: 100vh;
   box-sizing: border-box;
@@ -17,13 +17,13 @@
   z-index: 999;
 
   /* Transición suave para abrir y cerrar el Aside */
-  transition: transform 0.3s ease-in-out !important;
-  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  /* transform: translateX(-100%) !important; */
   /* Ocultar por defecto en móviles */
 }
 
 .aside.open {
-  transform: translateX(0);
+  transform: translateX(0) !important;
   /* Mostrar Aside cuando el menú está abierto */
 }
 
@@ -81,15 +81,264 @@
   z-index: 1000;
 }
 
+
+/*? Clases Compartidas Tarjeta */
+
+/**
+**MARK: Capas
+*/
+
+.SharedCard__card-background {
+
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--clr-OnPrimary);
+
+}
+
+.SharedCard__card-first-layer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--clr-primary);
+}
+
+/**
+**MARK: Formulario
+*/
+
+.SharedCard__form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.SharedCard__form>input,
+.SharedCard__form>textarea,
+.SharedCard__form>select,
+.SharedCard__form>button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.SharedCard__form>button {
+  padding: 10px 16px;
+  color: var(--clr-OnPrimary);
+  transition: background-color 0.1s ease;
+  color: white;
+}
+
+/* Animación de enfoque suave para el campo de título */
+input[type="text"] {
+  /*; Animación suave tanto para box-shadow como para el borde */
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  /*; Elimina el borde por defecto del navegador */
+  outline: none;
+  /*; Efecto de sombra alrededor del campo */
+  box-shadow: 0 0 8px var(--secondary-default);
+  /*; Cambia el color del borde */
+  border-color: var(--secondary-default);
+}
+
+
+/**
+**MARK: Texto
+*/
+
+.SharedCard__title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: var(--clr-OnText);
+}
+
+
+/**
+**MARK: Botones
+*/
+
+.SharedCard__filter-button-div {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.SharedCard__filter-button-div>button {
+  margin-bottom: 10px;
+  padding: 8px 15px;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+
+.SharedCard__delete-button {
+  background-color: var(--clr-error);
+  color: white;
+}
+
+.SharedCard__delete-button:hover {
+  background-color: darkred;
+}
+
+
+/**
+**MARK: Elemento
+*/
+
+.SharedCard__items-list {
+  display: grid;
+  gap: 15px;
+}
+
+.SharedCard__item {
+  background-color: var(--clr-primary);
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.1s, background-color 0.1s;
+}
+
+.SharedCard__item:hover {
+  transform: translateY(-2px);
+}
+
+.SharedCard__item.pending {
+  border-left: 10px solid rgb(255, 230, 0);
+}
+
+.SharedCard__item.done {
+  border-left: 10px solid rgb(19, 167, 0);
+}
+
+.SharedCard__item>p {
+  color: var(--clr-text);
+}
+
+.SharedCard__item-user-div {
+  display: flex;
+  font-size: 1.5em;
+}
+
+.SharedCard__item-user-div>h1 {
+  color: var(--clr-OnPrimary);
+  padding-bottom: 15px;
+  margin: 0;
+  font-size: 1em;
+}
+
+.SharedCard__item-user-div .user-role {
+  /* padding: 5px 15px;
+  border-radius: 5px;
+  font-size: 0.6em;
+  display: inline-block; */
+
+  /*; Desplaza el .user-role hacia la derecha */
+  /* margin-left: auto;
+  margin-bottom: auto; */
+}
+
+.SharedCard__item>h1 {
+  margin: 0 0 10px 0;
+  font-weight: bold;
+  font-size: 20px;
+  color: var(--clr-text);
+}
+
+.SharedCard__item>h2 {
+  margin: 0;
+  font-size: 15px;
+  word-break: break-word;
+  margin-bottom: 5px;
+  color: var(--clr-text);
+}
+
+.SharedCard__item>button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.SharedCard__item>button+button {
+  margin-left: 10px;
+}
+
+
+/**
+**MARK: Otros
+*/
+
+.SharedCard__note {
+  background-color: var(--clr-primary);
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+  color: var(--clr-text);
+  font-size: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.SharedCard__note>p {
+  color: whitesmoke;
+  font-weight: 300;
+}
+
+.SharedCard__note #info {
+  color: var(--clr-OnInfo);
+  font-weight: 600;
+}
+
+.SharedCard__note #warning {
+  color: var(--clr-OnWarning);
+  font-weight: 600;
+}
+
+.SharedCard__note #error {
+  color: var(--clr-OnError);
+  font-weight: 600;
+}
+
+.SharedCard__note #success {
+  color: var(--clr-OnSuccess);
+  font-weight: 600;
+}
+
+
 /* Estilos específicos para pantallas pequeñas (menos de 768px) */
 @media screen and (max-width: 768px) {
+
+  .SharedCard__card-background {
+    width: auto;
+  }
+
+
   .aside {
-    transform: translateX(-100%);
+    transform: translateX(-100%) !important;
     /* Ocultar Aside inicialmente en pantallas pequeñas */
   }
 
   .aside.open {
-    transform: translateX(0);
+    transform: translateX(0) !important;
     /* Mostrar Aside cuando el menú está abierto */
   }
 

@@ -1,3 +1,4 @@
+//TODO#code3: Añadir una actualizacion cada minuto para recargar la vista de los usuarios
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify"; // Importar react-toastify
 import "./UserManagement.css";
@@ -100,8 +101,8 @@ const UserManagement = ({ userData }) => {
   };
 
   return (
-    <div className="user-management">
-      <h2>Gestión de Usuarios</h2>
+    <div className="SharedCard__card-background user-management">
+      <h2 className="SharedCard__title">Gestión de Usuarios</h2>
       <div className="filters">
         <select
           value={roleFilter}

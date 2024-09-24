@@ -1,3 +1,5 @@
+//TODO#code3: añadir boton de eliminar del usuario que no es admin para que solo pueda eliminar su propia nota
+
 import React, { useState, useEffect } from "react";
 import AddNoteForm from "./AddNoteForm";
 import { toast } from "react-toastify";
@@ -8,9 +10,13 @@ const Notes = ({ userData }) => {
   const [sortOrder, setSortOrder] = useState(
     localStorage.getItem("sortOrderNote") || "asc"
   );
+  const [users, setUsers] = useState([]); //; Estado de los usuarios obtenidos del backend
 
   useEffect(() => {
     loadNotes();
+
+    loadUsers();
+
     const interval = setInterval(() => {
       console.log("Actualizando notas...");
       loadNotes();
@@ -35,6 +41,30 @@ const Notes = ({ userData }) => {
         : new Date(b.updated_at) - new Date(a.updated_at)
     );
     setNotes(sortedNotes);
+  };
+
+  /**
+   * Cargar los usuarios del servidor.
+   */
+  const loadUsers = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/users/all", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("authToken")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error fetching users: " + response.statusText);
+      }
+
+      const usersResult = await response.json();
+      setUsers(usersResult.data);
+    } catch (error) {
+      console.error("Error al cargar usuarios:", error.message);
+    }
   };
 
   const loadNotes = async () => {
@@ -112,38 +142,78 @@ const Notes = ({ userData }) => {
     }
   };
 
+  /**
+   * Obtener el nombre completo, nombre de usuario y rol por ID.
+   * @param {number} userId - ID del usuario.
+   * @returns {Object} Objeto que contiene el nombre completo, nombre de usuario y rol.
+   */
+  const getUsernameById = (userId) => {
+    const user =
+      userId === userData.id
+        ? userData //; Si el userId es el del usuario actual, usamos directamente userData
+        : users.find((user) => user.id === userId); //; Buscar en la lista de usuarios
+
+    //; Retornar valores del usuario encontrado o valores por defecto
+    return {
+      fullName:
+        [user?.name, user?.firstname, user?.lastname]
+          .filter(Boolean)
+          .join(" ") || "Usuario desconocido",
+      username: user?.username || "Usuario desconocido",
+      role: user?.role || "unknown",
+    };
+  };
+
   return (
-    <div className="notes-container">
-      <h2>Notas</h2>
+    <div className="SharedCard__card-background notes-container">
+      <h2 className="SharedCard__title">Notas</h2>
 
-      <AddNoteForm onAddNote={handleAddNote} userId={userData.id} />
-      <button className="filter-button" onClick={toggleSortOrder}>
-        Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
-      </button>
-      <div className="notes-list">
-        <div className="info-message">
-          <p>Las notas se eliminarán automáticamente después de 24 horas.</p>
+      <div className="SharedCard__card-first-layer">
+        <AddNoteForm onAddNote={handleAddNote} userId={userData.id} />
+        <div className="SharedCard__filter-button-div">
+          <button onClick={toggleSortOrder}>
+            Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
+          </button>
         </div>
+      </div>
 
-        {notes.map((note) => (
-          <div key={note.id} className="note-item">
-            <h3 className="note-title">{note.title}</h3>
-            <p className="note-description">{note.description}</p>
-            <small className="smallNotes">
-              Por: Usuario {note.user_id} - Creado:{" "}
-              {new Date(note.created_at).toLocaleString()} - Actualizado:{" "}
-              {new Date(note.updated_at).toLocaleString()}
-            </small>
-            {userData.role === "admin" && (
-              <button
-                className="delete-note-button"
-                onClick={() => handleDeleteNote(note.id)}
-              >
-                Eliminar
-              </button>
-            )}
-          </div>
-        ))}
+      <div className="SharedCard__note">
+        <p id="info">
+          Las notas se eliminarán automáticamente después de 24 horas.
+        </p>
+      </div>
+      <br />
+
+      <div className="SharedCard__items-list">
+        {notes.map((note) => {
+          const { fullName, username, role } = getUsernameById(note.user_id); //; Obtener el nombre y el rol del usuario
+          return (
+            <div key={note.id} className="SharedCard__item">
+              <div className="SharedCard__item-user-div">
+                <h1>
+                  {note.user_id === userData.id
+                    ? "(TU)"
+                    : `${fullName.split(" ")[0]} ${fullName.split(" ")[1]}`}
+                </h1>
+                {role !== "unknown" && (
+                  <div className={`user-role-tag ${role}`}>{role}</div>
+                )}
+              </div>
+
+              <h1>{note.title}</h1>
+              <h2>{note.description}</h2>
+
+              {userData.role === "admin" && (
+                <button
+                  className="SharedCard__delete-button"
+                  onClick={() => handleDeleteNote(note.id)}
+                >
+                  Eliminar
+                </button>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

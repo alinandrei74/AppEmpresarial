@@ -1,23 +1,6 @@
 /* Contenedor del formulario */
 .schedule-container {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 30px;
-    border: 1px solid var(--clr-background);
-    border-radius: 12px;
-    background-color: var(--clr-OnPrimary);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-    overflow-x: auto;
-    /* Permite el scroll horizontal si el contenido se desborda */
-}
-
-/* Título del formulario */
-.schedule-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: var(--clr-OnText);
+    max-width: 1000px;
 }
 
 /* Contenedor de cada entrada de horario */
@@ -98,13 +81,6 @@
 .send-button {
     margin-top: 5px;
     margin-bottom: 15px;
-}
-
-/* Contenedor para centrar el botón de enviar */
-.button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
 }
 
 /* Estilo para la tabla de historial */
