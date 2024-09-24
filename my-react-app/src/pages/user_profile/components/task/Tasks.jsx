@@ -123,8 +123,8 @@ const Tasks = ({ userData }) => {
         description: newTaskDescription,
         status: "pending",
         user_id: newTaskAssignedTo,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
+        // created_at: new Date().toISOString(),
+        // updated_at: new Date().toISOString(),
       };
 
       try {
@@ -266,7 +266,7 @@ const Tasks = ({ userData }) => {
         title: newTaskTitle,
         description: newTaskDescription,
         user_id: newTaskAssignedTo,
-        updated_at: new Date().toISOString(),
+        // updated_at: new Date().toISOString(),
       };
 
       try {
@@ -374,8 +374,8 @@ const Tasks = ({ userData }) => {
               type="text"
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 30))} //; Limitar el título a 30 caracteres
-              placeholder="Título de la tarea (máximo 30 caracteres)"
-              maxLength={30} //; Limitar el input del título
+              placeholder="Título de la tarea (máximo 100 caracteres)"
+              maxLength={100} //; Limitar el input del título
               required
             />
             <textarea

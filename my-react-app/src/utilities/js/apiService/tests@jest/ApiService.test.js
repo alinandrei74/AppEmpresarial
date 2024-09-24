@@ -16,13 +16,13 @@ async function createTemporaryUser() {
   let newUser = {
     fullName: "Usuario Temporal Tests", //; Este formato es necesario para separar el nombre
     username: "userTemp",
-    password: "Password123",
+    password: "Password123.",
     role: "admin",
     email: "userTemp@example.com",
     telephone: "987654321",
     dni: "98765432L",
     address: "Calle Real 456",
-    cp: "08002",
+    postal_code: "08002",
   };
 
   const [name, firstname, ...lastnameArray] = newUser.fullName.split(" ");
@@ -39,7 +39,7 @@ async function createTemporaryUser() {
     telephone: newUser.telephone,
     dni: newUser.dni,
     address: newUser.address,
-    cp: newUser.cp,
+    postal_code: newUser.postal_code,
     created_at: new Date().toISOString().split("T")[0],
     updated_at: new Date().toISOString().split("T")[0],
   };
@@ -66,13 +66,13 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
   let newUser = {
     fullName: "Juan Perez Lopez", //; Este formato es necesario para separar el nombre
     username: "juanperez",
-    password: "Password123",
+    password: "Password123.",
     role: "admin",
     email: "juanperez@example.com",
     telephone: "123456789",
     dni: "12345678L",
     address: "Calle Falsa 123",
-    cp: "08001",
+    postal_code: "08001",
   };
 
   let userId; //; Variable para almacenar el ID del nuevo usuario
@@ -92,7 +92,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       telephone: newUser.telephone,
       dni: newUser.dni,
       address: newUser.address,
-      cp: newUser.cp,
+      postal_code: newUser.postal_code,
       created_at: new Date().toISOString().split("T")[0],
       updated_at: new Date().toISOString().split("T")[0],
     };

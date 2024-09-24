@@ -43,8 +43,8 @@ const AddNoteForm = ({ onAddNote, userId }) => {
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        placeholder="Título de la nota (máximo 30 caracteres)"
-        maxLength={30} //; Limitar el input del título
+        placeholder="Título de la nota (máximo 100 caracteres)"
+        maxLength={100} //; Limitar el input del título
         required
       />
 
