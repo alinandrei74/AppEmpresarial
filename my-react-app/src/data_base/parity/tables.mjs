@@ -70,7 +70,7 @@ export const tasks = [
     id: 1, // PK
     title: "Limpieza del piso 1",
     description: "Revisar limpieza del piso 1",
-    status: "pending",
+    is_done: false,
     user_id: 2, // FK que referencia `users.id`
     created_at: "2024-08-25",
     updated_at: "2024-09-25",
@@ -80,7 +80,7 @@ export const tasks = [
     id: 2, // PK
     title: "Reparación de tuberías",
     description: "Reparación de tuberías en el apartamento 2B",
-    status: "done",
+    is_done: true,
     user_id: 4, // FK que referencia `users.id`
     created_at: "2024-08-26",
     updated_at: "2024-09-26",
@@ -90,7 +90,7 @@ export const tasks = [
     id: 3, // PK
     title: "Entrega de correo",
     description: "Entrega de correo a la recepción",
-    status: "canceled",
+    is_done: false,
     user_id: 3, // FK que referencia `users.id`
     created_at: "2024-08-27",
     updated_at: "2024-09-27",

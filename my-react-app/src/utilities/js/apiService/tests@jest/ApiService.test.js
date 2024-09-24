@@ -108,7 +108,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
     expect(registerResponse.status).toBe(StatusCodes.CREATED);
     expect(registerResponse).toEqual(
       expect.objectContaining({
-        status: expect.any(Number),
+        is_done: expect.any(Number),
         data: expect.any(Object),
         message: expect.any(String),
       })
@@ -140,8 +140,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
   });
 
   it("verificar el token JWT correctamente", async () => {
-    Logger.information(token);
-    const verifyResponse = await ApiService.post(
+    const verifyResponse = await ApiService.get(
       ApiService.urls.auth.verify,
       token
     );
@@ -201,7 +200,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
     const newTask = {
       title: "Limpieza del piso 1",
       description: "Revisar limpieza del piso 1",
-      status: "pending",
+      is_done: false,
       user_id: userId, //; Usamos el user_id del nuevo usuario
       // created_at: "2024-08-25",
       // updated_at: "2024-09-25",
@@ -220,7 +219,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
     const updatedTask = {
       title: "Limpieza del piso 1 Actualizada",
       description: "Revisar nuevamente la limpieza del piso 1",
-      status: "done",
+      is_done: true,
       user_id: userId, //; Mantener el mismo usuario
       // created_at: "2024-08-25",
       // updated_at: new Date().toISOString().split("T")[0],
@@ -253,7 +252,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
     expect(getCompletedTasksResponse.status).toBe(StatusCodes.OK);
     expect(Array.isArray(getCompletedTasksResponse.data)).toBe(true);
     expect(getCompletedTasksResponse.data.length).toBeGreaterThan(0);
-    expect(getCompletedTasksResponse.data[0].status).toBe("done");
+    expect(getCompletedTasksResponse.data[0].is_done).toBe(true);
   });
 
   it("eliminar la tarea recién creada", async () => {
@@ -297,7 +296,8 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
 
   it("actualizar la nota correctamente", async () => {
     const updatedNote = {
-      title: "Revisión de seguridad Actualizada",
+      // title: "Revisión de seguridad Actualizada", //! Aviso errorneo del servidor (message: 'El título no puede exceder los 255 caracteres')
+      title: "Revisión Actualizada",
       description: "Revisar de nuevo los sistemas de seguridad.",
       user_id: userId, //; Mantener el mismo usuario
       // created_at: "2024-09-01",

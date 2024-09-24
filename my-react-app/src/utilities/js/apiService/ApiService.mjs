@@ -11,12 +11,36 @@ import Logger from "../../../../../backend/src/utils/logger";
  * Servicio centralizado para manejar todas las solicitudes al backend.
  */
 class ApiService {
-  static baseUrl = "http://localhost:3000"; // URL base del backend
-  static _userToken = null; // Token de usuario opcional (privado)
+  /**
+   * URL base del backend.
+   * @type {string}
+   */
+  static baseUrl = "http://localhost:3000";
+
+  /**
+   * Token de usuario opcional (privado).
+   * @type {string|null}
+   * @private
+   */
+  static _userToken = null;
+
+  /**
+   * Configura la URL base y el token de usuario para las solicitudes.
+   * @param {Object} config - Objeto de configuración.
+   * @param {string} config.baseUrl - URL base del backend.
+   * @param {string} [config.userToken] - Token de usuario (opcional).
+   */
+  static configure({ baseUrl, userToken = null }) {
+    this.baseUrl = baseUrl;
+    if (userToken) {
+      this._userToken = userToken;
+    }
+  }
 
   /**
    * Getter para obtener el token del usuario.
    * Si no se ha establecido, se obtiene del sessionStorage.
+   * @returns {string|null} El token de usuario.
    */
   static get userToken() {
     return this._userToken || sessionStorage.getItem("authToken");
@@ -24,43 +48,40 @@ class ApiService {
 
   /**
    * Setter para establecer el token de usuario.
-   * @param {string} token - Token de usuario
+   * @param {string} token - Token de usuario.
    */
   static set userToken(token) {
     this._userToken = token;
   }
 
   /**
-   * URLs del backend agrupadas por entidades (con baseUrl agregada)
+   * URLs del backend agrupadas por entidades (con baseUrl agregada).
+   * @type {Object}
    */
-  static urls = ApiService.addBaseUrl({
+  static urls = ApiService._addBaseUrl({
     auth: {
-      //!### (register)
-      register: "/api/auth/register", //!# ( Fixed return `res.data.data` )
-      login: "/api/auth/login", //*#
-      verify: "/api/auth/verify", //*#
+      register: "/api/auth/register",
+      login: "/api/auth/login",
+      verify: "/api/auth/verify",
     },
     users: {
-      //*###
-      getAll: "/api/users/all", //*#
-      getById: (id) => `/api/users/user-profile/${id}`, //*#
-      delete: (id) => `/api/users/${id}`, //*#
+      getAll: "/api/users/all",
+      getById: (id) => `/api/users/user-profile/${id}`,
+      delete: (id) => `/api/users/${id}`,
     },
     tasks: {
-      //!### (create, update)
-      getAll: "/api/tasks", //*#
-      create: "/api/tasks", //*#
-      update: (id) => `/api/tasks/${id}`, //!# ( Eliminar `completed_at` y `updated_at`)
-      delete: (id) => `/api/tasks/${id}`, //!# ( Eliminar `updated_at`)
-      getCompleted: (userId) => `/api/tasks/completed/${userId}`, //*#
+      getAll: "/api/tasks",
+      create: "/api/tasks",
+      update: (id) => `/api/tasks/${id}`,
+      delete: (id) => `/api/tasks/${id}`,
+      getCompleted: (userId) => `/api/tasks/completed/${userId}`,
     },
     notes: {
-      //*###
-      getAll: "/api/notes", //*#
-      getById: (id) => `/api/notes/${id}`, //*#
-      create: "/api/notes", //*#
-      update: (id) => `/api/notes/${id}`, //*#
-      delete: (id) => `/api/notes/${id}`, //*#
+      getAll: "/api/notes",
+      getById: (id) => `/api/notes/${id}`,
+      create: "/api/notes",
+      update: (id) => `/api/notes/${id}`,
+      delete: (id) => `/api/notes/${id}`,
     },
     workSchedules: {
       getAll: "/api/work-schedules",
@@ -72,11 +93,12 @@ class ApiService {
   });
 
   /**
-   * Función para agregar baseUrl a cada ruta
-   * @param {Object} urls - Objeto con rutas del API
-   * @returns {Object} - Objeto con URLs completas
+   * Función para agregar baseUrl a cada ruta.
+   * @private
+   * @param {Object} urls - Objeto con rutas del API.
+   * @returns {Object} - Objeto con URLs completas.
    */
-  static addBaseUrl(urls) {
+  static _addBaseUrl(urls) {
     const addPrefix = (url) =>
       typeof url === "function"
         ? (...args) => `${this.baseUrl}${url(...args)}`
@@ -85,7 +107,7 @@ class ApiService {
     // Recorremos el objeto de URLs para agregar la baseUrl
     return Object.keys(urls).reduce((acc, key) => {
       if (typeof urls[key] === "object") {
-        acc[key] = this.addBaseUrl(urls[key]); // Recurre si es un objeto anidado
+        acc[key] = this._addBaseUrl(urls[key]); // Recurre si es un objeto anidado
       } else {
         acc[key] = addPrefix(urls[key]); // Agrega el prefijo
       }
@@ -101,7 +123,7 @@ class ApiService {
    * @param {Object} [body] - El cuerpo de la solicitud (opcional).
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
    */
-  static async request(url, method, body = null) {
+  static async _request(url, method, body = null) {
     try {
       const token = this.userToken;
       // Logger.information(`userToken: {${token}}`);
@@ -140,13 +162,15 @@ class ApiService {
     }
   }
 
+  // Métodos públicos para realizar solicitudes HTTP:
+
   /**
    * Realiza una solicitud GET al backend.
    * @param {string} url - La URL del recurso.
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
    */
   static async get(url) {
-    return this.request(url, "GET");
+    return this._request(url, "GET");
   }
 
   /**
@@ -156,7 +180,7 @@ class ApiService {
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
    */
   static async post(url, body) {
-    return this.request(url, "POST", body);
+    return this._request(url, "POST", body);
   }
 
   /**
@@ -166,7 +190,7 @@ class ApiService {
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
    */
   static async put(url, body) {
-    return this.request(url, "PUT", body);
+    return this._request(url, "PUT", body);
   }
 
   /**
@@ -175,10 +199,10 @@ class ApiService {
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
    */
   static async delete(url) {
-    return this.request(url, "DELETE");
+    return this._request(url, "DELETE");
   }
 
-  // Métodos específicos para diferentes entidades:
+  // Métodos específicos para entidades:
 
   /**
    * Registra un nuevo usuario.
@@ -186,16 +210,17 @@ class ApiService {
    * @returns {Promise<ApiResponse>} - Respuesta del backend.
    */
   static async registerUser(user) {
-    const body = this.transformUserData(user);
+    const body = this._transformUserData(user);
     return this.post(this.urls.auth.register, body);
   }
 
   /**
    * Transforma los datos del usuario para que coincidan con el formato esperado por el backend.
+   * @private
    * @param {Object} user - Datos del usuario.
    * @returns {Object} - Datos transformados.
    */
-  static transformUserData(user) {
+  static _transformUserData(user) {
     const [name, firstname, ...lastnameArray] = user.fullName.split(" ");
     const lastname = lastnameArray.join(" ");
     return {
@@ -209,9 +234,7 @@ class ApiService {
       telephone: user.telephone,
       dni: user.dni,
       address: user.address,
-      cp: user.postal_code,
-      created_at: new Date().toISOString().split("T")[0],
-      updated_at: new Date().toISOString().split("T")[0],
+      postal_code: user.postal_code,
     };
   }
 }

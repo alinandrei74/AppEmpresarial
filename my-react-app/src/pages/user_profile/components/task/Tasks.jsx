@@ -121,7 +121,7 @@ const Tasks = ({ userData }) => {
       const newTask = {
         title: newTaskTitle,
         description: newTaskDescription,
-        status: "pending",
+        is_done: false,
         user_id: newTaskAssignedTo,
         // created_at: new Date().toISOString(),
         // updated_at: new Date().toISOString(),
@@ -164,7 +164,7 @@ const Tasks = ({ userData }) => {
     if (taskToUpdate && taskToUpdate.user_id === userData.id) {
       const updatedTask = {
         ...taskToUpdate,
-        status: "done",
+        is_done: true,
       };
 
       try {
@@ -425,7 +425,7 @@ const Tasks = ({ userData }) => {
           const { fullName, username, role } = getUsernameById(task.user_id); //; Obtener el nombre y el rol del usuario
 
           return (
-            <div key={task.id} className={`SharedCard__item ${task.status}`}>
+            <div key={task.id} className={`SharedCard__item ${task.is_done}`}>
               {/* Añadir la clase correspondiente al rol del usuario */}
 
               {userData.role === "admin" && (
@@ -445,9 +445,9 @@ const Tasks = ({ userData }) => {
               <h1>{task.title}</h1>
               <h2>{task.description}</h2>
 
-              {/* <small>Estado: {task.status}</small> */}
+              {/* <small>Estado: {task.is_done}</small> */}
 
-              {task.status === "pending" && task.user_id === userData.id && (
+              {task.is_done === false && task.user_id === userData.id && (
                 <button
                   className="complete-task-button"
                   onClick={() => handleCompleteTask(task.id)}
