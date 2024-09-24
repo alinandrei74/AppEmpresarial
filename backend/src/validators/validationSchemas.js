@@ -219,12 +219,9 @@ exports.createTaskSchema = joi_1.default.object({
 });
 // Para la actualización de tareas
 exports.updateTaskSchema = joi_1.default.object({
-    // id: Joi.number().integer().positive().required().label("id - updateTaskSchema").messages({
-    //   "number.base": "{{#label}} debe ser un número.",
-    //   "number.integer": "{{#label}} debe ser un número entero.",
-    //   "number.positive": "{{#label}} debe ser un número positivo.",
-    //   "any.required": "{{#label}} es obligatorio.",
-    // }),
+    id: joi_1.default.number().integer().positive().allow().label("id - updateTaskSchema").messages({
+        "error en id": "Error en id - updateTaskSchema"
+    }),
     user_id: joi_1.default.number().allow().label("user_id - updateTaskSchema"),
     title: joi_1.default.string().max(100).optional().label("title - updateTaskSchema").messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
