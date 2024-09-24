@@ -18,8 +18,8 @@ const authenticateToken = (req, res, next) => {
         });
     }
     const token = authHeader.split(" ")[1];
-    const secret = process.env.JWT_SECRET;
-    if (!secret) {
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
         logger_1.default.error("JWT_SECRET is missing in the environment variables.");
         return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
@@ -27,20 +27,37 @@ const authenticateToken = (req, res, next) => {
             data: null,
         });
     }
-    try {
-        const decoded = jsonwebtoken_1.default.verify(token, secret);
-        // Asignar el usuario al objeto request
+    jsonwebtoken_1.default.verify(token, jwtSecret, (err, decoded) => {
+        if (err) {
+            let errorMessage = "Invalid or expired token";
+            if (err.name === "TokenExpiredError") {
+                logger_1.default.warning("JWT has expired");
+                errorMessage = "Token has expired";
+            }
+            else if (err.name === "JsonWebTokenError") {
+                logger_1.default.warning("JWT is invalid");
+                errorMessage = "Token is invalid";
+            }
+            else {
+                logger_1.default.error(`JWT verification failed: ${err.message}`);
+            }
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+                message: errorMessage,
+                data: null,
+            });
+        }
+        if (!decoded || typeof decoded !== "object" || !("user" in decoded)) {
+            logger_1.default.error("Invalid token payload: user information is missing");
+            return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({
+                status: http_status_codes_1.StatusCodes.UNAUTHORIZED,
+                message: "Invalid token payload: user information is missing",
+                data: null,
+            });
+        }
         req.user = decoded.user;
         logger_1.default.success(`Token verificado exitosamente para el usuario: ${req.user.username}`);
         next();
-    }
-    catch (err) {
-        logger_1.default.error(`JWT verification failed: ${err}`);
-        return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({
-            status: http_status_codes_1.StatusCodes.FORBIDDEN,
-            message: "Invalid or expired token",
-            data: null,
-        });
-    }
+    });
 };
 exports.authenticateToken = authenticateToken;

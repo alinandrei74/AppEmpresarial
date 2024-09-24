@@ -10,6 +10,6 @@ export interface User {
   email: string;
   telephone: string;
   address: string;
-  cp: string;
+  postal_code: string;
   password: string;
 }

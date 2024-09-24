@@ -9,6 +9,7 @@ import {
 import { authorizeRole } from '../middlewares/authRole';
 import { authenticateToken } from '../middlewares/authMiddleware';
 
+
 const router = Router();
 
 router.get('/', authenticateToken, authorizeRole('work_schedules', 'read'), getAllWorkSchedules);

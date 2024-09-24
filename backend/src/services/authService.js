@@ -13,7 +13,7 @@ const SECRET_KEY = process.env.JWT_SECRET || 'secret_key';
 // Define los campos obligatorios
 const requiredFields = [
     'role', 'username', 'name', 'firstname', 'lastname',
-    'dni', 'email', 'telephone', 'address', 'cp', 'password'
+    'dni', 'email', 'telephone', 'address', 'postal_code', 'password'
 ];
 // Función para lanzar errores
 const throwError = (status, message) => {

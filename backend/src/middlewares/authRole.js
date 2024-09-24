@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorizeRole = void 0;
 const http_status_codes_1 = require("http-status-codes");
 const logger_1 = __importDefault(require("../utils/logger"));
-// Definir permisos por rol
 const rolePermissions = {
     admin: {
         tasks: ['create', 'read', 'update', 'delete'],
@@ -16,34 +15,32 @@ const rolePermissions = {
     },
     maintenance: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
     cleaning: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
     delivery: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
 };
-// Middleware para autorizar según el rol del usuario
 const authorizeRole = (entity, action) => {
     return (req, res, next) => {
         var _a;
-        const user = req.user; // Asumiendo que el rol del usuario está en req.user
+        const user = req.user;
         if (!user || !user.role) {
             logger_1.default.warning("User not authenticated");
             return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({ message: 'User not authenticated' });
         }
-        const { role, id } = user; // Asumiendo que el id del usuario también está en req.user
-        // Verificar si el rol es válido
+        const { role, id } = user;
         if (!isValidRole(role)) {
             logger_1.default.error(`Invalid role: ${role}`);
             return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Invalid role' });

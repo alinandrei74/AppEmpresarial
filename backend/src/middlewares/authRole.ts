@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Role } from './../types/role';
 import Logger from '../utils/logger';
 
-// Definir permisos por rol
+
 const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: string[], work_schedules: string[] }> = {
   admin: {
     tasks: ['create', 'read', 'update', 'delete'],
@@ -13,37 +13,36 @@ const rolePermissions: Record<Role, { tasks: string[], users: string[], notes: s
   },
   maintenance: {
     tasks: ['read', 'update'],
-    users: [], // No tiene acceso
+    users: [],
     notes: ['create', 'read', 'update', 'delete'],
-    work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+    work_schedules: ['create', 'read'], 
   },
   cleaning: {
     tasks: ['read', 'update'],
-    users: [], // No tiene acceso
+    users: [],
     notes: ['create', 'read', 'update', 'delete'],
-    work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+    work_schedules: ['create', 'read'], 
   },
   delivery: {
     tasks: ['read', 'update'],
-    users: [], // No tiene acceso
+    users: [],
     notes: ['create', 'read', 'update', 'delete'],
-    work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+    work_schedules: ['create', 'read'], 
   },
 };
 
-// Middleware para autorizar según el rol del usuario
+
 export const authorizeRole = (entity: 'tasks' | 'users' | 'notes' | 'work_schedules', action: 'create' | 'read' | 'update' | 'delete') => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user; // Asumiendo que el rol del usuario está en req.user
+    const user = req.user; 
 
     if (!user || !user.role) {
       Logger.warning("User not authenticated");
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'User not authenticated' });
     }
+    
+    const { role, id } = user; 
 
-    const { role, id } = user; // Asumiendo que el id del usuario también está en req.user
-
-    // Verificar si el rol es válido
     if (!isValidRole(role)) {
       Logger.error(`Invalid role: ${role}`);
       return res.status(StatusCodes.FORBIDDEN).json({ message: 'Invalid role' });

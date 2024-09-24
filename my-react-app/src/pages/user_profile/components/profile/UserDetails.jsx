@@ -77,9 +77,9 @@ const UserDetails = ({ userData }) => {
             <strong>DNI:</strong> {userData.dni}
           </div>
         )}
-        {userData.address && userData.cp && (
+        {userData.address && userData.postal_code && (
           <div className="user-info-item">
-            <strong>Dirección:</strong> {userData.address}, {userData.cp}
+            <strong>Dirección:</strong> {userData.address}, {userData.postal_code}
           </div>
         )}
       </div>

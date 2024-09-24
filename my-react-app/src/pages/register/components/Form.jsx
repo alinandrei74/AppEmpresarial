@@ -113,7 +113,7 @@ const Form = () => {
               telephone: values.telephone,
               dni: values.dni,
               address: values.address,
-              cp: values.postal_code,
+              postal_code: values.postal_code,
               created_at: new Date().toISOString().split("T")[0],
               updated_at: new Date().toISOString().split("T")[0],
             }),
