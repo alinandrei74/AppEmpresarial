@@ -49,7 +49,7 @@ const authorizeRole = (entity, action) => {
         if (rolePermissions[role] && ((_a = rolePermissions[role][entity]) === null || _a === void 0 ? void 0 : _a.includes(action))) {
             // Restricción para creación de horarios
             if (entity === 'work_schedules') {
-                const scheduleUserId = req.params.workerId || req.body.workerId;
+                const scheduleUserId = req.params.user_id || req.body.user_Id;
                 // Validación para creación de horarios
                 if (action === 'create' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
                     logger_1.default.warning("User attempting to create schedule for another user");

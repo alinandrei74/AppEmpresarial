@@ -65,7 +65,7 @@ exports.createTask = [
     async (req, res) => {
         const { description, status, user_id, title } = req.body;
         try {
-            const result = await db_1.db.one('INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, user_id, title]);
+            const result = await db_1.db.one('INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4) RETURNING id', [description, status, user_id, title]);
             logger_1.default.success('Tarea creada con éxito');
             return res.status(http_status_codes_1.StatusCodes.CREATED).json({
                 status: http_status_codes_1.StatusCodes.CREATED,

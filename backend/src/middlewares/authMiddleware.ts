@@ -1,3 +1,4 @@
+// Middlewares/authMiddleware.ts
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
@@ -54,7 +55,6 @@ export const authenticateToken = (req: Request, res: Response, next: NextFunctio
       });
     }
 
- 
     if (!decoded || typeof decoded !== "object" || !("user" in decoded)) {
       Logger.error("Invalid token payload: user information is missing");
       return res.status(StatusCodes.UNAUTHORIZED).json({
