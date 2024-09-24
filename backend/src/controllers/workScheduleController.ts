@@ -1,11 +1,10 @@
-// src/controllers/workScheduleController.ts
-
 import { Request, Response } from "express";
 import { db } from "../config/db";
 import { StatusCodes } from "http-status-codes";
 import { User } from "../types/user";
 import { validateRequest } from "../middlewares/validateRequest";
 import { workScheduleIdSchema, createWorkScheduleSchema, updateWorkScheduleSchema } from '../validators/validationSchemas';
+
 
 class WorkScheduleError extends Error {
   constructor(message: string) {
@@ -20,7 +19,7 @@ export const getAllWorkSchedules = async (req: Request, res: Response) => {
   try {
     const work_schedules = user.role === 'admin'
       ? await db.many("SELECT * FROM work_schedule")
-      : await db.many("SELECT * FROM work_schedule WHERE worker_id=$1", [user.id]);
+      : await db.many("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
 
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
@@ -45,7 +44,7 @@ export const getWorkScheduleById = [
     try {
       const work_schedule = await db.oneOrNone("SELECT * FROM work_schedule WHERE id=$1", [id]);
       if (work_schedule) {
-        if (user.role === 'admin' || work_schedule.worker_id === user.id) {
+        if (user.role === 'admin' || work_schedule.user_id === user.id) {
           return res.status(StatusCodes.OK).json({
             status: StatusCodes.OK,
             message: `Horario de trabajo con ID ${id} recuperado exitosamente`,
@@ -78,17 +77,17 @@ export const getWorkScheduleById = [
 export const createWorkSchedule = [
   validateRequest(createWorkScheduleSchema),
   async (req: Request, res: Response) => {
-    const { worker_id, start_time, end_time, description, day_of_week } = req.body;
+    const { user_id, start_time, end_time, description, day_of_week } = req.body;
     const user = req.user as User;
 
     try {
-      if (user.role !== 'admin' && user.id !== worker_id) {
+      if (user.role !== 'admin' && user.id !== user_id) {
         throw new WorkScheduleError("No tienes permiso para crear horarios para otros usuarios.");
       }
 
       const result = await db.one(
-        "INSERT INTO work_schedule (worker_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [worker_id, start_time, end_time, description, day_of_week]
+        "INSERT INTO work_schedule (user_id, start_time, end_time, description, day_of_week) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+        [user_id, start_time, end_time, description, day_of_week]
       );
       return res.status(StatusCodes.CREATED).json({
         status: StatusCodes.CREATED,
@@ -123,7 +122,7 @@ export const updateWorkSchedule = [
   validateRequest(updateWorkScheduleSchema),
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { worker_id, start_time, end_time, description, day_of_week } = req.body;
+    const { user_id, start_time, end_time, description, day_of_week } = req.body;
     const user = req.user as User;
 
     try {
@@ -132,8 +131,8 @@ export const updateWorkSchedule = [
       }
 
       const result = await db.result(
-        "UPDATE work_schedule SET worker_id = $1, start_time = $2, end_time = $3, description = $4, day_of_week = $5 WHERE id = $6 RETURNING *",
-        [worker_id, start_time, end_time, description, day_of_week, id]
+        "UPDATE work_schedule SET user_id = $1, start_time = $2, end_time = $3, description = $4, day_of_week = $5 WHERE id = $6 RETURNING *",
+        [user_id, start_time, end_time, description, day_of_week, id]
       );
 
       if (result.rowCount) {

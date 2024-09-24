@@ -4,6 +4,7 @@ import Joi from "joi";
 
 // Para el registro
 export const userRegistrationSchema = Joi.object({
+  id: Joi.number().integer().positive(),
   role: Joi.string()
     .valid("admin", "maintenance", "cleaning", "delivery")
     .required()
@@ -85,7 +86,7 @@ export const userRegistrationSchema = Joi.object({
       "any.required": "La dirección es requerida",
     }),
   postal_code: Joi.string()
-    .pattern(/^\d{4,10}$/) // Almacenar como string pero validar como número
+    .pattern(/^\d{4,10}$/) 
     .required()
     .messages({
       "string.pattern.base":
@@ -112,10 +113,9 @@ export const userRegistrationSchema = Joi.object({
         "La contraseña debe contener al menos un símbolo especial (@$!%*?&.#)",
       "any.required": "La contraseña es requerida",
     }),
-  confirmPassword: Joi.string().valid(Joi.ref("password")).required().messages({
-    "any.only": "Las contraseñas no coinciden",
-    "any.required": "La confirmación de la contraseña es requerida",
-  }),
+
+    created_at: Joi.string(),
+    updated_at: Joi.string()
 });
 
 // Para el login
@@ -126,6 +126,8 @@ export const userLoginSchema = Joi.object({
   password: Joi.string().required().messages({
     "any.required": "La contraseña es requerida",
   }),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 // Para la creación de notas
@@ -142,6 +144,8 @@ export const createNoteSchema = Joi.object({
   description: Joi.string().max(800).required().messages({
     "any.required": "La descripción es requerida",
   }),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 // Para la actualización de notas
@@ -153,22 +157,20 @@ export const updateNoteSchema = Joi.object({
   description: Joi.string().max(800).required().messages({
     "any.required": "La descripción es requerida",
   }),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 export const idParamSchema = Joi.object({
-  id: Joi.number().integer().positive().required().messages({
-    'number.base': 'El ID debe ser un número entero',
-    'number.positive': 'El ID debe ser un número positivo',
-    'any.required': 'El ID es requerido',
-  }),
+  id: Joi.number().integer().positive(),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 export const userIdParamSchema = Joi.object({
-  id: Joi.number().integer().positive().required().messages({
-    "number.base": "El ID debe ser un número entero",
-    "number.positive": "El ID debe ser un número positivo",
-    "any.required": "El ID es requerido",
-  }),
+  id: Joi.number().integer().positive(),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 // Para la creación de tareas
@@ -196,10 +198,14 @@ export const createTaskSchema = Joi.object({
   completed_at: Joi.date().required().messages({
     "date.base": "La fecha de finalización debe ser válida",
   }),
+  
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 // Para la actualización de tareas
 export const updateTaskSchema = Joi.object({
+  
   title: Joi.string().max(30).required().messages({
     "string.max": "El título no puede exceder los 255 caracteres",
     "any.required": "El título es requerido",
@@ -217,15 +223,13 @@ export const updateTaskSchema = Joi.object({
   completed_at: Joi.date().required().messages({
     "date.base": "La fecha de finalización debe ser válida",
   }),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 
-// Esquema de validación para la creación de horarios laborales
 export const createWorkScheduleSchema = Joi.object({
-  user_id: Joi.number().integer().required().messages({
-    "number.base": "El ID de usuario debe ser un número entero",
-    "any.required": "El ID de usuario es requerido",
-  }),
+  user_id: Joi.number().integer(),
   start_time: Joi.date().iso().required().messages({
     "date.base": "La fecha y hora de inicio debe ser válida",
     "any.required": "La fecha y hora de inicio es requerida",
@@ -255,6 +259,8 @@ export const createWorkScheduleSchema = Joi.object({
         "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
       "any.required": "El día de la semana es requerido",
     }),
+    created_at: Joi.string(),
+    updated_at: Joi.string()
 });
 
 // Esquema de validación para la actualización de horarios laborales
@@ -288,14 +294,14 @@ export const updateWorkScheduleSchema = Joi.object({
         "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
       "any.required": "El día de la semana es requerido",
     }),
+    created_at: Joi.string(),
+    updated_at: Joi.string()
 });
 
 export const workScheduleIdSchema = Joi.object({
-  id: Joi.number().integer().positive().required().messages({
-    'number.base': 'El ID debe ser un número entero',
-    'number.positive': 'El ID debe ser un número positivo',
-    'any.required': 'El ID del horario de trabajo es requerido',
-  }),
+  id: Joi.number().integer().positive(),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
 });
 
 export const userProfileSchema = Joi.object({
@@ -308,6 +314,8 @@ export const userProfileSchema = Joi.object({
     'string.email': 'Formato de email inválido',
     'any.required': 'El email es requerido',
   }),
+  created_at: Joi.string(),
+  updated_at: Joi.string()
  
 });
 

@@ -32,9 +32,9 @@ export const getTasks = async (req: Request, res: Response) => {
   }
 };
 
-// Obtener tareas completadas por un usuario específico
+
 export const getCompletedTasksByUserId = [
-  validateRequest(userIdParamSchema, 'params'), // Validar userId en los parámetros
+  validateRequest(userIdParamSchema, 'params'), 
   async (req: Request, res: Response) => {
     const { userId } = req.params;
 
@@ -59,14 +59,14 @@ export const getCompletedTasksByUserId = [
 
 // Crear una nueva tarea
 export const createTask = [
-  validateRequest(createTaskSchema), // Validar cuerpo de la solicitud
+  validateRequest(createTaskSchema), 
   async (req: Request, res: Response) => {
-    const { description, status, user_id, created_at, title } = req.body;
+    const { description, status, user_id, title } = req.body;
 
     try {
       const result = await db.one(
-        'INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
-        [description, status, user_id, created_at, title]
+        'INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4, $5) RETURNING id',
+        [description, status, user_id, title]
       );
       Logger.success('Tarea creada con éxito');
       return res.status(StatusCodes.CREATED).json({
@@ -90,12 +90,12 @@ export const updateTask = [
   validateRequest(updateTaskSchema, 'params'), // Validar cuerpo de la solicitud
   async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { description, status, user_id, created_at, title } = req.body;
+    const { description, status, user_id, title } = req.body;
 
     try {
       const result = await db.result(
-        'UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
-        [description, status, user_id, created_at, title, status === 'completed' ? new Date() : null, parseInt(id)]
+        'UPDATE tasks SET description = $1, status = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *',
+        [description, status, user_id, title, status === 'completed' ? new Date() : null, parseInt(id)]
       );
 
       if (result.rowCount) {

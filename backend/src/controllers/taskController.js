@@ -36,9 +36,8 @@ const getTasks = async (req, res) => {
     }
 };
 exports.getTasks = getTasks;
-// Obtener tareas completadas por un usuario específico
 exports.getCompletedTasksByUserId = [
-    (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'), // Validar userId en los parámetros
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'),
     async (req, res) => {
         const { userId } = req.params;
         try {
@@ -62,11 +61,11 @@ exports.getCompletedTasksByUserId = [
 ];
 // Crear una nueva tarea
 exports.createTask = [
-    (0, validateRequest_1.validateRequest)(validationSchemas_1.createTaskSchema), // Validar cuerpo de la solicitud
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.createTaskSchema),
     async (req, res) => {
-        const { description, status, user_id, created_at, title } = req.body;
+        const { description, status, user_id, title } = req.body;
         try {
-            const result = await db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, user_id, created_at, title]);
+            const result = await db_1.db.one('INSERT INTO tasks (description, status, user_id, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, user_id, title]);
             logger_1.default.success('Tarea creada con éxito');
             return res.status(http_status_codes_1.StatusCodes.CREATED).json({
                 status: http_status_codes_1.StatusCodes.CREATED,
@@ -89,9 +88,9 @@ exports.updateTask = [
     (0, validateRequest_1.validateRequest)(validationSchemas_1.updateTaskSchema, 'params'), // Validar cuerpo de la solicitud
     async (req, res) => {
         const { id } = req.params;
-        const { description, status, user_id, created_at, title } = req.body;
+        const { description, status, user_id, title } = req.body;
         try {
-            const result = await db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, user_id, created_at, title, status === 'completed' ? new Date() : null, parseInt(id)]);
+            const result = await db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, user_id, title, status === 'completed' ? new Date() : null, parseInt(id)]);
             if (result.rowCount) {
                 logger_1.default.success(`Tarea con ID ${id} actualizada con éxito`);
                 return res.status(http_status_codes_1.StatusCodes.OK).json({

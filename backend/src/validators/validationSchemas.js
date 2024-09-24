@@ -8,6 +8,7 @@ const joi_1 = __importDefault(require("joi"));
 // Validaciones:
 // Para el registro
 exports.userRegistrationSchema = joi_1.default.object({
+    id: joi_1.default.number().integer().positive(),
     role: joi_1.default.string()
         .valid("admin", "maintenance", "cleaning", "delivery")
         .required()
@@ -83,7 +84,7 @@ exports.userRegistrationSchema = joi_1.default.object({
         "any.required": "La dirección es requerida",
     }),
     postal_code: joi_1.default.string()
-        .pattern(/^\d{4,10}$/) // Almacenar como string pero validar como número
+        .pattern(/^\d{4,10}$/)
         .required()
         .messages({
         "string.pattern.base": "El código postal debe ser un número entre 4 y 10 dígitos.",
@@ -106,10 +107,8 @@ exports.userRegistrationSchema = joi_1.default.object({
         "string.pattern.special": "La contraseña debe contener al menos un símbolo especial (@$!%*?&.#)",
         "any.required": "La contraseña es requerida",
     }),
-    confirmPassword: joi_1.default.string().valid(joi_1.default.ref("password")).required().messages({
-        "any.only": "Las contraseñas no coinciden",
-        "any.required": "La confirmación de la contraseña es requerida",
-    }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Para el login
 exports.userLoginSchema = joi_1.default.object({
@@ -119,6 +118,8 @@ exports.userLoginSchema = joi_1.default.object({
     password: joi_1.default.string().required().messages({
         "any.required": "La contraseña es requerida",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Para la creación de notas
 exports.createNoteSchema = joi_1.default.object({
@@ -134,6 +135,8 @@ exports.createNoteSchema = joi_1.default.object({
     description: joi_1.default.string().max(800).required().messages({
         "any.required": "La descripción es requerida",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Para la actualización de notas
 exports.updateNoteSchema = joi_1.default.object({
@@ -144,20 +147,18 @@ exports.updateNoteSchema = joi_1.default.object({
     description: joi_1.default.string().max(800).required().messages({
         "any.required": "La descripción es requerida",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 exports.idParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().required().messages({
-        'number.base': 'El ID debe ser un número entero',
-        'number.positive': 'El ID debe ser un número positivo',
-        'any.required': 'El ID es requerido',
-    }),
+    id: joi_1.default.number().integer().positive(),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 exports.userIdParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().required().messages({
-        "number.base": "El ID debe ser un número entero",
-        "number.positive": "El ID debe ser un número positivo",
-        "any.required": "El ID es requerido",
-    }),
+    id: joi_1.default.number().integer().positive(),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Para la creación de tareas
 exports.createTaskSchema = joi_1.default.object({
@@ -183,6 +184,8 @@ exports.createTaskSchema = joi_1.default.object({
     completed_at: joi_1.default.date().required().messages({
         "date.base": "La fecha de finalización debe ser válida",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Para la actualización de tareas
 exports.updateTaskSchema = joi_1.default.object({
@@ -202,13 +205,11 @@ exports.updateTaskSchema = joi_1.default.object({
     completed_at: joi_1.default.date().required().messages({
         "date.base": "La fecha de finalización debe ser válida",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
-// Esquema de validación para la creación de horarios laborales
 exports.createWorkScheduleSchema = joi_1.default.object({
-    user_id: joi_1.default.number().integer().required().messages({
-        "number.base": "El ID de usuario debe ser un número entero",
-        "any.required": "El ID de usuario es requerido",
-    }),
+    user_id: joi_1.default.number().integer(),
     start_time: joi_1.default.date().iso().required().messages({
         "date.base": "La fecha y hora de inicio debe ser válida",
         "any.required": "La fecha y hora de inicio es requerida",
@@ -229,6 +230,8 @@ exports.createWorkScheduleSchema = joi_1.default.object({
         "any.only": "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "El día de la semana es requerido",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 // Esquema de validación para la actualización de horarios laborales
 exports.updateWorkScheduleSchema = joi_1.default.object({
@@ -252,13 +255,13 @@ exports.updateWorkScheduleSchema = joi_1.default.object({
         "any.only": "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "El día de la semana es requerido",
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 exports.workScheduleIdSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().required().messages({
-        'number.base': 'El ID debe ser un número entero',
-        'number.positive': 'El ID debe ser un número positivo',
-        'any.required': 'El ID del horario de trabajo es requerido',
-    }),
+    id: joi_1.default.number().integer().positive(),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 exports.userProfileSchema = joi_1.default.object({
     username: joi_1.default.string().min(3).max(20).required().messages({
@@ -270,5 +273,7 @@ exports.userProfileSchema = joi_1.default.object({
         'string.email': 'Formato de email inválido',
         'any.required': 'El email es requerido',
     }),
+    created_at: joi_1.default.string(),
+    updated_at: joi_1.default.string()
 });
 exports.deleteUserSchema = exports.idParamSchema;

@@ -45,7 +45,7 @@ const ensureDatabaseSchema = async () => {
                     email: 'VARCHAR(100) UNIQUE NOT NULL',
                     telephone: 'VARCHAR(20)',
                     address: 'TEXT',
-                    cp: 'VARCHAR(10)',
+                    postal_code: 'VARCHAR(10)',
                     password: 'VARCHAR(255) NOT NULL',
                     created_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
                     updated_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
