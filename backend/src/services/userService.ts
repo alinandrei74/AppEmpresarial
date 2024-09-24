@@ -2,6 +2,7 @@ import { getUserByIdFromDB, updateUserInDB, getUserByUsernameFromDB } from '../d
 import { StatusCodes } from 'http-status-codes';
 import Logger from '../utils/logger';
 
+
 // Obtener usuario por ID
 export const getUserById = async (user_id: string) => {
   try {

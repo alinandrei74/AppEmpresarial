@@ -38,7 +38,7 @@ cron.schedule('0 * * * *', async () => {
   try {
     //; Eliminar tareas completadas hace más de 24 horas
     const result = await db.result(
-      `DELETE FROM tasks WHERE status = 'done' AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`
+       `DELETE FROM tasks WHERE is_done = true AND completed_at IS NOT NULL AND completed_at < NOW() - INTERVAL '24 HOURS'`
     );
 
     if (result.rowCount > 0) {

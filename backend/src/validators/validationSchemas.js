@@ -3,14 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUserSchema = exports.userProfileSchema = exports.workScheduleIdSchema = exports.updateWorkScheduleSchema = exports.createWorkScheduleSchema = exports.updateTaskSchema = exports.createTaskSchema = exports.userIdParamSchema = exports.idParamSchema = exports.updateNoteSchema = exports.createNoteSchema = exports.userLoginSchema = exports.userRegistrationSchema = void 0;
+exports.deleteUserSchema = exports.workScheduleIdSchema = exports.updateWorkScheduleSchema = exports.createWorkScheduleSchema = exports.updateTaskSchema = exports.createTaskSchema = exports.userIdParamSchema = exports.idParamSchema = exports.updateNoteSchema = exports.createNoteSchema = exports.userLoginSchema = exports.userRegistrationSchema = void 0;
 const joi_1 = __importDefault(require("joi"));
 // Validaciones:
 // Para el registro
 exports.userRegistrationSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive(),
     role: joi_1.default.string()
         .valid("admin", "maintenance", "cleaning", "delivery")
+        .max(50)
         .required()
         .messages({
         "any.only": "Rol inválido",
@@ -55,7 +55,7 @@ exports.userRegistrationSchema = joi_1.default.object({
         "any.required": "El segundo apellido es requerido",
     }),
     dni: joi_1.default.string()
-        .regex(/^[A-Za-z0-9]+$/)
+        .pattern(/^[A-Za-z0-9]+$/)
         .max(16)
         .required()
         .messages({
@@ -63,7 +63,7 @@ exports.userRegistrationSchema = joi_1.default.object({
         "string.max": "El DNI o NIE debe tener máximo 16 caracteres",
         "any.required": "El DNI o NIE es requerido",
     }),
-    email: joi_1.default.string().email().required().messages({
+    email: joi_1.default.string().email().max(100).required().messages({
         "string.email": "Formato de email inválido",
         "any.required": "El email es requerido",
     }),
@@ -85,6 +85,7 @@ exports.userRegistrationSchema = joi_1.default.object({
     }),
     postal_code: joi_1.default.string()
         .pattern(/^\d{4,10}$/)
+        .max(10)
         .required()
         .messages({
         "string.pattern.base": "El código postal debe ser un número entre 4 y 10 dígitos.",
@@ -93,10 +94,10 @@ exports.userRegistrationSchema = joi_1.default.object({
     password: joi_1.default.string()
         .min(8)
         .max(30)
-        .regex(/[A-Z]/, "uppercase")
-        .regex(/[a-z]/, "lowercase")
-        .regex(/\d/, "number")
-        .regex(/[@$!%*?&.#]/, "special")
+        .pattern(/[A-Z]/, "uppercase")
+        .pattern(/[a-z]/, "lowercase")
+        .pattern(/\d/, "number")
+        .pattern(/[@$!%*?&.#]/, "special")
         .required()
         .messages({
         "string.min": "La contraseña debe tener mínimo 8 caracteres",
@@ -107,8 +108,8 @@ exports.userRegistrationSchema = joi_1.default.object({
         "string.pattern.special": "La contraseña debe contener al menos un símbolo especial (@$!%*?&.#)",
         "any.required": "La contraseña es requerida",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 // Para el login
 exports.userLoginSchema = joi_1.default.object({
@@ -118,124 +119,111 @@ exports.userLoginSchema = joi_1.default.object({
     password: joi_1.default.string().required().messages({
         "any.required": "La contraseña es requerida",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
 });
 // Para la creación de notas
 exports.createNoteSchema = joi_1.default.object({
-    user_id: joi_1.default.number().integer().required().positive().messages({
+    title: joi_1.default.string().max(100).required().messages({
+        "string.max": "El título no puede exceder los 100 caracteres",
+        "any.required": "El título es requerido",
+    }),
+    description: joi_1.default.string().max(800).required().messages({
+        "any.required": "La descripción es requerida",
+    }),
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
+});
+// Para la actualización de notas
+exports.updateNoteSchema = joi_1.default.object({
+    id: joi_1.default.number().integer().required().positive().messages({
         "number.base": "El ID de usuario debe ser un número entero",
         "any.required": "El ID de usuario es requerido",
         "number.positive": "El ID de usuario debe ser un número positivo",
     }),
-    title: joi_1.default.string().max(30).required().messages({
-        "string.max": "El título no puede exceder los 255 caracteres",
+    title: joi_1.default.string().max(100).required().messages({
+        "string.max": "El título no puede exceder los 100 caracteres",
         "any.required": "El título es requerido",
     }),
     description: joi_1.default.string().max(800).required().messages({
         "any.required": "La descripción es requerida",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
-});
-// Para la actualización de notas
-exports.updateNoteSchema = joi_1.default.object({
-    title: joi_1.default.string().max(30).required().messages({
-        "string.max": "El título no puede exceder los 255 caracteres",
-        "any.required": "El título es requerido",
-    }),
-    description: joi_1.default.string().max(800).required().messages({
-        "any.required": "La descripción es requerida",
-    }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.idParamSchema = joi_1.default.object({
     id: joi_1.default.number().integer().positive().required().messages({
-        'number.base': 'El ID debe ser un número.',
-        'number.integer': 'El ID debe ser un número entero.',
-        'number.positive': 'El ID debe ser un número positivo.',
-        'any.required': 'El ID es obligatorio.'
+        "number.base": "El ID debe ser un número.",
+        "number.integer": "El ID debe ser un número entero.",
+        "number.positive": "El ID debe ser un número positivo.",
+        "any.required": "El ID es obligatorio.",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.userIdParamSchema = joi_1.default.object({
     user_id: joi_1.default.number().integer().positive().required().messages({
-        'number.base': 'El ID de usuario debe ser un número.',
-        'number.integer': 'El ID de usuario debe ser un número entero.',
-        'number.positive': 'El ID de usuario debe ser un número positivo.',
-        'any.required': 'El ID de usuario es obligatorio.'
+        "number.base": "El ID de usuario debe ser un número.",
+        "number.integer": "El ID de usuario debe ser un número entero.",
+        "number.positive": "El ID de usuario debe ser un número positivo.",
+        "any.required": "El ID de usuario es obligatorio.",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 // Esquema de validación para la creación de tareas
 exports.createTaskSchema = joi_1.default.object({
-    title: joi_1.default.string().max(30).required().messages({
-        "string.max": "El título no puede exceder los 30 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
+    title: joi_1.default.string().max(100).required().messages({
+        "string.max": "El título no puede exceder los 100 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
         "any.required": "El título es requerido",
     }),
     description: joi_1.default.string().max(200).required().messages({
         "string.max": "La descripción no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
         "any.required": "La descripción es requerida",
     }),
-    status: joi_1.default.string()
-        .valid("pending", "in_progress", "completed") // Corregir los valores válidos para status
-        .required()
-        .messages({
-        "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
-        "any.required": "El estado de la tarea es requerido",
+    is_done: joi_1.default.boolean().valid(true, false).required().messages({
+        "any.only": "El estado de la tarea debe ser true o false.",
+        "any.required": "El estado de la tarea es requerido."
     }),
-    completed_at: joi_1.default.date().optional().messages({
-        "date.base": "La fecha de finalización debe ser válida",
-    }),
-    // Campos que deben ser prohibidos en la solicitud, ya que se manejan automáticamente en la base de datos
-    created_at: joi_1.default.forbidden().messages({
-        "any.unknown": "El campo 'created_at' no está permitido",
-    }),
-    updated_at: joi_1.default.forbidden().messages({
-        "any.unknown": "El campo 'updated_at' no está permitido",
-    }),
+    completed_at: joi_1.default.date().allow(null),
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 // Para la actualización de tareas
 exports.updateTaskSchema = joi_1.default.object({
     id: joi_1.default.number().integer().positive().required().messages({
-        'number.base': 'El ID debe ser un número.',
-        'number.integer': 'El ID debe ser un número entero.',
-        'number.positive': 'El ID debe ser un número positivo.',
-        'any.required': 'El ID es obligatorio.'
+        "number.base": "El ID debe ser un número.",
+        "number.integer": "El ID debe ser un número entero.",
+        "number.positive": "El ID debe ser un número positivo.",
+        "any.required": "El ID es obligatorio.",
     }),
-    title: joi_1.default.string().max(30).required().messages({
-        "string.max": "El título no puede exceder los 255 caracteres",
+    title: joi_1.default.string().max(100).required().messages({
+        "string.max": "El título no puede exceder los 100 caracteres",
         "any.required": "El título es requerido",
     }),
     description: joi_1.default.string().max(200).required().messages({
         "any.required": "La descripción es requerida",
     }),
-    status: joi_1.default.string()
-        .valid("pending", "in_progress", "completed")
-        .required()
-        .messages({
-        "any.only": "El estado de la tarea debe ser uno de los siguientes: pending, in_progress, completed",
+    is_done: joi_1.default.boolean().valid(true, false).required().messages({
+        "any.only": "El estado de la tarea debe ser true o false.",
+        "any.required": "El estado de la tarea es requerido."
     }),
-    completed_at: joi_1.default.date().optional().messages({
-        "date.base": "La fecha de finalización debe ser válida",
-    }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    completed_at: joi_1.default.date().allow(null),
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.createWorkScheduleSchema = joi_1.default.object({
-    user_id: joi_1.default.number().integer(),
     start_time: joi_1.default.date().iso().required().messages({
         "date.base": "La fecha y hora de inicio debe ser válida",
         "any.required": "La fecha y hora de inicio es requerida",
-        'date.format': 'La fecha de inicio debe estar en formato ISO 8601',
+        "date.format": "La fecha de inicio debe estar en formato ISO 8601",
     }),
-    end_time: joi_1.default.date().iso().required().greater(joi_1.default.ref('start_time')).messages({
-        'date.format': 'La fecha de finalización debe estar en formato ISO 8601',
-        'any.required': 'La hora de finalización es requerida',
-        'date.greater': 'La hora de finalización debe ser posterior a la hora de inicio',
+    end_time: joi_1.default.date()
+        .iso()
+        .required()
+        .greater(joi_1.default.ref("start_time"))
+        .messages({
+        "date.format": "La fecha de finalización debe estar en formato ISO 8601",
+        "any.required": "La hora de finalización es requerida",
+        "date.greater": "La hora de finalización debe ser posterior a la hora de inicio",
     }),
     description: joi_1.default.string().required().messages({
         "string.empty": "La descripción no puede estar vacía",
@@ -247,19 +235,25 @@ exports.createWorkScheduleSchema = joi_1.default.object({
         "any.only": "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "El día de la semana es requerido",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 // Esquema de validación para la actualización de horarios laborales
 exports.updateWorkScheduleSchema = joi_1.default.object({
+    id: joi_1.default.number().integer().positive().required().messages({
+        "number.base": "El ID debe ser un número.",
+        "number.integer": "El ID debe ser un número entero.",
+        "number.positive": "El ID debe ser un número positivo.",
+        "any.required": "El ID es obligatorio.",
+    }),
     start_time: joi_1.default.date().iso().required().messages({
         "date.base": "La fecha y hora de inicio debe ser válida",
-        'date.format': 'La fecha de inicio debe estar en formato ISO 8601',
+        "date.format": "La fecha de inicio debe estar en formato ISO 8601",
         "any.required": "La fecha y hora de inicio es requerida",
     }),
     end_time: joi_1.default.date().iso().required().messages({
         "date.base": "La fecha y hora de fin debe ser válida",
-        'date.format': 'La fecha de inicio debe estar en formato ISO 8601',
+        "date.format": "La fecha de inicio debe estar en formato ISO 8601",
         "any.required": "La fecha y hora de fin es requerida",
     }),
     description: joi_1.default.string().required().messages({
@@ -272,25 +266,12 @@ exports.updateWorkScheduleSchema = joi_1.default.object({
         "any.only": "El día de la semana debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "El día de la semana es requerido",
     }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.workScheduleIdSchema = joi_1.default.object({
     id: joi_1.default.number().integer().positive(),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
-});
-exports.userProfileSchema = joi_1.default.object({
-    username: joi_1.default.string().min(3).max(20).required().messages({
-        'string.min': 'El nombre de usuario debe tener al menos 3 caracteres',
-        'string.max': 'El nombre de usuario no debe exceder los 20 caracteres',
-        'any.required': 'El nombre de usuario es requerido',
-    }),
-    email: joi_1.default.string().email().required().messages({
-        'string.email': 'Formato de email inválido',
-        'any.required': 'El email es requerido',
-    }),
-    created_at: joi_1.default.string(),
-    updated_at: joi_1.default.string()
+    created_at: joi_1.default.date().timestamp().optional().allow(null),
+    updated_at: joi_1.default.date().timestamp().optional().allow(null),
 });
 exports.deleteUserSchema = exports.idParamSchema;
