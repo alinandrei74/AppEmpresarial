@@ -170,16 +170,8 @@ exports.idParamSchema = joi_1.default.object({
     updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at -idParamSchema"),
 });
 exports.userIdParamSchema = joi_1.default.object({
-    id: joi_1.default.number()
-        .integer()
-        .positive()
-        .required()
-        .label("id - userIdParamSchema")
-        .messages({
-        "number.base": "{{#label}} debe ser un número.",
-        "number.integer": "{{#label}} debe ser un número entero.",
-        "number.positive": "{{#label}} debe ser un número positivo.",
-        "any.required": "{{#label}} es obligatorio.",
+    id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
+        "error en id": "Error en id - userIdParamSchema"
     }),
     created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - userIdParamSchema"),
     updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - userIdParamSchema"),
