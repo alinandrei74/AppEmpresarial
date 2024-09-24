@@ -206,7 +206,7 @@ exports.createTaskSchema = joi_1.default.object({
         "any.required": "{{#label}} es requerida",
     }),
     is_done: joi_1.default.boolean()
-        .valid(true, false)
+        .valid(false)
         .optional()
         .label("is_done - createTaskSchema")
         .messages({
