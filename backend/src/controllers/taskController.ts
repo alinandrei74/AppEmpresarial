@@ -34,7 +34,7 @@ export const getTasks = async (req: Request, res: Response) => {
 
 
 export const getCompletedTasksByUserId = [
-  validateRequest(userIdParamSchema, 'params'), 
+ 
   async (req: Request, res: Response) => {
     const { user_id } = req.params;
 
