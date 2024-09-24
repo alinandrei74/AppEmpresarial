@@ -10,7 +10,7 @@ const router = (0, express_1.Router)();
 // Permite que cualquier usuario autenticado pueda ver las tareas
 router.get('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'read'), taskController_1.getTasks);
 // Nueva ruta para obtener todas las tareas completadas por un usuario
-router.get('/completed/:userId', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'read'), (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'), taskController_1.getCompletedTasksByUserId);
+router.get('/completed/:user_id', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'read'), (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'), taskController_1.getCompletedTasksByUserId);
 // Solo admin puede crear tareas
 router.post('/', authMiddleware_1.authenticateToken, (0, authRole_1.authorizeRole)('tasks', 'create'), (0, validateRequest_1.validateRequest)(validationSchemas_1.createTaskSchema), taskController_1.createTask);
 // Permite que cualquier usuario autenticado pueda actualizar tareas
