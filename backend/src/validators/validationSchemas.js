@@ -170,7 +170,7 @@ exports.idParamSchema = joi_1.default.object({
     updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at -idParamSchema"),
 });
 exports.userIdParamSchema = joi_1.default.object({
-    user_id: joi_1.default.number()
+    id: joi_1.default.number()
         .integer()
         .positive()
         .required()

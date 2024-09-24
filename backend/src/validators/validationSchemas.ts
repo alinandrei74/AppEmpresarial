@@ -180,7 +180,7 @@ export const idParamSchema = Joi.object({
 });
 
 export const userIdParamSchema = Joi.object({
-  user_id: Joi.number()
+  id: Joi.number()
     .integer()
     .positive()
     .required()
