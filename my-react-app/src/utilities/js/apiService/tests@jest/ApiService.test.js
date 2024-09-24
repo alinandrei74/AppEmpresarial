@@ -41,8 +41,6 @@ async function createTemporaryUser() {
     dni: newUser.dni,
     address: newUser.address,
     postal_code: newUser.postal_code,
-    // created_at: new Date().toISOString().split("T")[0],
-    // updated_at: new Date().toISOString().split("T")[0],
   };
 
   const registerResponse = await ApiService.post(
@@ -50,8 +48,9 @@ async function createTemporaryUser() {
     body
   );
 
+  // Logger.information("registerResponse: ", registerResponse);
   expect(registerResponse.status).toBe(StatusCodes.CREATED);
-  return registerResponse.data.data.id; //; Devolvemos el ID del usuario creado
+  return registerResponse.data.id; //; Devolvemos el ID del usuario creado
 }
 
 async function deleteUserTemporal(userId) {
@@ -59,6 +58,8 @@ async function deleteUserTemporal(userId) {
   const deleteUserResponse = await ApiService.delete(
     ApiService.urls.users.delete(userId)
   );
+
+  // Logger.information("deleteUserResponse: ", deleteUserResponse);
   expect(deleteUserResponse.status).toBe(StatusCodes.OK); //; Código de éxito para eliminación
 }
 
@@ -96,8 +97,6 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       dni: newUser.dni,
       address: newUser.address,
       postal_code: newUser.postal_code,
-      // created_at: new Date().toISOString().split("T")[0],
-      // updated_at: new Date().toISOString().split("T")[0],
     };
 
     const registerResponse = await ApiService.post(
@@ -105,18 +104,19 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       body
     );
 
+    // Logger.information("registerResponse: ", registerResponse);
     expect(registerResponse.status).toBe(StatusCodes.CREATED);
     expect(registerResponse).toEqual(
       expect.objectContaining({
-        is_done: expect.any(Number),
+        status: expect.any(Number),
         data: expect.any(Object),
         message: expect.any(String),
       })
     );
 
-    Logger.warning("registerResponse: ", registerResponse);
+    // Logger.information("registerResponse: ", registerResponse);
     //; Guardamos el ID del usuario registrado
-    userId = registerResponse.data.data.id; //TODO#code3: mantener `data.data` mientras que marisa soluciona el retorno del register
+    userId = registerResponse.data.id;
   });
 
   it("iniciar sesión y obtener un token JWT válido", async () => {
@@ -125,6 +125,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       password: newUser.password,
     });
 
+    // Logger.information("loginResponse: ", loginResponse);
     expect(loginResponse.status).toBe(StatusCodes.OK);
     expect(loginResponse.message).toBe("Login successful");
     expect(loginResponse.data).toHaveProperty("token");
@@ -145,6 +146,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       token
     );
 
+    // Logger.information("verifyResponse: ", verifyResponse);
     expect(verifyResponse.status).toBe(StatusCodes.OK);
   });
 
@@ -153,16 +155,18 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       ApiService.urls.users.getAll
     );
 
+    // Logger.information("getAllUsersResponse: ", getAllUsersResponse);
     expect(getAllUsersResponse.status).toBe(StatusCodes.OK);
     expect(Array.isArray(getAllUsersResponse.data)).toBe(true);
     expect(getAllUsersResponse.data.length).toBeGreaterThan(0);
   });
 
-  it("obtener el perfil del usuario recién registrado", async () => {
+  it("obtener el perfil del usuario recién registrado por id", async () => {
     const getUserResponse = await ApiService.get(
       ApiService.urls.users.getById(userId)
     );
 
+    // Logger.information("getUserResponse: ", getUserResponse);
     expect(getUserResponse.status).toBe(StatusCodes.OK);
     expect(getUserResponse.data).toEqual(
       expect.objectContaining({
@@ -178,6 +182,7 @@ describe("ApiService - Registro, Login, Verificación y Gestión de usuarios (co
       ApiService.urls.users.delete(userId)
     );
 
+    // Logger.information("deleteResponse: ", deleteResponse);
     expect(deleteResponse.status).toBe(StatusCodes.OK); //; Código de éxito para eliminación
   });
 });
@@ -202,8 +207,6 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       description: "Revisar limpieza del piso 1",
       is_done: false,
       user_id: userId, //; Usamos el user_id del nuevo usuario
-      // created_at: "2024-08-25",
-      // updated_at: "2024-09-25",
     };
 
     const createTaskResponse = await ApiService.post(
@@ -211,6 +214,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       newTask
     );
 
+    // Logger.information("createTaskResponse: ", createTaskResponse);
     expect(createTaskResponse.status).toBe(StatusCodes.CREATED);
     taskId = createTaskResponse.data.id;
   });
@@ -221,9 +225,6 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       description: "Revisar nuevamente la limpieza del piso 1",
       is_done: true,
       user_id: userId, //; Mantener el mismo usuario
-      // created_at: "2024-08-25",
-      // updated_at: new Date().toISOString().split("T")[0],
-      // completed_at: new Date().toISOString().split("T")[0],
     };
 
     const updateTaskResponse = await ApiService.put(
@@ -231,6 +232,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       updatedTask
     );
 
+    // Logger.information("updateTaskResponse: ", updateTaskResponse);
     expect(updateTaskResponse.status).toBe(StatusCodes.OK);
   });
 
@@ -239,6 +241,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       ApiService.urls.tasks.getAll
     );
 
+    // Logger.information("getAllTasksResponse: ", getAllTasksResponse);
     expect(getAllTasksResponse.status).toBe(StatusCodes.OK);
     expect(Array.isArray(getAllTasksResponse.data)).toBe(true);
     expect(getAllTasksResponse.data.length).toBeGreaterThan(0);
@@ -249,6 +252,10 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       ApiService.urls.tasks.getCompleted(userId)
     );
 
+    // Logger.information(
+    //   "getCompletedTasksResponse: ",
+    //   getCompletedTasksResponse
+    // );
     expect(getCompletedTasksResponse.status).toBe(StatusCodes.OK);
     expect(Array.isArray(getCompletedTasksResponse.data)).toBe(true);
     expect(getCompletedTasksResponse.data.length).toBeGreaterThan(0);
@@ -260,6 +267,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de tar
       ApiService.urls.tasks.delete(taskId)
     );
 
+    // Logger.information("deleteTaskResponse: ", deleteTaskResponse);
     expect(deleteTaskResponse.status).toBe(StatusCodes.OK); //; Código de éxito para eliminación
   });
 });
@@ -290,17 +298,16 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
       newNote
     );
 
+    // Logger.information("createNoteResponse: ", createNoteResponse);
     expect(createNoteResponse.status).toBe(StatusCodes.CREATED);
     noteId = createNoteResponse.data.id;
   });
 
   it("actualizar la nota correctamente", async () => {
     const updatedNote = {
-      // title: "Revisión de seguridad Actualizada", //! Aviso errorneo del servidor (message: 'El título no puede exceder los 255 caracteres')
-      title: "Revisión Actualizada",
+      title: "Revisión de seguridad Actualizada",
       description: "Revisar de nuevo los sistemas de seguridad.",
       user_id: userId, //; Mantener el mismo usuario
-      // created_at: "2024-09-01",
     };
 
     const updateNoteResponse = await ApiService.put(
@@ -308,6 +315,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
       updatedNote
     );
 
+    // Logger.information("updateNoteResponse: ", updateNoteResponse);
     expect(updateNoteResponse.status).toBe(StatusCodes.OK);
   });
 
@@ -316,6 +324,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
       ApiService.urls.notes.getAll
     );
 
+    // Logger.information("getAllNotesResponse: ", getAllNotesResponse);
     expect(getAllNotesResponse.status).toBe(StatusCodes.OK);
     expect(Array.isArray(getAllNotesResponse.data)).toBe(true);
     expect(getAllNotesResponse.data.length).toBeGreaterThan(0);
@@ -326,6 +335,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
       ApiService.urls.notes.getById(noteId)
     );
 
+    // Logger.information("getNoteByIdResponse: ", getNoteByIdResponse);
     expect(getNoteByIdResponse.status).toBe(StatusCodes.OK);
     expect(getNoteByIdResponse.data.id).toBe(noteId);
   });
@@ -335,6 +345,7 @@ describe("ApiService - Creación, Actualización, Eliminación y Gestión de not
       ApiService.urls.notes.delete(noteId)
     );
 
+    // Logger.information("deleteNoteResponse: ", deleteNoteResponse);
     expect(deleteNoteResponse.status).toBe(StatusCodes.OK); //; Código de éxito para eliminación
   });
 });

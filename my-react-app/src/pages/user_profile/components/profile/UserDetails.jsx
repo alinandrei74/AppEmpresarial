@@ -32,7 +32,7 @@ const UserDetails = ({ userData }) => {
         }
 
         const data = await response.json();
-        setCompletedTasks(data.data.length); // Actualizamos el estado con el número de tareas completadas
+        setCompletedTasks(data.length); // Actualizamos el estado con el número de tareas completadas
       } catch (error) {
         console.error("Error al cargar las tareas completadas", error);
       }
@@ -79,7 +79,8 @@ const UserDetails = ({ userData }) => {
         )}
         {userData.address && userData.postal_code && (
           <div className="user-info-item">
-            <strong>Dirección:</strong> {userData.address}, {userData.postal_code}
+            <strong>Dirección:</strong> {userData.address},{" "}
+            {userData.postal_code}
           </div>
         )}
       </div>

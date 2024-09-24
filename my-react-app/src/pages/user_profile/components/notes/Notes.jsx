@@ -94,7 +94,7 @@ const Notes = ({ userData }) => {
       }
 
       const data = await response.json();
-      setNotes((prevNotes) => [...prevNotes, data.data]);
+      setNotes((prevNotes) => [...prevNotes, data]);
       loadNotes();
       toast.success("Nota añadida con éxito");
     } catch (error) {
