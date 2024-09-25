@@ -1,9 +1,9 @@
-/* Contenedor del formulario */
 .schedule-container {
-    max-width: 1000px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-/* Contenedor de cada entrada de horario */
 .schedule-input {
     display: flex;
     flex-direction: column;
@@ -15,20 +15,19 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Fila para hora de inicio, hora de fin y día de la semana */
 .time-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 3vw;
     margin-bottom: 15px;
     box-sizing: border-box;
 }
 
-/* Ajustar el ancho de los campos de tiempo y el selector */
 .input-group {
-    flex: 1;
+    flex: 1 1 100%;
+    min-width: 200px;
 }
 
-/* Etiquetas */
 .input-group label {
     display: block;
     margin-bottom: 8px;
@@ -40,8 +39,6 @@
     margin-top: 15px;
 }
 
-
-/* Campos de entrada */
 .input-group input,
 .input-group select {
     width: 100%;
@@ -54,7 +51,6 @@
     box-sizing: border-box;
 }
 
-/* Estilo para el selector de día de la semana */
 .input-group select {
     -webkit-appearance: none;
     appearance: none;
@@ -65,7 +61,6 @@
     padding-right: 30px;
 }
 
-/* Botones */
 .add-button,
 .remove-button,
 .send-button {
@@ -75,7 +70,6 @@
     font-size: 16px;
     cursor: pointer;
     margin-top: 10px;
-    /* Elimina los estilos de color y fondo para que hereden los propios */
 }
 
 .send-button {
@@ -83,7 +77,6 @@
     margin-bottom: 15px;
 }
 
-/* Estilo para la tabla de historial */
 .schedule-list {
     width: 100%;
     overflow-x: auto;
@@ -103,9 +96,7 @@
     border-collapse: collapse;
     margin-top: 20px;
     background-color: var(--clr-primary);
-    /* Fondo de la tabla en OnPrimary */
     color: var(--clr-OnPrimary);
-    /* Color del texto dentro de la tabla */
 }
 
 .schedule-list th,
@@ -116,12 +107,10 @@
     color: var(--clr-OnPrimary);
 }
 
-
 .schedule-list th {
     background-color: var(--clr-primary);
     color: var(--clr-text);
 }
-
 
 .schedule-list tr:nth-child(even) {
     background-color: var(--clr-OnPrimary-light);
@@ -131,32 +120,62 @@
     background-color: var(--clr-OnPrimary-light);
 }
 
-/* Media Queries */
+@media (max-width: 768px) {
+    .schedule-container {
+        padding: 15px;
+    }
 
-/* Para dispositivos pequeños (hasta 350px) */
+    .time-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-group {
+        flex: 1 1 auto;
+    }
+
+    .schedule-list table {
+        font-size: 14px;
+    }
+
+    .schedule-list th,
+    .schedule-list td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .schedule-list table {
+        font-size: 12px;
+    }
+
+    .input-group input,
+    .input-group select {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
 @media (max-width: 350px) {
+    .schedule-container {
+        padding: 10px;
+    }
+}
+
+@media (min-width: 351px) and (max-width: 600px) {
+    .schedule-container {
+        padding: 15px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
     .schedule-container {
         padding: 20px;
     }
 }
 
-/* Para dispositivos pequeños (351px - 600px) */
-@media (min-width: 351px) and (max-width: 600px) {
-    .schedule-container {
-        padding: 25px;
-    }
-}
-
-/* Para dispositivos medianos (601px - 900px) */
-@media (min-width: 601px) and (max-width: 900px) {
-    .schedule-container {
-        padding: 30px;
-    }
-}
-
-/* Para dispositivos grandes (901px - 1200px) */
 @media (min-width: 901px) and (max-width: 1200px) {
     .schedule-container {
-        padding: 40px;
+        padding: 25px;
     }
 }

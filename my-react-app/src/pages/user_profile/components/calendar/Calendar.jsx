@@ -123,6 +123,37 @@ const Calendar = ({ userData }) => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const token = sessionStorage.getItem("authToken");
+      if (!token) {
+        toast.error("No se encontró el token de autenticación.");
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:3000/api/work-schedules/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error: ${response.status} - ${errorText}`);
+      }
+
+      loadSchedules(); // Recargar los horarios después de eliminar
+      toast.success("Horario eliminado exitosamente.");
+    } catch (error) {
+      console.error("Error al eliminar el horario:", error);
+      toast.error(`Error al eliminar el horario: ${error.message}`);
+    }
+  };
+
   return (
     <div className="SharedCard__card-background schedule-container">
       <h2 className="SharedCard__title">Gestión de Horarios</h2>
@@ -198,19 +229,33 @@ const Calendar = ({ userData }) => {
           <table>
             <thead>
               <tr>
+                <th>Usuario</th>{" "}
+                {/* Nueva columna para el nombre del usuario */}
                 <th>Hora de inicio</th>
                 <th>Hora de fin</th>
                 <th>Descripción</th>
                 <th>Día de la semana</th>
+                {userData.role === "admin" && <th>Acciones</th>} {/* Nueva columna para las acciones */}
               </tr>
             </thead>
             <tbody>
               {workSchedules.map((sched, index) => (
                 <tr key={index}>
+                  <td>{userData.name}</td> {/* Mostrar el nombre del usuario */}
                   <td>{sched.start}</td>
                   <td>{sched.end}</td>
                   <td>{sched.description}</td>
                   <td>{sched.dayOfWeek}</td>
+                  {userData.role === "admin" && (
+                    <td>
+                      <button
+                        className="SharedCard__delete-button remove-button"
+                        onClick={() => handleDelete(sched.id)}
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
