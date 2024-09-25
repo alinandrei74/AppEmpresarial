@@ -432,7 +432,7 @@ const Tasks = ({ userData }) => {
                 <div className="SharedCard__item-user-div">
                   <h1>
                     {task.user_id === userData.id
-                      ? "(TU)"
+                      ? "(TÚ)"
                       : `${fullName.split(" ")[0]} ${fullName.split(" ")[1]}`}
                   </h1>
 

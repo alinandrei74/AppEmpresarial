@@ -28,8 +28,6 @@ const AddNoteForm = ({ onAddNote, userId }) => {
       user_id: userId,
     };
 
-    console.log("Enviando nueva nota:", newNote); // Log para depurar
-
     onAddNote(newNote);
 
     setTitle("");

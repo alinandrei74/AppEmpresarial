@@ -93,8 +93,12 @@ const Notes = ({ userData }) => {
         throw new Error(errorData.message || "Failed to add note");
       }
 
-      const data = await response.json();
-      setNotes((prevNotes) => [...prevNotes, data]);
+      // const data = await response.json();
+      // setNotes((prevNotes) => [...prevNotes, data.data]);
+
+      // await response.json(); //; No necesitas usar el dato para actualizar manualmente
+
+      //; Simplemente llama a loadNotes para actualizar la lista de notas desde el servidor
       loadNotes();
       toast.success("Nota añadida con éxito");
     } catch (error) {
@@ -154,7 +158,7 @@ const Notes = ({ userData }) => {
             <div key={note.id} className="SharedCard__item">
               <div className="SharedCard__item-user-div">
                 <h1>
-                  {note.user_id === userData.id ? "(TU)" : note.user_name}
+                  {note.user_id === userData.id ? "(TÚ)" : note.user_name}
                 </h1>
                 {note.user_role !== "unknown" && (
                   <div className={`user-role-tag ${note.user_role}`}>
