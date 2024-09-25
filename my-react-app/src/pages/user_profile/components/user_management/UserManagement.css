@@ -116,7 +116,7 @@ thead .thManagement {
   cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 950px) {
   .filters {
     flex-direction: column;
   }

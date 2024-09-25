@@ -16,12 +16,12 @@ const UserDetails = ({ userData }) => {
   useEffect(() => {
     const fetchCompletedTasks = async () => {
       try {
-        const data = await API_S.get(
+        const response = await API_S.get(
           API_S.urls.tasks.getCompleted(userData.id)
         );
 
-        if (data.status === 201) {
-          setCompletedTasks(data.length); // Actualizamos el estado con el número de tareas completadas
+        if (response.status === 200) {
+          setCompletedTasks(response.data.length); // Actualizamos el estado con el número de tareas completadas
         }
       } catch (error) {
         console.error("Error al cargar las tareas completadas", error);
