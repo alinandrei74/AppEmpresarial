@@ -21,7 +21,9 @@ const AppContent = () => {
   const [isMobile, setIsMobile] = useState(false);
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
+    if (isMobile) {
+      setIsMenuOpen(!isMenuOpen);
+    }
   };
 
   const location = useLocation();
@@ -34,6 +36,12 @@ const AppContent = () => {
 
     window.addEventListener("resize", handleResize);
     handleResize();
+
+    // //! NO FUNCIONA COMO ESPERABA
+    // if (isMenuOpen && !isMobile) {
+    //   setIsMenuOpen(false); //! Quiero que el aside se cierre
+    // }
+    // console.log(isMenuOpen);
 
     return () => {
       window.removeEventListener("resize", handleResize);

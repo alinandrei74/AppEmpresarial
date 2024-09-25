@@ -46,8 +46,6 @@ const Calendar = ({ userData }) => {
       // Filtrar los horarios según el rol del usuario
       if (userData.role === "admin") {
         setSchedules(formattedSchedules);
-        console.log("Console de pruebas", formattedSchedules);
-        
       } else {
         setSchedules(
           formattedSchedules.filter((sched) => sched.userId === userData.id)
@@ -238,9 +236,7 @@ const Calendar = ({ userData }) => {
           <table>
             <thead>
               <tr>
-              {userData.role === "admin" && (
-                <th>Usuario</th>
-              )}
+                {userData.role === "admin" && <th>Usuario</th>}
                 <th>Hora de inicio</th>
                 <th>Hora de fin</th>
                 <th>Descripción</th>
@@ -251,10 +247,10 @@ const Calendar = ({ userData }) => {
             <tbody>
               {workSchedules.map((sched) => (
                 <tr key={sched.id}>
-                   {userData.role === "admin" && (
-                  <td>
-                    {userData.id === sched.userId ? "(TÚ)" : sched.userName}
-                  </td>
+                  {userData.role === "admin" && (
+                    <td>
+                      {userData.id === sched.userId ? "(TÚ)" : sched.userName}
+                    </td>
                   )}
                   <td>{sched.start}</td>
                   <td>{sched.end}</td>
