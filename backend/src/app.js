@@ -81,3 +81,6 @@ node_cron_1.default.schedule('0 0 * * *', async () => {
         logger_1.default.finalError('Error eliminando notas antiguas:', error);
     }
 });
+const bcrypt = require('bcrypt');
+const password = 'Admin1..';
+bcrypt.hash(password, 10).then(console.log);
