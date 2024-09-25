@@ -15,8 +15,8 @@ const getAllWorkSchedules = async (req, res) => {
     const user = req.user;
     try {
         const work_schedules = user.role === 'admin'
-            ? await db_1.db.many("SELECT * FROM work_schedule")
-            : await db_1.db.many("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
+            ? await db_1.db.any("SELECT * FROM work_schedule")
+            : await db_1.db.any("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
             message: "Horarios de trabajo recuperados exitosamente",

@@ -18,8 +18,8 @@ export const getAllWorkSchedules = async (req: Request, res: Response) => {
 
   try {
     const work_schedules = user.role === 'admin'
-      ? await db.many("SELECT * FROM work_schedule")
-      : await db.many("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
+      ? await db.any("SELECT * FROM work_schedule")
+      : await db.any("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
 
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,

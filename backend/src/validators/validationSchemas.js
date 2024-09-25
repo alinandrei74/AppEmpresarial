@@ -123,70 +123,162 @@ exports.userRegistrationSchema = joi_1.default.object({
         "string.pattern.special": "{{#label}} debe contener al menos un símbolo especial (@$!%*?&.#)",
         "any.required": "{{#label}} es requerida",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - userRegistrationSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - userRegistrationSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - userRegistrationSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - userRegistrationSchema"),
 });
 // Para el login
 exports.userLoginSchema = joi_1.default.object({
-    username: joi_1.default.string().required().label("username - userLoginSchema").messages({
+    username: joi_1.default.string()
+        .required()
+        .label("username - userLoginSchema")
+        .messages({
         "any.required": "{{#label}} es requerido",
     }),
-    password: joi_1.default.string().required().label("password - userLoginSchema").messages({
+    password: joi_1.default.string()
+        .required()
+        .label("password - userLoginSchema")
+        .messages({
         "any.required": "{{#label}} es requerida",
     }),
 });
 // Para la creación de notas
 exports.createNoteSchema = joi_1.default.object({
-    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
-        "error en id": "Error en id - userIdParamSchema"
+    user_id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - userIdParamSchema")
+        .messages({
+        "error en id": "Error en id - userIdParamSchema",
     }),
-    title: joi_1.default.string().max(100).required().label("title - createNoteSchema").messages({
+    title: joi_1.default.string()
+        .max(100)
+        .required()
+        .label("title - createNoteSchema")
+        .messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
         "any.required": "{{#label}} es requerido",
     }),
-    description: joi_1.default.string().max(800).required().label("description - createNoteSchema").messages({
+    description: joi_1.default.string()
+        .max(800)
+        .required()
+        .label("description - createNoteSchema")
+        .messages({
         "any.required": "{{#label}} es requerida",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - createNoteSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - createNoteSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - createNoteSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - createNoteSchema"),
 });
 // Para la actualización de notas
 exports.updateNoteSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
-        "error en id": "Error en id - userIdParamSchema"
+    id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - userIdParamSchema")
+        .messages({
+        "error en id": "Error en id - userIdParamSchema",
     }),
-    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
-        "error en id": "Error en id - userIdParamSchema"
+    user_id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - userIdParamSchema")
+        .messages({
+        "error en id": "Error en id - userIdParamSchema",
     }),
-    title: joi_1.default.string().max(100).required().label("title - updateNoteSchema").messages({
+    title: joi_1.default.string()
+        .max(100)
+        .required()
+        .label("title - updateNoteSchema")
+        .messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
         "any.required": "{{#label}} es requerido",
     }),
-    description: joi_1.default.string().max(800).required().label("description - updateNoteSchema").messages({
+    description: joi_1.default.string()
+        .max(800)
+        .required()
+        .label("description - updateNoteSchema")
+        .messages({
         "any.required": "{{#label}} es requerida",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - updateNoteSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - updateNoteSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - updateNoteSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - updateNoteSchema"),
 });
 exports.idParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().required().label("id -idParamSchema").messages({
+    id: joi_1.default.number()
+        .integer()
+        .positive()
+        .required()
+        .label("id -idParamSchema")
+        .messages({
         "number.base": "{{#label}} debe ser un número.",
         "number.integer": "{{#label}} debe ser un número entero.",
         "number.positive": "{{#label}} debe ser un número positivo.",
         "any.required": "{{#label}} es obligatorio.",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - idParamSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at -idParamSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - idParamSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at -idParamSchema"),
 });
 exports.userIdParamSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
-        "error en id": "Error en id - userIdParamSchema"
+    id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - userIdParamSchema")
+        .messages({
+        "error en id": "Error en id - userIdParamSchema",
     }),
-    user_id: joi_1.default.number().integer().positive().allow().label("id - userIdParamSchema").messages({
-        "error en id": "Error en id - userIdParamSchema"
+    user_id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - userIdParamSchema")
+        .messages({
+        "error en id": "Error en id - userIdParamSchema",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - userIdParamSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - userIdParamSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - userIdParamSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - userIdParamSchema"),
 });
 // Esquema de validación para la creación de tareas
 exports.createTaskSchema = joi_1.default.object({
@@ -201,11 +293,19 @@ exports.createTaskSchema = joi_1.default.object({
         "number.positive": "{{#label}} debe ser un número positivo.",
         "any.required": "{{#label}} es obligatorio.",
     }),
-    title: joi_1.default.string().max(100).required().label("title - createTaskSchema").messages({
+    title: joi_1.default.string()
+        .max(100)
+        .required()
+        .label("title - createTaskSchema")
+        .messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres", // Ajustar mensaje para reflejar la longitud máxima correcta
         "any.required": "{{#label}} es requerido",
     }),
-    description: joi_1.default.string().max(200).required().label("description - createTaskSchema").messages({
+    description: joi_1.default.string()
+        .max(200)
+        .required()
+        .label("description - createTaskSchema")
+        .messages({
         "string.max": "{{#label}} no puede exceder los 200 caracteres", // Añadir mensaje para el límite de descripción
         "any.required": "{{#label}} es requerida",
     }),
@@ -223,15 +323,28 @@ exports.createTaskSchema = joi_1.default.object({
 });
 // Para la actualización de tareas
 exports.updateTaskSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().allow().label("id - updateTaskSchema").messages({
-        "error en id": "Error en id - updateTaskSchema"
+    id: joi_1.default.number()
+        .integer()
+        .positive()
+        .allow()
+        .label("id - updateTaskSchema")
+        .messages({
+        "error en id": "Error en id - updateTaskSchema",
     }),
     user_id: joi_1.default.number().allow().label("user_id - updateTaskSchema"),
-    title: joi_1.default.string().max(100).optional().label("title - updateTaskSchema").messages({
+    title: joi_1.default.string()
+        .max(100)
+        .optional()
+        .label("title - updateTaskSchema")
+        .messages({
         "string.max": "{{#label}} no puede exceder los 100 caracteres",
         "any.required": "{{#label}} es requerido",
     }),
-    description: joi_1.default.string().max(200).optional().label("description - updateTaskSchema").messages({
+    description: joi_1.default.string()
+        .max(200)
+        .optional()
+        .label("description - updateTaskSchema")
+        .messages({
         "any.required": "{{#label}} es requerida",
     }),
     is_done: joi_1.default.boolean()
@@ -247,7 +360,12 @@ exports.updateTaskSchema = joi_1.default.object({
     updated_at: joi_1.default.date().allow(null).label("updated_at - updateTaskSchema"),
 });
 exports.createWorkScheduleSchema = joi_1.default.object({
-    start_time: joi_1.default.date().iso().required().label("start_time - createWorkScheduleSchema").messages({
+    user_id: joi_1.default.number().allow().label("user_id - createWorkScheduleSchema"),
+    start_time: joi_1.default.date()
+        .iso()
+        .required()
+        .label("start_time - createWorkScheduleSchema")
+        .messages({
         "date.base": "{{#label}} debe ser válida",
         "any.required": "{{#label}} es requerida",
         "date.format": "{{#label}} debe estar en formato ISO 8601",
@@ -255,14 +373,16 @@ exports.createWorkScheduleSchema = joi_1.default.object({
     end_time: joi_1.default.date()
         .iso()
         .required()
-        .greater(joi_1.default.ref("start_time - createWorkScheduleSchema"))
         .label("end_time - createWorkScheduleSchema")
         .messages({
         "date.format": "{{#label}} debe estar en formato ISO 8601",
         "any.required": "{{#label}} es requerida",
         "date.greater": "{{#label}} debe ser posterior a la hora de inicio",
     }),
-    description: joi_1.default.string().required().label("description - createWorkScheduleSchema").messages({
+    description: joi_1.default.string()
+        .required()
+        .label("description - createWorkScheduleSchema")
+        .messages({
         "string.empty": "{{#label}} no puede estar vacía",
     }),
     day_of_week: joi_1.default.string()
@@ -273,28 +393,52 @@ exports.createWorkScheduleSchema = joi_1.default.object({
         "any.only": "{{#label}} debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "{{#label}} es requerido",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - createWorkScheduleSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - createWorkScheduleSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - createWorkScheduleSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - createWorkScheduleSchema"),
 });
 // Esquema de validación para la actualización de horarios laborales
 exports.updateWorkScheduleSchema = joi_1.default.object({
-    id: joi_1.default.number().integer().positive().required().label("id - updateWorkScheduleSchema").messages({
+    id: joi_1.default.number()
+        .integer()
+        .positive()
+        .required()
+        .label("id - updateWorkScheduleSchema")
+        .messages({
         "number.base": "{{#label}} debe ser un número.",
         "number.integer": "{{#label}} debe ser un número entero.",
         "number.positive": "{{#label}} debe ser un número positivo.",
         "any.required": "{{#label}} es obligatorio.",
     }),
-    start_time: joi_1.default.date().iso().required().label("start_time - updateWorkScheduleSchema").messages({
+    start_time: joi_1.default.date()
+        .iso()
+        .required()
+        .label("start_time - updateWorkScheduleSchema")
+        .messages({
         "date.base": "{{#label}} debe ser válida",
         "date.format": "{{#label}} debe estar en formato ISO 8601",
         "any.required": "{{#label}} es requerida",
     }),
-    end_time: joi_1.default.date().iso().required().label("end_time - updateWorkScheduleSchema").messages({
+    end_time: joi_1.default.date()
+        .iso()
+        .required()
+        .label("end_time - updateWorkScheduleSchema")
+        .messages({
         "date.base": "{{#label}} debe ser válida",
         "date.format": "{{#label}} debe estar en formato ISO 8601",
         "any.required": "{{#label}} es requerida",
     }),
-    description: joi_1.default.string().required().label("description - updateWorkScheduleSchema").messages({
+    description: joi_1.default.string()
+        .required()
+        .label("description - updateWorkScheduleSchema")
+        .messages({
         "string.empty": "{{#label}} no puede estar vacía",
     }),
     day_of_week: joi_1.default.string()
@@ -305,13 +449,29 @@ exports.updateWorkScheduleSchema = joi_1.default.object({
         "any.only": "{{#label}} debe ser uno de: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday",
         "any.required": "{{#label}} es requerido",
     }),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - updateWorkScheduleSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - updateWorkScheduleSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - updateWorkScheduleSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - updateWorkScheduleSchema"),
 });
 exports.workScheduleIdSchema = joi_1.default.object({
     id: joi_1.default.number().integer().positive().label("id - workScheduleIdSchema"),
-    created_at: joi_1.default.date().timestamp().optional().allow(null).label("created_at - workScheduleIdSchema"),
-    updated_at: joi_1.default.date().timestamp().optional().allow(null).label("updated_at - workScheduleIdSchema"),
+    created_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("created_at - workScheduleIdSchema"),
+    updated_at: joi_1.default.date()
+        .timestamp()
+        .optional()
+        .allow(null)
+        .label("updated_at - workScheduleIdSchema"),
 });
 exports.userProfileSchema = joi_1.default.object({
     user_id: joi_1.default.number()
@@ -329,7 +489,7 @@ exports.userProfileSchema = joi_1.default.object({
         .min(3)
         .max(20)
         .required()
-        .label('username - userProfileSchema') // Agrega el label aquí
+        .label("username - userProfileSchema") // Agrega el label aquí
         .messages({
         "string.min": "El campo '{#label}' debe tener al menos 3 caracteres",
         "string.max": "El campo '{#label}' no debe exceder los 20 caracteres",
@@ -338,7 +498,7 @@ exports.userProfileSchema = joi_1.default.object({
     email: joi_1.default.string()
         .email()
         .required()
-        .label('email -userProfileSchema') // Agrega el label aquí
+        .label("email -userProfileSchema") // Agrega el label aquí
         .messages({
         "string.email": "Formato de '{#label}' inválido",
         "any.required": "El campo '{#label}' es requerido",
@@ -347,11 +507,11 @@ exports.userProfileSchema = joi_1.default.object({
         .timestamp()
         .optional()
         .allow(null)
-        .label('Fecha de creación - userProfileSchema'), // Agrega el label aquí
+        .label("Fecha de creación - userProfileSchema"), // Agrega el label aquí
     updated_at: joi_1.default.date()
         .timestamp()
         .optional()
         .allow(null)
-        .label('Fecha de actualización - userProfileSchema'), // Agrega el label aquí
+        .label("Fecha de actualización - userProfileSchema"), // Agrega el label aquí
 });
 exports.deleteUserSchema = exports.idParamSchema;
