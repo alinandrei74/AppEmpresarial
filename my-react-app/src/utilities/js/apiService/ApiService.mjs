@@ -27,9 +27,20 @@ class ApiService {
    * @param {Object} config - Objeto de configuración.
    * @param {string} config.baseUrl - URL base del backend.
    * @param {string} [config.userToken] - Token de usuario (opcional).
+   * @throws {Error} Si `baseUrl` no es una cadena válida.
+   * @throws {Error} Si `userToken` no es una cadena.
    */
   static configure({ baseUrl, userToken = null }) {
+    if (typeof baseUrl !== "string" || !baseUrl.startsWith("http")) {
+      throw new Error(
+        "El 'baseUrl' debe ser una cadena válida que comience con 'http'."
+      );
+    }
     this.baseUrl = baseUrl;
+
+    if (userToken && typeof userToken !== "string") {
+      throw new Error("El 'userToken' debe ser una cadena.");
+    }
     if (userToken) {
       this._userToken = userToken;
     }
@@ -47,8 +58,12 @@ class ApiService {
   /**
    * Setter para establecer el token de usuario.
    * @param {string} token - Token de usuario.
+   * @throws {Error} Si el token no es una cadena válida.
    */
   static set userToken(token) {
+    if (typeof token !== "string") {
+      throw new Error("El token debe ser una cadena.");
+    }
     this._userToken = token;
   }
 
@@ -120,8 +135,21 @@ class ApiService {
    * @param {string} method - El método HTTP (GET, POST, PUT, DELETE).
    * @param {Object} [body] - El cuerpo de la solicitud (opcional).
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
+   * @throws {Error} Si los parámetros no son válidos.
    */
   static async _request(url, method, body = null) {
+    if (typeof url !== "string" || !url.startsWith(this.baseUrl)) {
+      throw new Error("La URL proporcionada no es válida.");
+    }
+
+    if (!["GET", "POST", "PUT", "DELETE"].includes(method)) {
+      throw new Error(`Método HTTP no soportado: ${method}`);
+    }
+
+    if (body && typeof body !== "object") {
+      throw new Error("El cuerpo de la solicitud debe ser un objeto válido.");
+    }
+
     try {
       const token = this.userToken;
 
@@ -165,8 +193,12 @@ class ApiService {
    * Realiza una solicitud GET al backend.
    * @param {string} url - La URL del recurso.
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
+   * @throws {Error} Si la URL no es válida.
    */
   static async get(url) {
+    if (typeof url !== "string" || !url.startsWith(this.baseUrl)) {
+      throw new Error("La URL para GET no es válida.");
+    }
     return this._request(url, "GET");
   }
 
@@ -175,8 +207,15 @@ class ApiService {
    * @param {string} url - La URL del recurso.
    * @param {Object} body - El cuerpo de la solicitud.
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
+   * @throws {Error} Si la URL o el cuerpo no son válidos.
    */
   static async post(url, body) {
+    if (typeof url !== "string" || !url.startsWith(this.baseUrl)) {
+      throw new Error("La URL para POST no es válida.");
+    }
+    if (!body || typeof body !== "object") {
+      throw new Error("El cuerpo para POST debe ser un objeto no vacío.");
+    }
     return this._request(url, "POST", body);
   }
 
@@ -185,8 +224,15 @@ class ApiService {
    * @param {string} url - La URL del recurso.
    * @param {Object} body - El cuerpo de la solicitud.
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
+   * @throws {Error} Si la URL o el cuerpo no son válidos.
    */
   static async put(url, body) {
+    if (typeof url !== "string" || !url.startsWith(this.baseUrl)) {
+      throw new Error("La URL para PUT no es válida.");
+    }
+    if (!body || typeof body !== "object") {
+      throw new Error("El cuerpo para PUT debe ser un objeto no vacío.");
+    }
     return this._request(url, "PUT", body);
   }
 
@@ -194,8 +240,12 @@ class ApiService {
    * Realiza una solicitud DELETE al backend.
    * @param {string} url - La URL del recurso.
    * @returns {Promise<ApiResponse>} - Objeto con el estado, mensaje y datos de la respuesta.
+   * @throws {Error} Si la URL no es válida.
    */
   static async delete(url) {
+    if (typeof url !== "string" || !url.startsWith(this.baseUrl)) {
+      throw new Error("La URL para DELETE no es válida.");
+    }
     return this._request(url, "DELETE");
   }
 
@@ -205,8 +255,18 @@ class ApiService {
    * Registra un nuevo usuario.
    * @param {Object} user - Datos del usuario.
    * @returns {Promise<ApiResponse>} - Respuesta del backend.
+   * @throws {Error} Si los datos del usuario no son válidos.
    */
   static async registerUser(user) {
+    if (
+      !user ||
+      typeof user !== "object" ||
+      !user.fullName ||
+      !user.username ||
+      !user.password
+    ) {
+      throw new Error("Datos de usuario inválidos para el registro.");
+    }
     const body = this._transformUserData(user);
     return this.post(this.urls.auth.register, body);
   }

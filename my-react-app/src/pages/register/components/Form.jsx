@@ -41,7 +41,7 @@ const Form = () => {
         .required("El nombre completo es requerido"),
       dni: Yup.string()
         .matches(
-          /^[A-Za-z0-9]+$/,
+          /^[A-Za-z0-9Ññ]+$/,
           "El DNI o NIE sólo puede contener números y letras"
         )
         .required("El DNI o NIE es requerido"),
@@ -59,7 +59,7 @@ const Form = () => {
         .required("El código postal es requerido"),
       email: Yup.string()
         .matches(
-          /^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i,
+          /^[A-Z0-9Ññ._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i,
           "Formato de email inválido"
         )
         .required("El email es requerido"),
@@ -114,8 +114,6 @@ const Form = () => {
 
         if (data.status === 201) {
           toast.success("Usuario registrado con éxito."); //; Notificación de éxito
-        } else {
-          toast.error("Error al registrar el usuario: " + data.message); //; Notificación de error
         }
       } catch (error) {
         toast.error("Error al registrar el usuario: " + error.message); //; Notificación de error

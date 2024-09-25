@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./UserDetails.css";
+import API_S from "../../../../utilities/js/apiService/ApiService.mjs";
 
 /**
  * Componente para mostrar los detalles del usuario autenticado.
@@ -15,24 +16,13 @@ const UserDetails = ({ userData }) => {
   useEffect(() => {
     const fetchCompletedTasks = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/tasks/completed/${userData.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, // Asegúrate de que el token esté presente
-            },
-          }
+        const data = await API_S.get(
+          API_S.urls.tasks.getCompleted(userData.id)
         );
 
-        // Comprobamos si la respuesta es satisfactoria
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener las tareas completadas");
+        if (data.status === 201) {
+          setCompletedTasks(data.length); // Actualizamos el estado con el número de tareas completadas
         }
-
-        const data = await response.json();
-        setCompletedTasks(data.length); // Actualizamos el estado con el número de tareas completadas
       } catch (error) {
         console.error("Error al cargar las tareas completadas", error);
       }

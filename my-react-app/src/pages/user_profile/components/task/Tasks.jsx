@@ -123,8 +123,6 @@ const Tasks = ({ userData }) => {
         description: newTaskDescription,
         is_done: false,
         user_id: newTaskAssignedTo,
-        // created_at: new Date().toISOString(),
-        // updated_at: new Date().toISOString(),
       };
 
       try {
@@ -266,7 +264,6 @@ const Tasks = ({ userData }) => {
         title: newTaskTitle,
         description: newTaskDescription,
         user_id: newTaskAssignedTo,
-        // updated_at: new Date().toISOString(),
       };
 
       try {
@@ -425,9 +422,12 @@ const Tasks = ({ userData }) => {
           const { fullName, username, role } = getUsernameById(task.user_id); //; Obtener el nombre y el rol del usuario
 
           return (
-            <div key={task.id} className={`SharedCard__item ${task.is_done}`}>
-              {/* Añadir la clase correspondiente al rol del usuario */}
-
+            <div
+              key={task.id}
+              className={`SharedCard__item ${
+                task.is_done ? "done" : "pending"
+              }`}
+            >
               {userData.role === "admin" && (
                 <div className="SharedCard__item-user-div">
                   <h1>
