@@ -1,10 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteWorkSchedule = exports.updateWorkSchedule = exports.createWorkSchedule = exports.getWorkScheduleById = exports.getAllWorkSchedules = void 0;
 const db_1 = require("../config/db");
 const http_status_codes_1 = require("http-status-codes");
 const validateRequest_1 = require("../middlewares/validateRequest");
 const validationSchemas_1 = require("../validators/validationSchemas");
+const logger_1 = __importDefault(require("../utils/logger"));
 class WorkScheduleError extends Error {
     constructor(message) {
         super(message);
@@ -14,16 +18,28 @@ class WorkScheduleError extends Error {
 const getAllWorkSchedules = async (req, res) => {
     const user = req.user;
     try {
-        const work_schedules = user.role === 'admin'
-            ? await db_1.db.any("SELECT * FROM work_schedule")
-            : await db_1.db.any("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
+        const workSchedules = user.role === 'admin'
+            ? await db_1.db.any(`
+          SELECT ws.id, ws.start_time, ws.end_time, ws.description, ws.day_of_week, ws.user_id,
+                 u.name AS user_name, u.role AS user_role
+          FROM work_schedule ws
+          JOIN users u ON ws.user_id = u.id
+        `)
+            : await db_1.db.any(`
+          SELECT ws.id, ws.start_time, ws.end_time, ws.description, ws.day_of_week, ws.user_id,
+                 u.name AS user_name, u.role AS user_role
+          FROM work_schedule ws
+          JOIN users u ON ws.user_id = u.id
+          WHERE ws.user_id = $1
+        `, [user.id]);
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
             message: "Horarios de trabajo recuperados exitosamente",
-            data: work_schedules,
+            data: workSchedules,
         });
     }
     catch (error) {
+        logger_1.default.finalError("Error al recuperar los horarios de trabajo:", error);
         return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
             message: "Error interno del servidor",

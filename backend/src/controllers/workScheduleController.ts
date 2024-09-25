@@ -4,6 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { User } from "../types/user";
 import { validateRequest } from "../middlewares/validateRequest";
 import { workScheduleIdSchema, createWorkScheduleSchema, updateWorkScheduleSchema } from '../validators/validationSchemas';
+import Logger from "../utils/logger";
 
 
 class WorkScheduleError extends Error {
@@ -17,16 +18,30 @@ export const getAllWorkSchedules = async (req: Request, res: Response) => {
   const user = req.user as User;
 
   try {
-    const work_schedules = user.role === 'admin'
-      ? await db.any("SELECT * FROM work_schedule")
-      : await db.any("SELECT * FROM work_schedule WHERE user_id=$1", [user.id]);
+
+    const workSchedules = user.role === 'admin'
+      ? await db.any(`
+          SELECT ws.id, ws.start_time, ws.end_time, ws.description, ws.day_of_week, ws.user_id,
+                 u.name AS user_name, u.role AS user_role
+          FROM work_schedule ws
+          JOIN users u ON ws.user_id = u.id
+        `)
+      : await db.any(`
+          SELECT ws.id, ws.start_time, ws.end_time, ws.description, ws.day_of_week, ws.user_id,
+                 u.name AS user_name, u.role AS user_role
+          FROM work_schedule ws
+          JOIN users u ON ws.user_id = u.id
+          WHERE ws.user_id = $1
+        `, [user.id]);
 
     return res.status(StatusCodes.OK).json({
       status: StatusCodes.OK,
       message: "Horarios de trabajo recuperados exitosamente",
-      data: work_schedules,
+      data: workSchedules,
     });
+
   } catch (error) {
+    Logger.finalError("Error al recuperar los horarios de trabajo:", error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       status: StatusCodes.INTERNAL_SERVER_ERROR,
       message: "Error interno del servidor",
@@ -34,6 +49,7 @@ export const getAllWorkSchedules = async (req: Request, res: Response) => {
     });
   }
 };
+
 
 export const getWorkScheduleById = [
   validateRequest(workScheduleIdSchema, 'params'),
