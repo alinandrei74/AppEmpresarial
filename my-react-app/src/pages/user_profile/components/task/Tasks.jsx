@@ -370,7 +370,7 @@ const Tasks = ({ userData }) => {
               ref={newTaskTitleRef} //; Asignar la referencia al input
               type="text"
               value={newTaskTitle}
-              onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 30))} //; Limitar el título a 30 caracteres
+              onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 100))} //; Limitar el título a 30 caracteres
               placeholder="Título de la tarea (máximo 100 caracteres)"
               maxLength={100} //; Limitar el input del título
               required

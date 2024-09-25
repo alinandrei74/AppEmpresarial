@@ -37,7 +37,7 @@ const UserDetails = ({ userData }) => {
     .join(" ");
 
   return (
-    <div className="SharedCard__card-background">
+    <div className="SharedCard__card-background user-details-container">
       <div className="SharedCard__item-user-div">
         <h2 className="SharedCard__title">
           {fullName.split(" ")[0]} - {userData.dni}
