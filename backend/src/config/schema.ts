@@ -1,17 +1,20 @@
-import { db } from './db';
-import Logger from '../utils/logger';
+import { db } from "./db";
+import Logger from "../utils/logger";
+import bcrypt from "bcryptjs";
 
 /**
  * Asegura que las tablas, columnas y triggers necesarios existen en la base de datos.
  */
 export const ensureDatabaseSchema = async (): Promise<void> => {
   try {
-    Logger.information('Iniciando verificación y aseguramiento del esquema de la base de datos.');
+    Logger.information(
+      "Iniciando verificación y aseguramiento del esquema de la base de datos."
+    );
 
     //; Definiciones de las tablas y columnas esperadas
     const tables: TableDefinition[] = [
       {
-        name: 'users',
+        name: "users",
         createQuery: `
           CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
@@ -31,24 +34,24 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
           );
         `,
         columns: {
-          id: 'SERIAL PRIMARY KEY',
-          role: 'VARCHAR(50)',
-          username: 'VARCHAR(100) UNIQUE NOT NULL',
-          name: 'VARCHAR(100)',
-          firstname: 'VARCHAR(100)',
-          lastname: 'VARCHAR(100)',
-          dni: 'VARCHAR(20) UNIQUE NOT NULL',
-          email: 'VARCHAR(100) UNIQUE NOT NULL',
-          telephone: 'VARCHAR(20)',
-          address: 'VARCHAR',
-          postal_code: 'VARCHAR(10)',
-          password: 'VARCHAR(255) NOT NULL',
-          created_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          updated_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+          id: "SERIAL PRIMARY KEY",
+          role: "VARCHAR(50)",
+          username: "VARCHAR(100) UNIQUE NOT NULL",
+          name: "VARCHAR(100)",
+          firstname: "VARCHAR(100)",
+          lastname: "VARCHAR(100)",
+          dni: "VARCHAR(20) UNIQUE NOT NULL",
+          email: "VARCHAR(100) UNIQUE NOT NULL",
+          telephone: "VARCHAR(20)",
+          address: "VARCHAR",
+          postal_code: "VARCHAR(10)",
+          password: "VARCHAR(255) NOT NULL",
+          created_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+          updated_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
         },
       },
       {
-        name: 'tasks',
+        name: "tasks",
         createQuery: `
           CREATE TABLE IF NOT EXISTS tasks (
             id SERIAL PRIMARY KEY,
@@ -62,18 +65,18 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
           );
         `,
         columns: {
-          id: 'SERIAL PRIMARY KEY',
-          title: 'TEXT NOT NULL',
-          description: 'TEXT NOT NULL',
-          is_done: 'BOOLEAN NOT NULL DEFAULT FALSE',
-          user_id: 'INT REFERENCES users(id) ON DELETE CASCADE',
-          created_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          updated_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          completed_at: 'TIMESTAMP DEFAULT NULL',
+          id: "SERIAL PRIMARY KEY",
+          title: "TEXT NOT NULL",
+          description: "TEXT NOT NULL",
+          is_done: "BOOLEAN NOT NULL DEFAULT FALSE",
+          user_id: "INT REFERENCES users(id) ON DELETE CASCADE",
+          created_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+          updated_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+          completed_at: "TIMESTAMP DEFAULT NULL",
         },
       },
       {
-        name: 'notes',
+        name: "notes",
         createQuery: `
           CREATE TABLE IF NOT EXISTS notes (
             id SERIAL PRIMARY KEY,
@@ -85,16 +88,16 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
           );
         `,
         columns: {
-          id: 'SERIAL PRIMARY KEY',
-          user_id: 'INT REFERENCES users(id) ON DELETE CASCADE',
-          title: 'VARCHAR(255) NOT NULL',
-          description: 'TEXT NOT NULL',
-          created_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          updated_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+          id: "SERIAL PRIMARY KEY",
+          user_id: "INT REFERENCES users(id) ON DELETE CASCADE",
+          title: "VARCHAR(255) NOT NULL",
+          description: "TEXT NOT NULL",
+          created_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+          updated_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
         },
       },
       {
-        name: 'work_schedule',
+        name: "work_schedule",
         createQuery: `
           CREATE TABLE IF NOT EXISTS work_schedule (
             id SERIAL PRIMARY KEY,
@@ -108,14 +111,14 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
           );
         `,
         columns: {
-          id: 'SERIAL PRIMARY KEY',
-          user_id: 'INT REFERENCES users(id) ON DELETE CASCADE',
-          start_time: 'TIMESTAMP NOT NULL',
-          end_time: 'TIMESTAMP NOT NULL',
-          description: 'TEXT NOT NULL',
-          day_of_week: 'VARCHAR(15) NOT NULL',
-          created_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
-          updated_at: 'TIMESTAMP DEFAULT CURRENT_TIMESTAMP',
+          id: "SERIAL PRIMARY KEY",
+          user_id: "INT REFERENCES users(id) ON DELETE CASCADE",
+          start_time: "TIMESTAMP NOT NULL",
+          end_time: "TIMESTAMP NOT NULL",
+          description: "TEXT NOT NULL",
+          day_of_week: "VARCHAR(15) NOT NULL",
+          created_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+          updated_at: "TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
         },
       },
     ];
@@ -127,10 +130,70 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
       await createUpdatedAtTrigger(table.name);
     }
 
-    Logger.finalSuccess('Tablas, columnas y triggers verificados/creados exitosamente.');
+    Logger.finalSuccess(
+      "Tablas, columnas y triggers verificados/creados exitosamente."
+    );
+
+    // Asegurar que existe un usuario admin si no hay ningún usuario
+    await createAdminIfNoUsers();
   } catch (error) {
-    Logger.finalError('Error en el proceso de creación/verificación del esquema de la base de datos:', error);
-    throw new Error('Fallo al asegurar el esquema de la base de datos.');
+    Logger.finalError(
+      "Error en el proceso de creación/verificación del esquema de la base de datos:",
+      error
+    );
+    throw new Error("Fallo al asegurar el esquema de la base de datos.");
+  }
+};
+
+/**
+ * Crea un usuario administrador si no hay ningún usuario en la tabla.
+ */
+const createAdminIfNoUsers = async (): Promise<void> => {
+  try {
+    const { count } = await db.one<{ count: number }>(
+      "SELECT COUNT(*) FROM users",
+      [],
+      (data) => ({
+        count: +data.count,
+      })
+    );
+
+    if (count === 0) {
+      Logger.information(
+        "No se encontraron usuarios en la tabla. Creando usuario administrador predeterminado..."
+      );
+
+      const hashedPassword = await bcrypt.hash("Admin1..", 10);
+
+      await db.none(
+        `INSERT INTO users (role, username, name, firstname, lastname, dni, email, telephone, address, postal_code, password)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [
+          "admin", // role
+          "Admin", // username
+          "Admin", // name
+          "Admin", // firstname
+          "User", // lastname
+          "00000000A", // dni
+          "admin@example.com", // email
+          "123456789", // telephone
+          "Admin Address 123", // address
+          "00000", // postal_code
+          hashedPassword, // password
+        ]
+      );
+
+      Logger.success("Usuario administrador creado exitosamente.");
+    } else {
+      Logger.information(
+        `Se encontraron ${count} usuarios en la base de datos. No se creó el usuario administrador.`
+      );
+    }
+  } catch (error) {
+    Logger.error("Error al verificar o crear el usuario administrador:", error);
+    throw new Error(
+      "Error en la creación/verificación del usuario administrador."
+    );
   }
 };
 
@@ -139,7 +202,10 @@ export const ensureDatabaseSchema = async (): Promise<void> => {
  * @param tableName - El nombre de la tabla.
  * @param createTableQuery - La consulta SQL para crear la tabla.
  */
-const createTableIfNotExists = async (tableName: string, createTableQuery: string): Promise<void> => {
+const createTableIfNotExists = async (
+  tableName: string,
+  createTableQuery: string
+): Promise<void> => {
   try {
     await db.none(createTableQuery);
     Logger.success(`Tabla {'${tableName}'} creada o ya existente.`);
@@ -154,9 +220,14 @@ const createTableIfNotExists = async (tableName: string, createTableQuery: strin
  * @param tableName - El nombre de la tabla.
  * @param createTableQuery - La consulta SQL para crear la tabla.
  */
-const dropTableAndRetry = async (tableName: string, createTableQuery: string): Promise<void> => {
+const dropTableAndRetry = async (
+  tableName: string,
+  createTableQuery: string
+): Promise<void> => {
   try {
-    Logger.warning(`Eliminando la tabla '${tableName}' debido a un error previo...`);
+    Logger.warning(
+      `Eliminando la tabla '${tableName}' debido a un error previo...`
+    );
     await db.none(`DROP TABLE IF EXISTS ${tableName} CASCADE`);
     Logger.success(`Tabla '${tableName}' eliminada. Intentando recrear...`);
     await db.none(createTableQuery);
@@ -172,7 +243,10 @@ const dropTableAndRetry = async (tableName: string, createTableQuery: string): P
  * @param tableName - El nombre de la tabla.
  * @param expectedColumns - Las definiciones de columnas esperadas.
  */
-const checkAndAlterTableColumns = async (tableName: string, expectedColumns: Record<string, string>): Promise<void> => {
+const checkAndAlterTableColumns = async (
+  tableName: string,
+  expectedColumns: Record<string, string>
+): Promise<void> => {
   try {
     Logger.information(`Verificando columnas de la tabla {'${tableName}'}.`);
     const existingColumns = await db.any<{ column_name: string }>(
@@ -180,21 +254,38 @@ const checkAndAlterTableColumns = async (tableName: string, expectedColumns: Rec
       [tableName]
     );
 
-    const existingColumnNames = existingColumns.map((col) => col.column_name.toLowerCase());
+    const existingColumnNames = existingColumns.map((col) =>
+      col.column_name.toLowerCase()
+    );
 
     //; Crear columnas que faltan
-    for (const [columnName, columnDefinition] of Object.entries(expectedColumns)) {
+    for (const [columnName, columnDefinition] of Object.entries(
+      expectedColumns
+    )) {
       if (!existingColumnNames.includes(columnName.toLowerCase())) {
-        await db.none(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`);
-        Logger.success(`Columna '{${columnName}'} añadida a la tabla {'${tableName}'}.`);
+        await db.none(
+          `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`
+        );
+        Logger.success(
+          `Columna '{${columnName}'} añadida a la tabla {'${tableName}'}.`
+        );
       }
     }
 
     //; Eliminar columnas sobrantes
-    await removeExtraColumns(tableName, existingColumnNames, Object.keys(expectedColumns));
+    await removeExtraColumns(
+      tableName,
+      existingColumnNames,
+      Object.keys(expectedColumns)
+    );
   } catch (error) {
-    Logger.error(`Error verificando/ajustando columnas de la tabla {'${tableName}'}:`, error);
-    throw new Error(`Fallo al verificar/ajustar columnas en la tabla {'${tableName}'}.`);
+    Logger.error(
+      `Error verificando/ajustando columnas de la tabla {'${tableName}'}:`,
+      error
+    );
+    throw new Error(
+      `Fallo al verificar/ajustar columnas en la tabla {'${tableName}'}.`
+    );
   }
 };
 
@@ -204,14 +295,29 @@ const checkAndAlterTableColumns = async (tableName: string, expectedColumns: Rec
  * @param existingColumns - Columnas actuales en la tabla.
  * @param expectedColumns - Columnas esperadas en la tabla.
  */
-const removeExtraColumns = async (tableName: string, existingColumns: string[], expectedColumns: string[]): Promise<void> => {
+const removeExtraColumns = async (
+  tableName: string,
+  existingColumns: string[],
+  expectedColumns: string[]
+): Promise<void> => {
   for (const columnName of existingColumns) {
-    if (!expectedColumns.map((col) => col.toLowerCase()).includes(columnName.toLowerCase())) {
+    if (
+      !expectedColumns
+        .map((col) => col.toLowerCase())
+        .includes(columnName.toLowerCase())
+    ) {
       try {
-        await db.none(`ALTER TABLE ${tableName} DROP COLUMN ${columnName} CASCADE`);
-        Logger.warning(`Columna {'${columnName}'} eliminada de la tabla {'${tableName}'}.`);
+        await db.none(
+          `ALTER TABLE ${tableName} DROP COLUMN ${columnName} CASCADE`
+        );
+        Logger.warning(
+          `Columna {'${columnName}'} eliminada de la tabla {'${tableName}'}.`
+        );
       } catch (error) {
-        Logger.error(`Error eliminando la columna {'${columnName}'} de la tabla {'${tableName}'}:`, error);
+        Logger.error(
+          `Error eliminando la columna {'${columnName}'} de la tabla {'${tableName}'}:`,
+          error
+        );
       }
     }
   }
@@ -245,10 +351,17 @@ const createUpdatedAtTrigger = async (tableName: string): Promise<void> => {
       END;
       $$;
     `);
-    Logger.success(`Trigger 'update_{${tableName}}_updated_at_trigger' creado/verificado para la tabla '${tableName}'.`);
+    Logger.success(
+      `Trigger 'update_{${tableName}}_updated_at_trigger' creado/verificado para la tabla '${tableName}'.`
+    );
   } catch (error) {
-    Logger.error(`Error creando/verificando el trigger para la tabla {'${tableName}'}:`, error);
-    throw new Error(`Fallo al crear/verificar el trigger para la tabla '${tableName}'.`);
+    Logger.error(
+      `Error creando/verificando el trigger para la tabla {'${tableName}'}:`,
+      error
+    );
+    throw new Error(
+      `Fallo al crear/verificar el trigger para la tabla '${tableName}'.`
+    );
   }
 };
 

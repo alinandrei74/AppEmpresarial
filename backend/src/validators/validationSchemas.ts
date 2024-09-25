@@ -58,7 +58,7 @@ export const userRegistrationSchema = Joi.object({
       "any.required": "{{#label}} es requerido",
     }),
   dni: Joi.string()
-    .pattern(/^[A-Za-z0-9]+$/)
+    .pattern(/^[A-Za-z0-9Ññ]+$/)
     .max(16)
     .required()
     .label("dni - userRegistrationSchema") // Añadir un label para personalizar el mensaje de error
@@ -68,7 +68,7 @@ export const userRegistrationSchema = Joi.object({
       "any.required": "{{#label}} es requerido",
     }),
   email: Joi.string()
-  .pattern(/^[A-Z0-9._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i)
+  .pattern(/^[A-Z0-9Ññ._%+-]+@[A-Z0-9-]+\.[A-Z]{2,}(?:\.[A-Z]{2,})*$/i)
   .max(100)
   .required()
   .label("email - userRegistrationSchema")
