@@ -32,15 +32,27 @@ const Calendar = ({ userData }) => {
       }
 
       const data = await response.json();
+      // Incluir el id y nombre del usuario si está disponible en la respuesta de la API.
       const formattedSchedules = data.data.map((schedule) => ({
         id: schedule.id,
+        userId: schedule.user_id,
+        userName: schedule.user_name,
         start: schedule.start_time.split("T")[1].substring(0, 5),
         end: schedule.end_time.split("T")[1].substring(0, 5),
         description: schedule.description,
         dayOfWeek: schedule.day_of_week,
       }));
 
-      setSchedules(formattedSchedules);
+      // Filtrar los horarios según el rol del usuario
+      if (userData.role === "admin") {
+        setSchedules(formattedSchedules);
+        console.log("Console de pruebas", formattedSchedules);
+        
+      } else {
+        setSchedules(
+          formattedSchedules.filter((sched) => sched.userId === userData.id)
+        );
+      }
     } catch (error) {
       console.error("Error al cargar los horarios:", error);
       toast.error(`Error al cargar los horarios: ${error.message}`);
@@ -70,7 +82,6 @@ const Calendar = ({ userData }) => {
   const handleSave = async () => {
     const { start, end, description, dayOfWeek } = scheduleInput;
 
-    // Validación de campos requeridos
     if (!start || !end || !description || !dayOfWeek) {
       toast.error("Por favor, completa todos los campos requeridos.");
       return;
@@ -79,7 +90,6 @@ const Calendar = ({ userData }) => {
     const startDate = new Date(formatDateTime(start));
     const endDate = new Date(formatDateTime(end));
 
-    // Validación de rango de tiempo
     if (endDate <= startDate) {
       toast.error("La hora de fin debe ser posterior a la hora de inicio.");
       return;
@@ -170,7 +180,6 @@ const Calendar = ({ userData }) => {
               onChange={(e) => updateScheduleInput("start", e.target.value)}
             />
           </div>
-
           <div className="input-group time-group">
             <label htmlFor="end-time">Hora de fin</label>
             <input
@@ -229,19 +238,24 @@ const Calendar = ({ userData }) => {
           <table>
             <thead>
               <tr>
-                <th>Usuario</th>{" "}
-                {/* Nueva columna para el nombre del usuario */}
+              {userData.role === "admin" && (
+                <th>Usuario</th>
+              )}
                 <th>Hora de inicio</th>
                 <th>Hora de fin</th>
                 <th>Descripción</th>
                 <th>Día de la semana</th>
-                {userData.role === "admin" && <th>Acciones</th>} {/* Nueva columna para las acciones */}
+                {userData.role === "admin" && <th>Acciones</th>}
               </tr>
             </thead>
             <tbody>
-              {workSchedules.map((sched, index) => (
-                <tr key={index}>
-                  <td>{userData.name}</td> {/* Mostrar el nombre del usuario */}
+              {workSchedules.map((sched) => (
+                <tr key={sched.id}>
+                   {userData.role === "admin" && (
+                  <td>
+                    {userData.id === sched.userId ? "(TÚ)" : sched.userName}
+                  </td>
+                  )}
                   <td>{sched.start}</td>
                   <td>{sched.end}</td>
                   <td>{sched.description}</td>
