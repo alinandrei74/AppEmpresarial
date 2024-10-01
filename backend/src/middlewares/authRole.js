@@ -1,8 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorizeRole = void 0;
 const http_status_codes_1 = require("http-status-codes");
-// Definir permisos por rol
+const logger_1 = __importDefault(require("../utils/logger"));
 const rolePermissions = {
     admin: {
         tasks: ['create', 'read', 'update', 'delete'],
@@ -12,51 +15,45 @@ const rolePermissions = {
     },
     maintenance: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
     cleaning: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
     delivery: {
         tasks: ['read', 'update'],
-        users: [], // No tiene acceso
+        users: [],
         notes: ['create', 'read', 'update', 'delete'],
-        work_schedules: ['create', 'read'], // Puede leer y crear sus propios horarios
+        work_schedules: ['create', 'read'],
     },
 };
-// Middleware para autorizar según el rol del usuario
 const authorizeRole = (entity, action) => {
     return (req, res, next) => {
         var _a;
-        const user = req.user; // Asumiendo que el rol del usuario está en req.user
+        const user = req.user;
         if (!user || !user.role) {
+            logger_1.default.warning("User not authenticated");
             return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({ message: 'User not authenticated' });
         }
-        const { role, id } = user; // Asumiendo que el id del usuario también está en req.user
-        // Verificar si el rol es válido
+        const { role, id } = user;
         if (!isValidRole(role)) {
+            logger_1.default.error(`Invalid role: ${role}`);
             return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Invalid role' });
         }
         // Verificar si el rol tiene permiso para la acción solicitada en la entidad
         if (rolePermissions[role] && ((_a = rolePermissions[role][entity]) === null || _a === void 0 ? void 0 : _a.includes(action))) {
-            // Restricción para creación de horarios: El admin solo puede crear su propio horario
+            // Restricción para creación de horarios
             if (entity === 'work_schedules') {
-                const scheduleUserId = req.params.workerId || req.body.workerId; // Asumiendo que el ID del usuario para el horario está en params o body
+                const scheduleUserId = req.params.user_id || req.body.user_Id;
                 // Validación para creación de horarios
-                if (action === 'create') {
-                    if (role === 'admin' && scheduleUserId && scheduleUserId !== id) {
-                        // Admin no puede crear horarios para otros usuarios
-                        return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Admin cannot create schedule for another user' });
-                    }
-                    else if (role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
-                        // Otros roles no pueden crear horarios para otros usuarios
-                        return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Cannot create schedule for another user' });
-                    }
+                if (action === 'create' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
+                    logger_1.default.warning("User attempting to create schedule for another user");
+                    return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Cannot create schedule for another user' });
                 }
                 // Validación para lectura de horarios
                 if (action === 'read' && role !== 'admin' && scheduleUserId && scheduleUserId !== id) {
@@ -64,9 +61,11 @@ const authorizeRole = (entity, action) => {
                     return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Access denied to this schedule' });
                 }
             }
-            next(); // El rol tiene acceso, continuar con la siguiente función
+            logger_1.default.success(`User ${role} authorized for action: ${action} on entity: ${entity}`);
+            next();
         }
         else {
+            logger_1.default.error(`Access denied: Role ${role} does not have permission for ${action} on ${entity}`);
             return res.status(http_status_codes_1.StatusCodes.FORBIDDEN).json({ message: 'Access denied' });
         }
     };

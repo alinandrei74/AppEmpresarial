@@ -121,10 +121,8 @@ const Tasks = ({ userData }) => {
       const newTask = {
         title: newTaskTitle,
         description: newTaskDescription,
-        status: "pending",
+        is_done: false,
         user_id: newTaskAssignedTo,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
       };
 
       try {
@@ -164,7 +162,7 @@ const Tasks = ({ userData }) => {
     if (taskToUpdate && taskToUpdate.user_id === userData.id) {
       const updatedTask = {
         ...taskToUpdate,
-        status: "done",
+        is_done: true,
       };
 
       try {
@@ -266,7 +264,6 @@ const Tasks = ({ userData }) => {
         title: newTaskTitle,
         description: newTaskDescription,
         user_id: newTaskAssignedTo,
-        updated_at: new Date().toISOString(),
       };
 
       try {
@@ -360,89 +357,97 @@ const Tasks = ({ userData }) => {
   };
 
   return (
-    <div className="tasks-container">
-      <h2>Tareas</h2>
+    <div className="SharedCard__card-background tasks-container">
+      <h2 className="SharedCard__title">Tareas</h2>
 
-      {userData.role === "admin" && (
-        <form
-          onSubmit={editingTask ? handleSaveEdit : handleCreateTask}
-          className="create-task-form"
-        >
-          <input
-            ref={newTaskTitleRef} //; Asignar la referencia al input
-            type="text"
-            value={newTaskTitle}
-            onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 30))} //; Limitar el título a 30 caracteres
-            placeholder="Título de la tarea (máximo 30 caracteres)"
-            maxLength={30} //; Limitar el input del título
-            required
-          />
-          <textarea
-            value={newTaskDescription}
-            onChange={(e) =>
-              setNewTaskDescription(e.target.value.slice(0, 200))
-            } //; Limitar la descripción a 200 caracteres
-            placeholder="Descripción de la tarea (máximo 200 caracteres)"
-            maxLength={200} //; Limitar el input de la descripción
-            required
-            style={{ height: "75px", resize: "none" }} //; Mayor altura y deshabilitar el redimensionamiento
-          />
-          <select
-            value={newTaskAssignedTo}
-            onChange={(e) => setNewTaskAssignedTo(e.target.value)}
-            required
+      <div className="SharedCard__card-first-layer">
+        {userData.role === "admin" && (
+          <form
+            onSubmit={editingTask ? handleSaveEdit : handleCreateTask}
+            className="SharedCard__form"
           >
-            <option value="">Seleccionar usuario</option>
-            {users
-              .filter((user) => user.id !== userData.id) //; Excluir al usuario actual
-              .map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.username} ({user.role})
-                </option>
-              ))}
-          </select>
-          <button type="submit">
-            {editingTask ? "Guardar Cambios" : "Crear Tarea"}
-          </button>
-          {editingTask && (
-            <button type="button" onClick={handleCancelEdit}>
-              Cancelar
+            <input
+              ref={newTaskTitleRef} //; Asignar la referencia al input
+              type="text"
+              value={newTaskTitle}
+              onChange={(e) => setNewTaskTitle(e.target.value.slice(0, 100))} //; Limitar el título a 30 caracteres
+              placeholder="Título de la tarea (máximo 100 caracteres)"
+              maxLength={100} //; Limitar el input del título
+              required
+            />
+            <textarea
+              value={newTaskDescription}
+              onChange={(e) =>
+                setNewTaskDescription(e.target.value.slice(0, 200))
+              } //; Limitar la descripción a 200 caracteres
+              placeholder="Descripción de la tarea (máximo 200 caracteres)"
+              maxLength={200} //; Limitar el input de la descripción
+              required
+              style={{ height: "75px", resize: "none" }} //; Mayor altura y deshabilitar el redimensionamiento
+            />
+            <select
+              value={newTaskAssignedTo}
+              onChange={(e) => setNewTaskAssignedTo(e.target.value)}
+              required
+            >
+              <option value="">Seleccionar usuario</option>
+              {users
+                .filter((user) => user.id !== userData.id) //; Excluir al usuario actual
+                .map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.username} ({user.role})
+                  </option>
+                ))}
+            </select>
+            <button type="submit">
+              {editingTask ? "Guardar Cambios" : "Crear Tarea"}
             </button>
-          )}
-        </form>
-      )}
+            {editingTask && (
+              <button type="button" onClick={handleCancelEdit}>
+                Cancelar
+              </button>
+            )}
+          </form>
+        )}
 
-      <button className="filter-button" onClick={toggleSortOrder}>
-        Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
-      </button>
+        <div className="SharedCard__filter-button-div">
+          <button onClick={toggleSortOrder}>
+            Orden {sortOrder === "asc" ? "Antiguo" : "Reciente"}
+          </button>
+        </div>
+      </div>
 
-      <div className="tasks-list">
+      <div className="SharedCard__items-list">
         {tasks.map((task) => {
           const { fullName, username, role } = getUsernameById(task.user_id); //; Obtener el nombre y el rol del usuario
 
           return (
-            <div key={task.id} className={`task-item ${task.status}`}>
-              {/* Añadir la clase correspondiente al rol del usuario */}
-
+            <div
+              key={task.id}
+              className={`SharedCard__item ${
+                task.is_done ? "done" : "pending"
+              }`}
+            >
               {userData.role === "admin" && (
-                <div className="user-details-task">
-                  <h2>
-                    {fullName.split(" ")[0]} {fullName.split(" ")[1]}
-                  </h2>
+                <div className="SharedCard__item-user-div">
+                  <h1>
+                    {task.user_id === userData.id
+                      ? "(TÚ)"
+                      : `${fullName.split(" ")[0]} ${fullName.split(" ")[1]}`}
+                  </h1>
+
                   {userData.role && (
-                    <div className={`user-role ${role}`}>{role}</div>
+                    <div className={`user-role-tag ${role}`}>{role}</div>
                   )}
                 </div>
               )}
 
-              <p className="task-title">
-                <strong>{task.title}</strong>
-              </p>
-              <p className="task-description">{task.description}</p>
+              <h1>{task.title}</h1>
+              <h2>{task.description}</h2>
 
-              {/* <small>Estado: {task.status}</small> */}
+              {/* <small>Estado: {task.is_done}</small> */}
 
-              {task.status === "pending" && task.user_id === userData.id && (
+              {task.is_done === false && task.user_id === userData.id && (
                 <button
                   className="complete-task-button"
                   onClick={() => handleCompleteTask(task.id)}
@@ -455,7 +460,7 @@ const Tasks = ({ userData }) => {
                 <>
                   <button onClick={() => handleEditTask(task)}>Editar</button>
                   <button
-                    className="delete-task-button"
+                    className="SharedCard__delete-button"
                     onClick={() => handleDeleteTask(task.id)}
                   >
                     Eliminar

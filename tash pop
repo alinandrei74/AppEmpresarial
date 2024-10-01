@@ -1,0 +1,222 @@
+*   [33ma9ae23a[m[33m ([m[1;35mrefs/stash[m[33m)[m WIP on codevaried: d009fc0 Update Mejora Log BackEnd + Modulo
+[31m|[m[32m\[m  
+[31m|[m * [33m5cd078e[m index on codevaried: d009fc0 Update Mejora Log BackEnd + Modulo
+[31m|[m[31m/[m  
+* [33md009fc0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mcodevaried[m[33m, [m[1;31morigin/codevaried[m[33m)[m Update Mejora Log BackEnd + Modulo
+* [33mfb6f535[m Update FIXED after the second demo
+* [33m9e82064[m Update FIXED after the second demo
+* [33m0218e73[m Update FIXED after the second demo
+* [33m80dfc46[m Update FIXED after the second demo
+* [33m2071049[m Update FIXED after the second demo
+* [33mdb1463a[m Update FIXED after the second demo
+* [33mdef9c6b[m Update FIXED after the second demo
+* [33mcb143cb[m Update UserManagement + Controllers  BackEnd
+* [33m26cee04[m Update UserManagement + Controllers  BackEnd
+* [33ma3fd554[m Update Notes fixed
+* [33m0d3c196[m Update limpieza arreglo parte alin
+* [33m48e1834[m Update Apartments & Interface
+* [33m17e2374[m Update Task Profile
+* [33mb043357[m Update Fixed Task
+* [33m4a74ce1[m Update Fixed Task
+* [33m878f64e[m Refactorización de la verificación de tablas y columnas en db.ts: se agregan funciones para crear, ajustar y eliminar columnas automáticamente.
+* [33me770896[m Revert "agregando role a tabla users" He revertido los cambios porque no los entiendo y creo que no son necesarios (msg para MASSI)
+* [33me12dd02[m agregando role a tabla users
+*   [33me36b713[m Update Fixed Conflicts
+[33m|[m[34m\[m  
+[33m|[m * [33m637ab38[m Calendar arreglado con permisos
+[33m|[m * [33mffc884b[m Calendar funciona bien sin permisos, bien guardado, no como antes. La señora ya la está liando
+[33m|[m * [33med3f905[m Hasta aquí funciona calendar pero sin permisos
+[33m|[m * [33m31011b2[m Calendar ya funciona
+[33m|[m * [33m3c3db17[m Array en user_id cambia a interger
+[33m|[m * [33mb4680dc[m NAvbar.jsx mergeado
+[33m|[m * [33m70028a4[m Tasks.jsx mergeado
+[33m|[m * [33maeb44b5[m App.jsx mergeado2
+[33m|[m * [33m1e53157[m App.jsx mergeado
+[33m|[m * [33mc031488[m Todo bien
+[33m|[m *   [33m7e60e1e[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[33m|[m [35m|[m[36m\[m  
+[33m|[m [35m|[m * [33m2f02ef2[m creando work-schedule
+[33m|[m [35m|[m * [33ma1ece74[m creando calendario
+[33m|[m * [36m|[m [33mdf63763[m Comments
+[33m|[m [1;31m|[m[36m\[m[36m|[m 
+[33m|[m * [36m|[m [33m17b75a3[m Merge
+[33m|[m * [36m|[m [33m75643bc[m Tasks routes
+[33m|[m * [36m|[m [33m93ad353[m Routes actualizadas con token
+* [1;32m|[m [36m|[m [33m03a3af6[m Update Task ++
+[36m|[m [1;32m|[m[36m/[m  
+[36m|[m[36m/[m[1;32m|[m   
+* [1;32m|[m [33m4f7d37d[m Update interface+css
+* [1;32m|[m [33m56b32c6[m Update interface+css
+* [1;32m|[m [33m7d8a4ec[m Update interface+css
+* [1;32m|[m [33m62b597c[m Update interface+css
+* [1;32m|[m [33m175d87c[m Update Notifications Toast and CSS
+* [1;32m|[m [33me4ed495[m Update Task
+* [1;32m|[m [33m2971173[m Update Task
+* [1;32m|[m [33m137d06a[m Task Funcional y refresco de tareas automatico añadido
+* [1;32m|[m [33mea8ea50[m ARREGLO ERROR authenticateToken
+* [1;32m|[m [33mf365a14[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;33m|[m[1;32m\[m[1;32m|[m 
+[1;33m|[m * [33m1355c54[m creando authRole y rolePrmissions
+* [1;34m|[m [33m9f8ad85[m Update task create
+[1;34m|[m[1;34m/[m  
+* [33m5b73194[m Update
+* [33m8d95ccb[m Token para tasks ya funciona
+* [33m2fca046[m Update front (error backend authenticateToken)
+* [33mbee46b7[m Update front (error backend authenticateToken)
+*   [33mdfc6fdc[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33me2c5203[m agregando getAllUsers
+[1;35m|[m *   [33mb0ffbbf[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;35m|[m [31m|[m[32m\[m  
+[1;35m|[m * [32m|[m [33ma0cf26b[m Intentando ejecutar frontend+backend
+* [32m|[m [32m|[m [33m85ef47d[m Update Font
+* [32m|[m [32m|[m   [33m5441d41[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[33m|[m[32m\[m [32m\[m [32m\[m  
+[33m|[m [32m|[m [32m|[m[32m/[m  
+[33m|[m [32m|[m[32m/[m[32m|[m   
+[33m|[m * [32m|[m [33m80943e7[m Verificación del token devuelve user entero
+* [34m|[m [32m|[m [33me546903[m Proceso unir back
+* [34m|[m [32m|[m [33m2816574[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[35m|[m[34m\[m[34m|[m [32m|[m 
+[35m|[m * [32m|[m [33m86caa4a[m La señora de volvió a dejar la compilación sin hacer
+[35m|[m * [32m|[m [33m7e63c2a[m Cambios en la generación del token
+* [36m|[m [32m|[m [33m8ec5297[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;31m|[m[36m\[m[36m|[m [32m|[m 
+[1;31m|[m * [32m|[m [33meb53544[m La señora no habia compilado
+* [1;32m|[m [32m|[m [33m1ecceeb[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;33m|[m[1;32m\[m[1;32m|[m [32m|[m 
+[1;33m|[m * [32m|[m [33mb4efb73[m Triggers y tablas si no existen arreglado
+* [1;34m|[m [32m|[m [33m9475618[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;35m|[m[1;34m\[m[1;34m|[m [32m|[m 
+[1;35m|[m * [32m|[m [33m30cf879[m Backend con triggers y tablas si no existen
+[1;35m|[m [32m|[m[32m/[m  
+* [32m/[m [33m2542997[m Proceso unir back
+[32m|[m[32m/[m  
+* [33m9810f5a[m Ya podemos registrarnos con front y back!!
+* [33m640c768[m Proceso Unir back
+*   [33m8f49d0b[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[31m|[m[32m\[m  
+[31m|[m * [33m039917a[m Arreglos del back
+[31m|[m *   [33ma489880[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[31m|[m [33m|[m[34m\[m  
+[31m|[m * [34m|[m [33m9642ff6[m Vamos bien
+* [34m|[m [34m|[m [33m91b3dcd[m Proceso Unir back
+[34m|[m [34m|[m[34m/[m  
+[34m|[m[34m/[m[34m|[m   
+* [34m|[m [33mb3c7ecc[m Update Parity BackEnd
+* [34m|[m [33mb0bcfb9[m Update Parity BackEnd
+[34m|[m[34m/[m  
+*   [33m47c1aa3[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[35m|[m[36m\[m  
+[35m|[m *   [33m747bc00[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[35m|[m [1;31m|[m[1;32m\[m  
+[35m|[m * [1;32m|[m [33m4dde606[m Backend finalizado
+* [1;32m|[m [1;32m|[m [33mfe998b3[m Update
+[1;32m|[m [1;32m|[m[1;32m/[m  
+[1;32m|[m[1;32m/[m[1;32m|[m   
+* [1;32m|[m [33m3e86886[m Arreglo Tasks.jsx
+* [1;32m|[m   [33m64a0fa1[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;33m|[m[1;34m\[m [1;32m\[m  
+[1;33m|[m * [1;32m|[m [33m582d9ec[m Update base simulada Task
+[1;33m|[m [1;32m|[m[1;32m/[m  
+* [1;32m|[m [33m4e85548[m intentando solucionar errores
+* [1;32m|[m [33m34e08ce[m cambios aside y tasks
+[1;32m|[m[1;32m/[m  
+* [33ma5619c0[m Update Aside
+* [33m902c378[m Update Aside
+* [33m72c7f78[m Fix Split backend & my-react-app
+* [33m7ae4ced[m Fix Split backend & my-react-app
+* [33m3b2c83b[m Update (mockDatabase) in Progress Testing
+*   [33m234d35e[m (SOLUCION AÑADIR BACKEND CONFLICTOS)
+[1;35m|[m[1;36m\[m  
+[1;35m|[m * [33md86801d[m Backend primera prueba
+[1;35m|[m *   [33m668425b[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;35m|[m [31m|[m[32m\[m  
+[1;35m|[m * [32m|[m [33m6a0d5b7[m Tenía que hacer merge
+* [32m|[m [32m|[m [33m21ade6c[m (SOLUCION AÑADIR BACK CONFLICTOS)
+* [32m|[m [32m|[m [33m70b81f0[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried (SOLUCION AÑADIR BACK CONFLICTOS)
+* [32m|[m [32m|[m [33m60cfb79[m Update (mockDatabase) in Progress v1
+* [32m|[m [32m|[m [33m165ccc6[m Update (mockDatabase) in Progress
+* [32m|[m [32m|[m [33m6e7bd6d[m Update (mockDatabase) in Progress
+* [32m|[m [32m|[m [33m8488f4e[m Update (mockDatabase) in Progress
+* [32m|[m [32m|[m [33m12cbc61[m Update (mockDatabase) in Progress
+* [32m|[m [32m|[m [33m0c718c8[m Update (mockDatabase) in Progress
+* [32m|[m [32m|[m [33m483b05d[m Update (mockDatabase) in Progress
+[32m|[m [32m|[m[32m/[m  
+[32m|[m[32m/[m[32m|[m   
+* [32m|[m   [33m7a0a2cf[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[33m|[m[34m\[m [32m\[m  
+[33m|[m * [32m|[m [33m04afd2e[m Update DataBase Simulada + logica en componentes
+[33m|[m * [32m|[m [33m2b3bba4[m Update DataBase Simulada + logica en componentes + UserDetails.css
+[33m|[m * [32m|[m [33md679190[m Update DataBase Simulada + logica en componentes + UserDetails.css
+* [34m|[m [32m|[m [33mbd96790[m notas entre perfiles y tareas
+[34m|[m[34m/[m [32m/[m  
+* [32m|[m [33med55df2[m UserDetails.jsx
+* [32m|[m [33mea93314[m UserDetails.jsx
+* [32m|[m [33mfaad4b6[m Update Styles
+* [32m|[m [33m8001e30[m Update DataBase Simulada + logica en componentes
+* [32m|[m [33mf82eae2[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[35m|[m[32m\[m[32m|[m 
+[35m|[m *   [33mc337b55[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[35m|[m [1;31m|[m[1;32m\[m  
+[35m|[m * [1;32m|[m [33m202e748[m Actualización contraseñas
+* [1;32m|[m [1;32m|[m [33m60f081e[m Update gitignore
+[1;32m|[m [1;32m|[m[1;32m/[m  
+[1;32m|[m[1;32m/[m[1;32m|[m   
+* [1;32m|[m [33m1bb9dc3[m Cleaning Update
+[1;32m|[m[1;32m/[m  
+* [33m133127a[m Update AppRoutes.jsx
+* [33m3f52dd3[m Update AppRoutes.jsx
+* [33m8cb30d1[m Update data_base
+* [33m3d8a101[m Update data_base
+* [33m2c0a509[m Update data_base
+*   [33mbf6baf6[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;33m|[m[1;34m\[m  
+[1;33m|[m * [33m3a84f04[m corrección menú hamburguesa
+* [1;34m|[m [33m80b8901[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;35m|[m[1;34m\[m[1;34m|[m 
+[1;35m|[m * [33m9c17961[m añadido responsive
+* [1;36m|[m [33m3b1f883[m Update data_base
+[1;36m|[m[1;36m/[m  
+* [33m3b99b19[m Update
+* [33maedb6f1[m Update
+* [33m5bc68a8[m Update
+*   [33mdad2d68[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[31m|[m[32m\[m  
+[31m|[m * [33m724c941[m Register without database 2
+[31m|[m *   [33md849b48[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[31m|[m [33m|[m[34m\[m  
+[31m|[m * [34m\[m   [33m926cc48[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[31m|[m [35m|[m[36m\[m [34m\[m  
+[31m|[m * [36m|[m [34m|[m [33m406e34e[m Register without database
+* [36m|[m [36m|[m [34m|[m [33m5772bd9[m Update
+[34m|[m [36m|[m[34m_[m[36m|[m[34m/[m  
+[34m|[m[34m/[m[36m|[m [36m|[m   
+* [36m|[m [36m|[m [33m2d6d0aa[m Update plantilla y user_profile
+[36m|[m [36m|[m[36m/[m  
+[36m|[m[36m/[m[36m|[m   
+* [36m|[m [33me36d7da[m Update plantilla y user_profile
+* [36m|[m [33mfb8d315[m Update plantilla y user_profile
+[36m|[m[36m/[m  
+* [33mb311240[m Update plantilla register y user_profile
+* [33m6108568[m Update
+* [33m292d51c[m Update
+* [33mc6231ea[m Update
+* [33mf91f9f1[m Update
+* [33mfb316cc[m Update
+* [33m103ebd0[m Organizacion archivos
+* [33m26da8ed[m Organizacion archivos
+* [33mc9976f3[m Arreglo Merge Update optimizacion
+* [33mf218c45[m Arreglo merge
+*   [33m3491924[m Merge branch 'codevaried' of https://github.com/develhope/FS-ESP10-Team2-Project3 into codevaried
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33mc68fcd7[m actualización con navbar
+* [1;32m|[m [33mbeae80f[m Update sample_colors
+[1;32m|[m[1;32m/[m  
+* [33m4d8280b[m Estilo de prueba funcional Update
+* [33m9023923[m Estilo de prueba funcional Update
+* [33md530bc2[m Estilo de prueba funcional Update
+* [33m88cdb9a[m Update App tests estilo
+* [33m620b238[m Added README.md for codevaried branch 2024-07-16 18:30:48
+* [33m02d76a5[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m Added README.md for develop branch 2024-07-16 18:30:45
+* [33m4a74876[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m Initial commit in main branch 2024-07-16 18:30:28

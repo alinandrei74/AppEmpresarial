@@ -116,56 +116,56 @@ const Form = () => {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <div className="form-title">Inicio de Sesión</div>
-      <div className="form-description">
+    <form className="login-form" onSubmit={handleSubmit}>
+      <div className="login-form-title">Inicio de Sesión</div>
+      <div className="login-form-description">
         Por favor, inicie sesión para usar la aplicación.
       </div>
       <br />
-      <div className="form-group">
-        <label htmlFor="username" className="form-label">
+      <div className="login-form-group">
+        <label htmlFor="username" className="login-form-label">
           Usuario
         </label>
         <input
           type="text"
           id="username"
           name="username"
-          className="form-input"
+          className="login-form-input"
           value={formData.username}
           onChange={handleChange}
           autoComplete="username"
         />
       </div>
-      <div className="form-group">
-        <label htmlFor="password" className="form-label">
+      <div className="login-form-group">
+        <label htmlFor="password" className="login-form-label">
           Contraseña
         </label>
         <input
           type={showPassword ? "text" : "password"}
           id="password"
           name="password"
-          className="form-input"
+          className="login-form-input"
           value={formData.password}
           onChange={handleChange}
           autoComplete="current-password"
         />
       </div>
-      <div className="form-group form-checkbox-group">
+      <div className="login-form-group login-form-checkbox-group">
         <input
           type="checkbox"
           id="show-password"
           checked={showPassword}
           onChange={handleCheckboxChange}
-          className="form-checkbox"
+          className="login-form-checkbox"
         />
-        <label htmlFor="show-password" className="form-checkbox-label">
+        <label htmlFor="show-password" className="login-form-checkbox-label">
           Mostrar Contraseña
         </label>
       </div>
       <button
         type="submit"
-        className={`form-button ${
-          !isFormValid() ? "form-button-disabled" : ""
+        className={`login-form-button ${
+          !isFormValid() ? "login-form-button-disabled" : ""
         }`}
         disabled={!isFormValid()}
       >

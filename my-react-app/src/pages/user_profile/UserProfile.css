@@ -1,104 +1,26 @@
-.user-profile-container {
-  /* display: flex; */
-}
-
-.aside {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 250px;
-  height: 100%;
-  background-color: #2c3e50;
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  transition: width 0.3s;
-}
-
-.aside .logo {
-  font-size: 24px;
-  color: #ecf0f1;
-  margin-bottom: 20px;
-}
-
-.aside ul {
-  list-style: none;
-  padding: 0;
-}
-
-.aside ul li {
-  margin-bottom: 10px;
-}
-
-.aside ul li a {
-  text-decoration: none;
-  color: #ecf0f1;
-  font-size: 18px;
-  display: block;
-  padding: 10px;
-  border-radius: 4px;
-  transition: background-color 0.3s;
-}
-
-.aside ul li a:hover {
-  background-color: #34495e;
-}
-
 .user-profile-content {
   transition: 0.3s;
-  margin-left: auto;
-  padding: 20px;
-  width: calc(100% - 250px);
+  padding: 20px 35px;
+  width: calc(100% - 240px);
+  /* width: 100%; */
+  /* Ajusta el ancho basado en el aside */
+  margin-left: 240px;
+  /* Deja espacio para el Aside en pantallas grandes */
 }
 
 @media (max-width: 768px) {
-  .aside {
-    width: 200px;
-  }
-
   .user-profile-content {
-
-    /* Aside abierto */
-    /* margin-left: 150px; */
-    /* width: auto; */
-
-    /* Aside cerrado */
-    margin-left: 0px;
-    width: auto;
-
-  }
-
-  .aside .logo {
-    font-size: 20px;
-  }
-
-  .aside ul li a {
-    font-size: 16px;
-    padding: 8px;
+    width: 100%;
+    /* Full width cuando el Aside está oculto en pantallas pequeñas */
+    margin-left: 0;
+    /* Remueve el margen cuando el aside está oculto */
   }
 }
 
 @media (max-width: 480px) {
-  .aside {
-    width: 150px;
-  }
-
   .user-profile-content {
-    /* Aside abierto */
-    /* margin-left: 150px; */
-    /* width: calc(100% - 50px); */
-
-    /* Aside cerrado */
-    margin-left: 0px;
-    width: auto;
-
-  }
-
-  .aside .logo {
-    font-size: 18px;
-  }
-
-  .aside ul li a {
-    font-size: 14px;
-    padding: 6px;
+    width: 100%;
+    /* Aseguramos que siempre ocupe el 100% del espacio disponible */
+    margin-left: 0;
   }
 }

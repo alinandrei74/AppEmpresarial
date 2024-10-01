@@ -11,7 +11,7 @@ export const users = [
     telephone: "1234567890",
     dni: "123456789A",
     address: "123 Example St",
-    cp: "12345", // Código postal
+    postal_code: "12345", // Código postal
     created_at: "2024-09-01",
     updated_at: "2024-09-13",
   },
@@ -27,7 +27,7 @@ export const users = [
     telephone: "2345678901",
     dni: "234567890B",
     address: "456 Test Ave",
-    cp: "23456", // Código postal
+    postal_code: "23456", // Código postal
     created_at: "2024-09-02",
     updated_at: "2024-09-13",
   },
@@ -43,7 +43,7 @@ export const users = [
     telephone: "3456789012",
     dni: "345678901C",
     address: "789 Sample Rd",
-    cp: "34567", // Código postal
+    postal_code: "34567", // Código postal
     created_at: "2024-09-03",
     updated_at: "2024-09-13",
   },
@@ -59,7 +59,7 @@ export const users = [
     telephone: "4567890123",
     dni: "456789012D",
     address: "012 Mockingbird Ln",
-    cp: "45678", // Código postal
+    postal_code: "45678", // Código postal
     created_at: "2024-09-04",
     updated_at: "2024-09-13",
   },
@@ -70,7 +70,7 @@ export const tasks = [
     id: 1, // PK
     title: "Limpieza del piso 1",
     description: "Revisar limpieza del piso 1",
-    status: "pending",
+    is_done: false,
     user_id: 2, // FK que referencia `users.id`
     created_at: "2024-08-25",
     updated_at: "2024-09-25",
@@ -80,7 +80,7 @@ export const tasks = [
     id: 2, // PK
     title: "Reparación de tuberías",
     description: "Reparación de tuberías en el apartamento 2B",
-    status: "done",
+    is_done: true,
     user_id: 4, // FK que referencia `users.id`
     created_at: "2024-08-26",
     updated_at: "2024-09-26",
@@ -90,7 +90,7 @@ export const tasks = [
     id: 3, // PK
     title: "Entrega de correo",
     description: "Entrega de correo a la recepción",
-    status: "canceled",
+    is_done: false,
     user_id: 3, // FK que referencia `users.id`
     created_at: "2024-08-27",
     updated_at: "2024-09-27",

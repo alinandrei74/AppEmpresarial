@@ -1,70 +1,33 @@
-/* TODO: Arreglar CSS */
-
-/* ScheduleForm.css */
-
-/* Contenedor del formulario */
 .schedule-container {
-    max-width: 900px;
+    max-width: 800px;
     margin: 0 auto;
-    padding: 30px;
-    border: 1px solid var(--clr-background);
-    border-radius: 12px;
-    background-color: var(--clr-background);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
+    padding: 20px;
 }
-#start-time-0{
-    width: 90%;
-}
-#end-time-0{
-    width: 90%;
-}
-#comment-0{width: 95%;}
-/* Título del formulario */
-.schedule-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 28px;
-    color: var(--clr-text);
-}
-#historial-de-horarios{
-    margin-top: 2.5vw;
-    margin-bottom: 0.5vw;
-    font-size: x-large;
-    box-shadow: inset;
-}
-/* Contenedor de cada entrada de horario */
+
 .schedule-input {
     display: flex;
     flex-direction: column;
     margin-bottom: 20px;
     padding: 15px;
-    border: 1px solid var(--clr-primary);
+    border: 1px solid var(--clr-OnPrimary);
     border-radius: 8px;
-    background-color: var(--clr-background);
+    background-color: var(--clr-primary);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* Fila para hora de inicio, hora de fin y día de la semana */
 .time-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 3vw;
     margin-bottom: 15px;
     box-sizing: border-box;
 }
 
-/* Ajustar el ancho de los campos de tiempo y el selector */
 .input-group {
-    flex: 1;
+    flex: 1 1 100%;
+    min-width: 200px;
 }
 
-/* Campo de comentario debajo de la fila de tiempos */
-.input-group.comment {
-    box-sizing: border-box;
-    margin-bottom: 20px;
-}
-
-/* Etiquetas */
 .input-group label {
     display: block;
     margin-bottom: 8px;
@@ -72,23 +35,25 @@
     color: var(--clr-text);
 }
 
-/* Campos de entrada */
+.input-group.day-of-week {
+    margin-top: 15px;
+}
+
 .input-group input,
 .input-group select {
     width: 100%;
     padding: 12px;
     font-size: 16px;
-    border: 1px solid var(--clr-primary);
+    border: 1px solid var(--clr-OnPrimary);
     border-radius: 6px;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: border-color 0.3s ease;
+    box-sizing: border-box;
 }
 
-/* Estilo para el selector de día de la semana */
 .input-group select {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--clr-background);
     background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"%3E%3Cpath d="M7 10l5 5 5-5H7z" fill="%23000000"/%3E%3C/svg%3E');
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -96,7 +61,6 @@
     padding-right: 30px;
 }
 
-/* Botones */
 .add-button,
 .remove-button,
 .send-button {
@@ -105,51 +69,113 @@
     border-radius: 6px;
     font-size: 16px;
     cursor: pointer;
-    color: var(--clr-OnText);
-    background-color: var(--clr-primary);
     margin-top: 10px;
 }
 
-/* Botón de eliminar */
-.remove-button {
-    background-color: var(--clr-error);
-}
-
-/* Botón de enviar */
 .send-button {
-    background-color: var(--clr-secondary);
+    margin-top: 5px;
+    margin-bottom: 15px;
 }
 
-/* Contenedor para centrar el botón de enviar */
-.button-container {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
+.schedule-list {
+    width: 100%;
+    overflow-x: auto;
 }
 
-/* Estilo para la tabla de historial */
-.history-table {
+.schedule-list h3 {
+    color: var(--clr-OnText);
+}
+
+.schedule-list p {
+    margin-top: 20px;
+    color: var(--clr-OnText);
+}
+
+.schedule-list table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-}
-
-.history-table th,
-.history-table td {
-    padding: 12px;
-    border: 1px solid var(--clr-primary);
-    text-align: left;
-}
-
-.history-table th {
     background-color: var(--clr-primary);
     color: var(--clr-OnPrimary);
 }
 
-.history-table tr:nth-child(even) {
-    background-color: var(--clr-primary-light);
+.schedule-list th,
+.schedule-list td {
+    padding: 12px;
+    border: 1px solid var(--clr-OnPrimary);
+    text-align: left;
+    color: var(--clr-OnPrimary);
 }
 
-.history-table tr:hover {
-    background-color: var(--clr-primary-light);
+.schedule-list th {
+    background-color: var(--clr-primary);
+    color: var(--clr-text);
+}
+
+.schedule-list tr:nth-child(even) {
+    background-color: var(--clr-OnPrimary-light);
+}
+
+.schedule-list tr:hover {
+    background-color: var(--clr-OnPrimary-light);
+}
+
+@media (max-width: 768px) {
+    .schedule-container {
+        padding: 15px;
+    }
+
+    .time-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .input-group {
+        flex: 1 1 auto;
+    }
+
+    .schedule-list table {
+        font-size: 14px;
+    }
+
+    .schedule-list th,
+    .schedule-list td {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .schedule-list table {
+        font-size: 12px;
+    }
+
+    .input-group input,
+    .input-group select {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 350px) {
+    .schedule-container {
+        padding: 10px;
+    }
+}
+
+@media (min-width: 351px) and (max-width: 600px) {
+    .schedule-container {
+        padding: 15px;
+    }
+}
+
+@media (min-width: 601px) and (max-width: 900px) {
+    .schedule-container {
+        padding: 20px;
+    }
+}
+
+@media (min-width: 901px) and (max-width: 1200px) {
+    .schedule-container {
+        padding: 25px;
+    }
 }

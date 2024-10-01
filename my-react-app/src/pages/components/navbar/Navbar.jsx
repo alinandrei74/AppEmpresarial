@@ -1,9 +1,9 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { toast } from "react-toastify"; // Importa react-toastify para notificaciones
+import { toast } from "react-toastify";
 import "./Navbar.css";
 import { DarkModeContext } from "../../../contexts/DarkModeContext";
-import { FaUserCircle } from "react-icons/fa"; // Importa el ícono de perfil
+import { FaUserCircle } from "react-icons/fa";
 
 /**
  * Componente de navegación principal.
@@ -28,26 +28,48 @@ export default function Navbar({ isMenuOpen, toggleMenu }) {
     navigate("/login");
   };
 
-  // Verificar si estamos en la ruta exacta "/user-profile"
   const isUserProfileActive = location.pathname === "/user-profile";
+
+  const isUserProfileRoute = location.pathname.includes("/user-profile");
+
+  // Verificar si estamos en la ruta /login
+  const isLoginRoute = location.pathname === "/login";
 
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <div className="menu-icon" onClick={toggleMenu}>
-          ☰
-        </div>
+        {/* Menú desplegable */}
+        {isLoggedIn && isUserProfileRoute && (
+          <div className="menu-icon" onClick={toggleMenu}>
+            ☰
+          </div>
+        )}
 
-        <div className={`navbar-logo ${isMenuOpen ? "menu-item" : ""}`}>
-          <Link
-            to="/user-profile"
-            className={isUserProfileActive ? "active-link" : ""}
+        {/* Logo "Mi perfil" solo si el usuario está logueado */}
+        {isLoggedIn && (
+          <div
+            className={`navbar-logo ${!isUserProfileRoute ? "no-margin" : ""}`}
           >
-            <FaUserCircle className="profile-icon" />
-            <h1>Mi perfil</h1>
-          </Link>
+            <Link
+              to="/user-profile"
+              className={`${isUserProfileActive ? "active-link" : ""}`}
+            >
+              <FaUserCircle className="profile-icon" />
+              <h1>Mi Perfil</h1>
+            </Link>
+          </div>
+        )}
+
+        {/* Título principal */}
+        <div
+          className={`navbar-title ${!isLoggedIn ? "adjust-title" : ""} ${
+            isLoginRoute && isLoggedIn ? "login-margin" : ""
+          }`}
+        >
+          <h1>UNITYNET</h1>
         </div>
 
+        {/* Botón de cerrar sesión */}
         <div className="navbar-actions">
           {isLoggedIn && (
             <button className="logout-button" onClick={handleLogout}>

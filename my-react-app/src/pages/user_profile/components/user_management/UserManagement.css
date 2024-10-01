@@ -1,0 +1,168 @@
+.user-management {
+  max-width: 1400px;
+}
+
+/* Estilo para el botón flotante */
+.floating-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--clr-OnPrimary);
+  color: var(--clr-OnText);
+  border-radius: 50%;
+  text-align: center;
+  font-size: 36px;
+  line-height: 60px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.floating-button:hover {
+  background-color: var(--clr-primary);
+}
+
+.user-management>h2 {
+  margin-bottom: 20px;
+  color: var(--clr-OnText);
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  transition: none;
+  justify-content: center;
+}
+
+.filters select,
+.filters input[type="text"] {
+  padding: 10px;
+  border: 1px solid var(--clr-secondary);
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+
+.tableManagement {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  table-layout: fixed;
+}
+
+.thManagement,
+.tdManagement {
+  background-color: var(--clr-primary) !important;
+  color: var(--clr-text) !important;
+  border: 1px solid var(--clr-OnText);
+  padding: 12px;
+  text-align: left;
+  transition: none !important;
+  word-wrap: break-word;
+}
+
+thead .thManagement {
+  color: var(--clr-disabled) !important;
+  color: var(--clr-text) !important;
+}
+
+.thManagement {
+  font-weight: bold;
+}
+
+.trManagement:nth-child(even) {
+  background-color: var(--clr-surface);
+  transition: none !important;
+}
+
+.buttonManagement {
+  display: flex;
+  justify-content: center;
+  /* Centra horizontalmente */
+  align-items: center;
+  /* Centra verticalmente */
+  padding: 10px 25px;
+  background-color: var(--clr-error);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 0 auto;
+  /* Centra el botón dentro de su contenedor */
+  transition: background-color 0.3s ease;
+  /* Añadir una transición suave */
+
+  /* width opcional si deseas que el botón ocupe todo el ancho del contenedor */
+  /* width: 100%; */
+}
+
+.buttonManagement:hover {
+  background-color: var(--clr-OnError);
+}
+
+.buttonManagement:disabled {
+  background-color: var(--clr-disabled);
+  color: var(--clr-OnSurface);
+  cursor: not-allowed;
+}
+
+@media (max-width: 950px) {
+  .filters {
+    flex-direction: column;
+  }
+
+  .tableManagement,
+  .theadManagement,
+  .tbodyManagement,
+  .thManagement,
+  .tdManagement,
+  .trManagement {
+    display: block;
+  }
+
+  .theadManagement tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .trManagement {
+    border: 1px solid var(--clr-secondary);
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .tdManagement {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 10;
+  }
+
+  .tdManagement:before {
+    flex-basis: 45%;
+    font-weight: bold;
+    color: var(--clr-text);
+  }
+
+  .tdManagement {
+    flex-basis: 55%;
+    text-align: right;
+  }
+
+  .buttonManagement {
+    width: 100%;
+  }
+}

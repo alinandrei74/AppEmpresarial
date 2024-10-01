@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./UserDetails.css";
+import API_S from "../../../../utilities/js/apiService/ApiService.mjs";
 
 /**
  * Componente para mostrar los detalles del usuario autenticado.
@@ -15,24 +16,13 @@ const UserDetails = ({ userData }) => {
   useEffect(() => {
     const fetchCompletedTasks = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3000/api/tasks/completed/${userData.id}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${sessionStorage.getItem("authToken")}`, // Asegúrate de que el token esté presente
-            },
-          }
+        const response = await API_S.get(
+          API_S.urls.tasks.getCompleted(userData.id)
         );
 
-        // Comprobamos si la respuesta es satisfactoria
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener las tareas completadas");
+        if (response.status === 200) {
+          setCompletedTasks(response.data.length); // Actualizamos el estado con el número de tareas completadas
         }
-
-        const data = await response.json();
-        setCompletedTasks(data.data.length); // Actualizamos el estado con el número de tareas completadas
       } catch (error) {
         console.error("Error al cargar las tareas completadas", error);
       }
@@ -47,13 +37,15 @@ const UserDetails = ({ userData }) => {
     .join(" ");
 
   return (
-    <div className="user-details-container">
-      <div className="user-details-header">
-        <h2>
+    <div className="SharedCard__card-background user-details-container">
+      <div className="SharedCard__item-user-div">
+        <h2 className="SharedCard__title">
           {fullName.split(" ")[0]} - {userData.dni}
         </h2>
         {userData.role && (
-          <div className={`user-role ${userData.role.toLowerCase()}`}>
+          <div
+            className={`user-role-tag ${userData.role.toLowerCase()} user-role-tag-UserDetais`}
+          >
             {userData.role}
           </div>
         )}
@@ -75,9 +67,10 @@ const UserDetails = ({ userData }) => {
             <strong>DNI:</strong> {userData.dni}
           </div>
         )}
-        {userData.address && userData.cp && (
+        {userData.address && userData.postal_code && (
           <div className="user-info-item">
-            <strong>Dirección:</strong> {userData.address}, {userData.cp}
+            <strong>Dirección:</strong> {userData.address},{" "}
+            {userData.postal_code}
           </div>
         )}
       </div>

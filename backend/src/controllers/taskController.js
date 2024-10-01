@@ -1,210 +1,156 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTask = exports.updateTask = exports.createTask = exports.getCompletedTasksByUserId = exports.getTasks = void 0;
 const db_1 = require("../config/db");
 const http_status_codes_1 = require("http-status-codes");
+const logger_1 = __importDefault(require("../utils/logger"));
+const validateRequest_1 = require("../middlewares/validateRequest");
+const validationSchemas_1 = require("../validators/validationSchemas");
 class TaskError extends Error {
     constructor(message) {
         super(message);
         this.name = 'TaskError';
     }
 }
-const getTasks = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// Obtener todas las tareas
+const getTasks = async (req, res) => {
     try {
-        const tasks = yield db_1.db.any('SELECT * FROM tasks');
+        const tasks = await db_1.db.any('SELECT * FROM tasks');
+        logger_1.default.success('Tareas obtenidas con éxito');
         return res.status(http_status_codes_1.StatusCodes.OK).json({
             status: http_status_codes_1.StatusCodes.OK,
-            message: 'Tasks fetched successfully',
+            message: 'Tareas obtenidas con éxito',
             data: tasks,
         });
     }
     catch (error) {
-        console.error('Error fetching tasks:', error);
+        logger_1.default.error('Error al obtener tareas:', error);
         return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
             status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-            message: 'Internal server error',
+            message: 'Error interno del servidor',
             data: null,
         });
     }
-});
+};
 exports.getTasks = getTasks;
-/**
- *! Necesitaba `getCompletedTasksByUserId` o `getTasksById` pero no estaba y no hay tiempo.
- * Obtiene todas las tareas completadas por un usuario específico.
- * @param {Request} req - La solicitud de Express.
- * @param {Response} res - La respuesta de Express.
- * @returns {Promise<Response>} - La respuesta con el estado y los datos de las tareas.
- */
-const getCompletedTasksByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { userId } = req.params;
-    try {
-        if (!userId) {
-            throw new TaskError('User ID is required');
-        }
-        // Asegurarse de que userId sea un número
-        const parsedUserId = parseInt(userId, 10);
-        if (isNaN(parsedUserId)) {
-            throw new TaskError('User ID must be a valid number');
-        }
-        // Obtener todas las tareas completadas por el usuario
-        const tasks = yield db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND status = $2', [parsedUserId, 'done']);
-        return res.status(http_status_codes_1.StatusCodes.OK).json({
-            status: http_status_codes_1.StatusCodes.OK,
-            message: 'Completed tasks fetched successfully',
-            data: tasks,
-        });
-    }
-    catch (error) {
-        console.error('Error fetching completed tasks:', error);
-        return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-            status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-            message: 'Internal server error',
-            data: null,
-        });
-    }
-});
-exports.getCompletedTasksByUserId = getCompletedTasksByUserId;
-const createTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { description, status, user_id, created_at, title } = req.body;
-    try {
-        if (!description || !status || !user_id || !created_at || !title) {
-            throw new TaskError('description, status, user_id, created_at, title are required');
-        }
-        // Asegúrate de que user_id sea un número
-        const parsedUserId = parseInt(user_id, 10);
-        if (isNaN(parsedUserId)) {
-            throw new TaskError('user_id must be a valid number');
-        }
-        const result = yield db_1.db.one('INSERT INTO tasks (description, status, user_id, created_at, title) VALUES ($1, $2, $3, $4, $5) RETURNING id', [description, status, parsedUserId, created_at, title]);
-        return res.status(http_status_codes_1.StatusCodes.CREATED).json({
-            status: http_status_codes_1.StatusCodes.CREATED,
-            message: 'Task created successfully',
-            data: { id: result.id },
-        });
-    }
-    catch (error) {
-        if (error instanceof TaskError) {
-            console.error('Task creation error:', error.message);
-            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                message: error.message,
-                data: null,
-            });
-        }
-        else {
-            console.error('Error creating task:', error);
-            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
-                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-                message: 'Internal server error',
-                data: null,
-            });
-        }
-    }
-});
-exports.createTask = createTask;
-const updateTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    const { description, status, user_id, created_at, title } = req.body;
-    try {
-        if (!id || !description || !status || !user_id || !created_at || !title) {
-            throw new TaskError('ID, description, status, user_id, created_at and title are required');
-        }
-        // Asegurarse de que id y user_id sean números
-        const parsedId = parseInt(id, 10);
-        const parsedUserId = parseInt(user_id, 10);
-        if (isNaN(parsedId) || isNaN(parsedUserId)) {
-            throw new TaskError('ID and user_id must be valid numbers');
-        }
-        const completedAt = status === 'done' ? new Date() : null;
-        const result = yield db_1.db.result('UPDATE tasks SET description = $1, status = $2, user_id = $3, created_at = $4, title = $5, completed_at = $6 WHERE id = $7 RETURNING *', [description, status, parsedUserId, created_at, title, completedAt, parsedId]);
-        if (result.rowCount) {
+exports.getCompletedTasksByUserId = [
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.userIdParamSchema, 'params'),
+    async (req, res) => {
+        const { user_id } = req.params;
+        try {
+            const tasks = await db_1.db.any('SELECT * FROM tasks WHERE user_id = $1 AND is_done = $2', [parseInt(user_id), true]);
+            logger_1.default.success(`Tareas completadas para el usuario ${user_id} obtenidas con éxito`);
             return res.status(http_status_codes_1.StatusCodes.OK).json({
                 status: http_status_codes_1.StatusCodes.OK,
-                message: 'Task updated successfully',
-                data: result.rows[0], // Devolver la tarea actualizada
+                message: 'Tareas completadas obtenidas con éxito',
+                data: tasks,
             });
         }
-        else {
-            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                status: http_status_codes_1.StatusCodes.NOT_FOUND,
-                message: 'Task not found',
-                data: null,
-            });
-        }
-    }
-    catch (error) {
-        if (error instanceof TaskError) {
-            console.error('Task update error:', error.message);
-            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                message: error.message,
-                data: null,
-            });
-        }
-        else {
-            console.error('Error updating task:', error);
+        catch (error) {
+            logger_1.default.error('Error al obtener tareas completadas:', error);
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
                 status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-                message: 'Internal server error',
+                message: 'Error interno del servidor',
                 data: null,
             });
         }
-    }
-});
-exports.updateTask = updateTask;
-const deleteTask = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id } = req.params;
-    try {
-        if (!id) {
-            throw new TaskError('ID is required');
-        }
-        // Asegurarse de que id sea un número
-        const parsedId = parseInt(id, 10);
-        if (isNaN(parsedId)) {
-            throw new TaskError('ID must be a valid number');
-        }
-        const result = yield db_1.db.result('DELETE FROM tasks WHERE id = $1', [parsedId]);
-        if (result.rowCount) {
-            return res.status(http_status_codes_1.StatusCodes.OK).json({
-                status: http_status_codes_1.StatusCodes.OK,
-                message: 'Task deleted successfully',
-                data: null,
+    },
+];
+// Crear una nueva tarea
+exports.createTask = [
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.createTaskSchema),
+    async (req, res) => {
+        const { description, is_done = false, user_id, title } = req.body; // Valor predeterminado de is_done a false
+        try {
+            const result = await db_1.db.one(`INSERT INTO tasks (description, is_done, user_id, title) 
+         VALUES ($1, $2, $3, $4) 
+         RETURNING id`, [description, is_done, user_id, title]);
+            logger_1.default.success('Tarea creada con éxito');
+            return res.status(http_status_codes_1.StatusCodes.CREATED).json({
+                status: http_status_codes_1.StatusCodes.CREATED,
+                message: 'Tarea creada con éxito',
+                data: { id: result.id },
             });
         }
-        else {
-            return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
-                status: http_status_codes_1.StatusCodes.NOT_FOUND,
-                message: 'Task not found',
-                data: null,
-            });
-        }
-    }
-    catch (error) {
-        if (error instanceof TaskError) {
-            console.error('Task deletion error:', error.message);
-            return res.status(http_status_codes_1.StatusCodes.BAD_REQUEST).json({
-                status: http_status_codes_1.StatusCodes.BAD_REQUEST,
-                message: error.message,
-                data: null,
-            });
-        }
-        else {
-            console.error('Error deleting task:', error);
+        catch (error) {
+            logger_1.default.error('Error al crear tarea:', error);
             return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
                 status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
-                message: 'Internal server error',
+                message: 'Error interno del servidor',
                 data: null,
             });
         }
-    }
-});
-exports.deleteTask = deleteTask;
+    },
+];
+// Actualizar una tarea existente
+exports.updateTask = [
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.updateTaskSchema, 'params'), // Validar cuerpo de la solicitud
+    async (req, res) => {
+        const { id } = req.params;
+        const { description, is_done, user_id, title } = req.body;
+        try {
+            const result = await db_1.db.result('UPDATE tasks SET description = $1, is_done = $2, user_id = $3, title = $4, completed_at = $5 WHERE id = $6 RETURNING *', [description, is_done, user_id, title, is_done === true ? new Date() : null, parseInt(id)]);
+            if (result.rowCount) {
+                logger_1.default.success(`Tarea con ID ${id} actualizada con éxito`);
+                return res.status(http_status_codes_1.StatusCodes.OK).json({
+                    status: http_status_codes_1.StatusCodes.OK,
+                    message: 'Tarea actualizada con éxito',
+                    data: result.rows[0],
+                });
+            }
+            else {
+                logger_1.default.warning(`Tarea con ID ${id} no encontrada`);
+                return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+                    status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                    message: 'Tarea no encontrada',
+                    data: null,
+                });
+            }
+        }
+        catch (error) {
+            logger_1.default.error('Error al actualizar tarea:', error);
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                message: 'Error interno del servidor',
+                data: null,
+            });
+        }
+    },
+];
+// Eliminar una tarea
+exports.deleteTask = [
+    (0, validateRequest_1.validateRequest)(validationSchemas_1.idParamSchema, 'params'), // Validar ID en parámetros
+    async (req, res) => {
+        const { id } = req.params;
+        try {
+            const result = await db_1.db.result('DELETE FROM tasks WHERE id = $1', [parseInt(id)]);
+            if (result.rowCount) {
+                logger_1.default.success(`Tarea con ID ${id} eliminada con éxito`);
+                return res.status(http_status_codes_1.StatusCodes.OK).json({
+                    status: http_status_codes_1.StatusCodes.OK,
+                    message: 'Tarea eliminada con éxito',
+                    data: null,
+                });
+            }
+            else {
+                logger_1.default.warning(`Tarea con ID ${id} no encontrada`);
+                return res.status(http_status_codes_1.StatusCodes.NOT_FOUND).json({
+                    status: http_status_codes_1.StatusCodes.NOT_FOUND,
+                    message: 'Tarea no encontrada',
+                    data: null,
+                });
+            }
+        }
+        catch (error) {
+            logger_1.default.error('Error al eliminar tarea:', error);
+            return res.status(http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR).json({
+                status: http_status_codes_1.StatusCodes.INTERNAL_SERVER_ERROR,
+                message: 'Error interno del servidor',
+                data: null,
+            });
+        }
+    },
+];
